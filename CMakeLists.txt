@@ -1,0 +1,19 @@
+cmake_minimum_required(VERSION 2.6)
+project(algo3_tp3)
+
+#TODO agregar archivos fuente aqui
+set(SOURCE_FILES )
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -pedantic")
+
+add_library(algo3-tp3-base ${SOURCE_FILES})
+
+#TODO agregar ejecutables entregables 
+#add_executable(nombreExe src/ArchivoConMain.cpp)
+#target_link_libraries (nombreExe algo3-tp2-base)
+
+#TODO agregar tests en archivo correspondiente
+#add_subdirectory(test)
+
+#TODO agregar recolector de datos en archivo correspondiente
+#add_subdirectory(data)

@@ -1,0 +1,13 @@
+language:
+  - cpp
+
+addons:
+  apt:
+    packages:
+      - valgrind
+
+script:
+  - mkdir build && cd build
+  - cmake ..
+  - make
+  - valgrind --leak-check=full --error-exitcode=10 ./test/correrTests
