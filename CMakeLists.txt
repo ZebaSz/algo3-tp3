@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.6)
 project(algo3_tp3)
 
 #TODO agregar archivos fuente aqui
-set(SOURCE_FILES )
+set(SOURCE_FILES src/dataReceptor.cpp src/exact.cpp src/graph.cpp)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -pedantic")
 
