@@ -22,10 +22,10 @@ int main() {
             for(int i = 0; i < m; ++i) {
                 unsigned int c1, c2;
                 int p;
-                std::cin >> c1 >> c2 >> p;
+                std::cin >> c1 >> c2;
                 --c1;
                 --c2;
-                in.edges.push_back({c1, c2, p});
+                in.edges.push_back({c1, c2});
             }
             inputs.push_back(in);
         }
