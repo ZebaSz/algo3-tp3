@@ -2,13 +2,13 @@
 #include "../src/graph.h"
 #include "../src/exact.h"
 
-class tests : public ::testing::Test {
+class PangaTest : public ::testing::Test {
 protected:
     int n;
     edgeList edges;
 };
 
-TEST_F(tests, treeSize) {
+TEST_F(PangaTest, treeSize) {
     edges.push_back({0,1});
     edges.push_back({0,2});
     edges.push_back({0,3});
@@ -18,5 +18,5 @@ TEST_F(tests, treeSize) {
 
     n = 4;
 
-    ASSERT_EQ(exactCMF(n, (int)edges.size(), edges), 0);
+    ASSERT_EQ(exactCMF(n, (int)edges.size(), edges), 4);
 }

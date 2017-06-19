@@ -21,7 +21,6 @@ int main() {
             in.m = m;
             for(int i = 0; i < m; ++i) {
                 unsigned int c1, c2;
-                int p;
                 std::cin >> c1 >> c2;
                 --c1;
                 --c2;
