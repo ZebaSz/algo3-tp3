@@ -31,7 +31,7 @@ int main() {
     }
     std::vector<input>::const_iterator it;
     for(it = inputs.begin(); it != inputs.end(); ++it) {
-        std::cout << exactCMF(it->n, it->m, it->edges) << std::endl;
+        std::cout << exactCMF(it->n, it->edges) << std::endl;
     }
     return 0;
 }

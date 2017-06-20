@@ -18,5 +18,5 @@ TEST_F(PangaTest, treeSize) {
 
     n = 4;
 
-    ASSERT_EQ(exactCMF(n, edges.size(), edges), (unsigned int)4);
+    ASSERT_EQ(exactCMF(n, edges), (unsigned int)4);
 }
