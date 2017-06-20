@@ -3,18 +3,20 @@
 
 #include <vector>
 
-#define INF INT_MAX
+typedef unsigned int node;
+typedef std::vector<unsigned int> nodeSet;
+typedef std::vector< std::vector< bool > > adjMatrix;
 
 struct edge {
-    unsigned int start;
-    unsigned int end;
+    node start;
+    node end;
 };
 
 typedef std::vector<edge> edgeList;
 
-bool operator<(const edge&, const edge&);
-bool operator>(const edge&, const edge&);
-bool operator==(const edge&, const edge&);
-bool operator!=(const edge&, const edge&);
+struct graphInfo {
+    unsigned int n;
+    edgeList edges;
+};
 
 #endif //ALGO3_TP2_GRAPH_H

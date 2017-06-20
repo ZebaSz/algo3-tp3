@@ -2,9 +2,7 @@
 #define ALGO3_TP3_EXACT_H
 
 #include "graph.h"
-
-typedef std::vector<unsigned int> nodeSet;
-typedef std::vector< std::vector< bool > > adjMatrix;
+#include "clique.h"
 
 /**
  * Returns whether adding a given node to a clique yields a new clique
@@ -39,18 +37,18 @@ std::vector<nodeSet> findAllCliques(const adjMatrix& graph);
  * Only half of the matrix is filled
  *
  * @param n the number of vertices
- * @param edges the graph as a list of edges
+ * @param input the graph as a list of edges
  * @return the graph as an adjacency matrix
  */
-adjMatrix createAdjacencyMatrix(unsigned int n, const edgeList &edges);
+adjMatrix createAdjacencyMatrix(const graphInfo &input);
 
 /**
  * Finds the clique with maximum outgoing edges for a given graph
  *
  * @param n the number of vertices
- * @param edges the graph as a list of edges
+ * @param input the graph as a list of edges
  * @return the maximum number of outgoing edges for all cliques in the graph
  */
-unsigned int exactCMF(unsigned int n, const edgeList &edges);
+cliqueInfo exactCMF(const graphInfo &input);
 
 #endif //ALGO3_TP3_EXACT_H

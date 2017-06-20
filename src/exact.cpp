@@ -44,25 +44,25 @@ std::vector<nodeSet> findAllCliques(const adjMatrix& graph) {
     return cliques;
 }
 
-adjMatrix createAdjacencyMatrix(unsigned int n, const edgeList &edges) {
-    adjMatrix adjacencyMatrix(n, std::vector<bool>(n, false));
-    for (size_t i = 0; i < edges.size(); i++) {
-        if(edges[i].start < edges[i].end) {
-            adjacencyMatrix[edges[i].start][edges[i].end] = true;
+adjMatrix createAdjacencyMatrix(const graphInfo &input) {
+    adjMatrix adjacencyMatrix(input.n, std::vector<bool>(input.n, false));
+    for (size_t i = 0; i < input.edges.size(); i++) {
+        if(input.edges[i].start < input.edges[i].end) {
+            adjacencyMatrix[input.edges[i].start][input.edges[i].end] = true;
         } else {
-            adjacencyMatrix[edges[i].end][edges[i].start] = true;
+            adjacencyMatrix[input.edges[i].end][input.edges[i].start] = true;
         }
     }
     return adjacencyMatrix;
 }
 
-unsigned int exactCMF(unsigned int n, const edgeList &edges) {
-    std::vector<unsigned int> degree(n, 0);
-    for (size_t i = 0; i < edges.size(); i++){
-        degree[edges[i].start]++;
-        degree[edges[i].end]++;
+cliqueInfo exactCMF(const graphInfo &input) {
+    std::vector<unsigned int> degree(input.n, 0);
+    for (size_t i = 0; i < input.edges.size(); i++){
+        degree[input.edges[i].start]++;
+        degree[input.edges[i].end]++;
     }
-    adjMatrix graph(createAdjacencyMatrix(n, edges));
+    adjMatrix graph(createAdjacencyMatrix(input));
     unsigned int maxDegree = 0;
     for (size_t i = 0; i < degree.size(); i++){
         if (degree[i] > maxDegree){
@@ -70,15 +70,18 @@ unsigned int exactCMF(unsigned int n, const edgeList &edges) {
         }
     }
     std::vector<nodeSet> cliques(findAllCliques(graph));
-    unsigned int answer = 0;
+
+    size_t bestPos = 0;
+    unsigned int bestCount = 0;
     for (size_t i = 0; i < cliques.size(); i++){
         unsigned int count = 0;
         for (size_t j = 0; j < cliques[i].size(); ++j) {
             count += degree[cliques[i][j]] + 1 - cliques[i].size();
         }
-        if (count > answer){
-            answer = count;
+        if (count > bestCount){
+            bestCount = count;
+            bestPos = i;
         }
     }
-    return answer;
+    return {cliques[bestPos], bestCount};
 }

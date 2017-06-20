@@ -1,11 +1,9 @@
 #include <gtest/gtest.h>
 #include "../src/graph.h"
 #include "../src/exact.h"
+#include "AbstractTest.h"
 
-class ExactText : public ::testing::Test {
-protected:
-    unsigned int n;
-    edgeList edges;
+class ExactText : public AbstractTest {
 };
 
 TEST_F(ExactText, k4) {
@@ -18,7 +16,7 @@ TEST_F(ExactText, k4) {
 
     n = 4;
 
-    ASSERT_EQ(exactCMF(n, edges), (unsigned int)4);
+    ASSERT_EQ(exactCMF({n, edges}).outgoing, (unsigned int)4);
 }
 
 TEST_F(ExactText, k4PlusTwoEdges) {
@@ -33,5 +31,13 @@ TEST_F(ExactText, k4PlusTwoEdges) {
 
     n = 6;
 
-    ASSERT_EQ(exactCMF(n, edges), (unsigned int)6);
+    ASSERT_EQ(exactCMF({n, edges}).outgoing, (unsigned int)6);
+}
+
+TEST_F(ExactText, allSmall) {
+    std::vector<testcase> tests(getTests(true));
+    for (size_t i = 0; i < tests.size(); ++i) {
+        ASSERT_EQ(exactCMF(tests[i].input).outgoing, tests[i].output.outgoing);
+        Utils::log(DEBUG, "Passed test %d", i);
+    }
 }

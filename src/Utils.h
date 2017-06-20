@@ -2,6 +2,8 @@
 #define ALGO3_TP2_UTILS_H
 
 #include <vector>
+#include <fstream>
+#include "clique.h"
 
 typedef int logLevel;
 enum LOG_LEVEL {TRACE, DEBUG, INFO, WARN, ERROR, OFF};
@@ -10,6 +12,10 @@ enum LOG_LEVEL {TRACE, DEBUG, INFO, WARN, ERROR, OFF};
 
 namespace Utils {
     void log(logLevel level, const char* format, ...);
+
+    graphInfo parseGraph(std::istream& is);
+
+    cliqueInfo parseCliqueInfo(std::string filename);
 
     template<typename T>
     void addAll(std::vector<T> &dest, const std::vector<T> &src) {

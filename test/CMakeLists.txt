@@ -32,7 +32,14 @@ if (CMAKE_VERSION VERSION_LESS 2.8.11)
     include_directories("${gtest_SOURCE_DIR}/include")
 endif()
 
-set(TEST_FILES ExactTest.cpp)
+
+set(TEST_FILES ExactTest.cpp AbstractTest.h AbstractTest.cpp)
 
 add_executable(correrTests ${TEST_FILES})
 target_link_libraries(correrTests algo3-tp3-base gtest_main gtest)
+
+find_package(Boost COMPONENTS system filesystem REQUIRED)
+target_link_libraries(correrTests
+        ${Boost_FILESYSTEM_LIBRARY}
+        ${Boost_SYSTEM_LIBRARY}
+        )
