@@ -2,13 +2,13 @@
 #include "../src/graph.h"
 #include "../src/exact.h"
 
-class PangaTest : public ::testing::Test {
+class ExactText : public ::testing::Test {
 protected:
     unsigned int n;
     edgeList edges;
 };
 
-TEST_F(PangaTest, treeSize) {
+TEST_F(ExactText, k4) {
     edges.push_back({0,1});
     edges.push_back({0,2});
     edges.push_back({0,3});
