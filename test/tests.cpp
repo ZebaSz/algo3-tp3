@@ -4,7 +4,7 @@
 
 class PangaTest : public ::testing::Test {
 protected:
-    int n;
+    unsigned int n;
     edgeList edges;
 };
 
@@ -18,5 +18,5 @@ TEST_F(PangaTest, treeSize) {
 
     n = 4;
 
-    ASSERT_EQ(exactCMF(n, (int)edges.size(), edges), 4);
+    ASSERT_EQ(exactCMF(n, edges.size(), edges), (unsigned int)4);
 }
