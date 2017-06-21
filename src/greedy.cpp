@@ -20,7 +20,7 @@ cliqueInfo greedyHeuristic(const graphInfo &inputGraph, cliqueInfo partialClique
         if(isClique(adjacencyList, partialClique.nodes, nodesToConsider[j]) && partialClique.nodes.size() * 2 < adjacencyList[nodesToConsider[j]].size()){
             partialClique.nodes.push_back(nodesToConsider[j]);
             //update frontier size
-            partialClique.outgoing += adjacencyList[nodesToConsider[j]].size() - partialClique.nodes.size() * 2;
+            partialClique.outgoing += adjacencyList[nodesToConsider[j]].size() + 2 - partialClique.nodes.size() * 2;
         }
     }
     return partialClique;
