@@ -8,7 +8,7 @@
 typedef int logLevel;
 enum LOG_LEVEL {TRACE, DEBUG, INFO, WARN, ERROR, OFF};
 
-#define CUR_LOG_LEVEL INFO
+#define CUR_LOG_LEVEL OFF
 
 namespace Utils {
     void log(logLevel level, const char* format, ...);

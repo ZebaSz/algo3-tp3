@@ -42,8 +42,6 @@ std::vector<nodeSet> findAllCliques(const adjMatrix& graph);
  */
 adjMatrix createAdjacencyMatrix(const graphInfo &input);
 
-
-
 /**
  * Finds the clique with maximum outgoing edges for a given graph
  *

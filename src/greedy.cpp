@@ -1,4 +1,5 @@
 #include "greedy.h"
+#include <iostream>
 
 cliqueInfo greedyHeuristic(const graphInfo &inputGraph, cliqueInfo partialClique){
     adjList adjacencyList = createAdjacencyList(inputGraph);
@@ -11,10 +12,13 @@ cliqueInfo greedyHeuristic(const graphInfo &inputGraph, cliqueInfo partialClique
             }
         }
     } else {
-        root = partialClique.nodes[0]; //if we have an input clique, any of its nodes suffices as a root
+        root = partialClique.nodes[0];  //if we have an input clique, any of its nodes suffices as a root
+                                        //TODO ¿tomar cualquier root? dudoso.
     }
     nodesToConsider = adjacencyList[root];
     sortByDegree(nodesToConsider, adjacencyList); //we want to first consider greedily adding nodes that will enlarge the clique's frontier
+    partialClique.nodes.push_back(nodesToConsider[root]);
+    partialClique.outgoing += adjacencyList[root].size();
     for (size_t j = 0; j < nodesToConsider.size() ; ++j) {
         //if the node we wanna add is adjacent to every node in the clique and it enlarges the frontier, we add it
         if(isClique(adjacencyList, partialClique.nodes, nodesToConsider[j]) && partialClique.nodes.size() * 2 < adjacencyList[nodesToConsider[j]].size()){
@@ -28,7 +32,7 @@ cliqueInfo greedyHeuristic(const graphInfo &inputGraph, cliqueInfo partialClique
 
 void sortByDegree(nodeSet& nodes, adjList& adjacencyList) {
     bool changesMade = true;
-    while(changesMade){ //bubble sort! bubbles are kawai :D
+    while(changesMade){ //Bubble sort
         changesMade = false;
         for (size_t i = 0; i < nodes.size()-1; ++i) {
             //uses the degrees found in adjacencyList as a criteria to order

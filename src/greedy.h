@@ -4,6 +4,7 @@
 #include <algorithm>
 #include "graph.h"
 #include "clique.h"
+#include "Utils.h"
 #include "exact.h"
 
 /**
