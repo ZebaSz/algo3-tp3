@@ -1,40 +1,39 @@
-//
-// Created by catofthecannals on 20/06/17.
-//
-
-#include "heuristics.h"
+#include "greedy.h"
 
 cliqueInfo greedyHeuristic(const graphInfo &inputGraph, cliqueInfo partialClique){
     adjList adjacencyList = createAdjacencyList(inputGraph);
     nodeSet nodesToConsider;
     node root = 0;
     if (partialClique.nodes.size() == 0){ //if starting from scratch, greedily choose the node that has the gratest frontier
-        for (int i = 1; i < adjacencyList.size() ; ++i) {
-            if(adjacencyList[root].size() < adjacencyList[i].size()) root = i;
+        for (unsigned int i = 1; i < adjacencyList.size() ; ++i) {
+            if(adjacencyList[root].size() < adjacencyList[i].size()) {
+                root = i;
+            }
         }
     } else {
         root = partialClique.nodes[0]; //if we have an input clique, any of its nodes suffices as a root
     }
     nodesToConsider = adjacencyList[root];
     sortByDegree(nodesToConsider, adjacencyList); //we want to first consider greedily adding nodes that will enlarge the clique's frontier
-    for (size_t j = 0; j < nodesToConsider.size() ; ++j) {
+    for (int j = 0; j < (int)nodesToConsider.size() ; ++j) {
         //if the node we wanna add is adjacent to every node in the clique and it enlarges the frontier, we add it
-        if(isClique(adjacencyList,partialClique,nodesToConsider[j]) && partialClique.nodes.size() * 2 < adjacencyList[nodesToConsider[j]].size()){
+        if(isClique(adjacencyList, partialClique.nodes, nodesToConsider[j]) && partialClique.nodes.size() * 2 < adjacencyList[nodesToConsider[j]].size()){
             partialClique.nodes.push_back(nodesToConsider[j]);
             //update frontier size
             partialClique.outgoing += adjacencyList[nodesToConsider[j]].size() - partialClique.nodes.size() * 2;
         }
     }
+    return partialClique;
 }
 
-void sortByDegree(nodeSet nodes, const adjList adjacencyList) {
+void sortByDegree(nodeSet nodes, adjList adjacencyList) {
     bool changesMade = true;
     while(changesMade){ //bubble sort! bubbles are kawai :D
         changesMade = false;
-        for (size_t i = 0; i < nodes.size()-1; ++i) {
+        for (int i = 0; i < nodes.size()-1; ++i) {
             //uses the degrees found in adjacencyList as a criteria to order
             if(adjacencyList[nodes[i]].size() < adjacencyList[nodes[i+1]].size()){
-                std::swap(adjacencyList[nodes[i]].size(), adjacencyList[nodes[i+1]].size());
+                std::swap(adjacencyList[nodes[i]], adjacencyList[nodes[i+1]]);
                 changesMade = true;
             }
         }
@@ -42,9 +41,9 @@ void sortByDegree(nodeSet nodes, const adjList adjacencyList) {
 }
 
 bool isClique(const adjList& graph, const nodeSet& subclique, unsigned int node) {
-    for (size_t i = 0; i < subclique.size(); i++){ //for every node in the clique
+    for (int i = 0; i < (int)subclique.size(); i++){ //for every node in the clique
         bool found = false;
-        for (size_t j = 0; j < graph[i].size(); ++j) { //check whether or not it is adjacent to the new node
+        for (int j = 0; j < (int)graph[i].size(); ++j) { //check whether or not it is adjacent to the new node
             if(graph[i][j] == node) found = true;
         }
         if(!found) return false;
@@ -63,4 +62,5 @@ adjList createAdjacencyList(const graphInfo &input) {
         adjacencyList[e.start].push_back(e.end);
         adjacencyList[e.end].push_back(e.start);
     }
+    return adjacencyList;
 }

@@ -4,7 +4,7 @@
 #include "graph.h"
 
 struct cliqueInfo {
-    cliqueInfo(size_t k, unsigned int f) : nodes(k), outgoing(f) {}
+    cliqueInfo(std::size_t k, unsigned int f) : nodes(k), outgoing(f) {}
     cliqueInfo(nodeSet g, unsigned int f) : nodes(g), outgoing(f) {}
 
     nodeSet nodes;

@@ -1,10 +1,7 @@
-//
-// Created by catofthecannals on 20/06/17.
-//
-
 #ifndef ALGO3_TP3_HEURISTICS_H
 #define ALGO3_TP3_HEURISTICS_H
 
+#include <algorithm>
 #include "graph.h"
 #include "clique.h"
 #include "exact.h"

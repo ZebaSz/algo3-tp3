@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include "../src/graph.h"
 #include "../src/exact.h"
+#include "../src/greedy.h"
 #include "AbstractTest.h"
 
 class ExactText : public AbstractTest {
@@ -15,8 +16,9 @@ TEST_F(ExactText, k4) {
     edges.push_back({2,3});
 
     n = 4;
-
+    cliqueInfo testClique(0,0);
     ASSERT_EQ(exactCMF({n, edges}).outgoing, (unsigned int)4);
+    ASSERT_EQ(greedyHeuristic({n, edges}, testClique).outgoing, (unsigned int)4);
 }
 
 TEST_F(ExactText, k4PlusTwoEdges) {
