@@ -5,7 +5,7 @@ cliqueInfo greedyHeuristic(const graphInfo &inputGraph, cliqueInfo partialClique
     nodeSet nodesToConsider;
     node root = 0;
     if (partialClique.nodes.size() == 0){ //if starting from scratch, greedily choose the node that has the gratest frontier
-        for (unsigned int i = 1; i < adjacencyList.size() ; ++i) {
+        for (size_t i = 1; i < adjacencyList.size() ; ++i) {
             if(adjacencyList[root].size() < adjacencyList[i].size()) {
                 root = i;
             }
@@ -15,7 +15,7 @@ cliqueInfo greedyHeuristic(const graphInfo &inputGraph, cliqueInfo partialClique
     }
     nodesToConsider = adjacencyList[root];
     sortByDegree(nodesToConsider, adjacencyList); //we want to first consider greedily adding nodes that will enlarge the clique's frontier
-    for (int j = 0; j < (int)nodesToConsider.size() ; ++j) {
+    for (size_t j = 0; j < nodesToConsider.size() ; ++j) {
         //if the node we wanna add is adjacent to every node in the clique and it enlarges the frontier, we add it
         if(isClique(adjacencyList, partialClique.nodes, nodesToConsider[j]) && partialClique.nodes.size() * 2 < adjacencyList[nodesToConsider[j]].size()){
             partialClique.nodes.push_back(nodesToConsider[j]);
@@ -26,11 +26,11 @@ cliqueInfo greedyHeuristic(const graphInfo &inputGraph, cliqueInfo partialClique
     return partialClique;
 }
 
-void sortByDegree(nodeSet nodes, adjList adjacencyList) {
+void sortByDegree(nodeSet& nodes, adjList& adjacencyList) {
     bool changesMade = true;
     while(changesMade){ //bubble sort! bubbles are kawai :D
         changesMade = false;
-        for (int i = 0; i < nodes.size()-1; ++i) {
+        for (size_t i = 0; i < nodes.size()-1; ++i) {
             //uses the degrees found in adjacencyList as a criteria to order
             if(adjacencyList[nodes[i]].size() < adjacencyList[nodes[i+1]].size()){
                 std::swap(adjacencyList[nodes[i]], adjacencyList[nodes[i+1]]);
@@ -53,11 +53,11 @@ bool isClique(const adjList& graph, const nodeSet& subclique, unsigned int node)
 
 adjList createAdjacencyList(const graphInfo &input) {
     adjList adjacencyList;
-    for (int i = 0; i < input.n; ++i) { // n nodes
+    for (unsigned int i = 0; i < input.n; ++i) { // n nodes
         std::vector<node> v;
         adjacencyList.push_back(v);
     }
-    for (int j = 0; j < input.edges.size(); ++j) { //add connections
+    for (size_t j = 0; j < input.edges.size(); ++j) { //add connections
         edge e = input.edges[j];
         adjacencyList[e.start].push_back(e.end);
         adjacencyList[e.end].push_back(e.start);

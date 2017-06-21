@@ -14,8 +14,10 @@ struct testcase {
 
 class AbstractTest : public ::testing::Test {
 protected:
-    unsigned int n;
-    edgeList edges;
+    graphInfo k4;
+    graphInfo k4plus;
+
+    virtual void SetUp();
 
     std::vector<testcase> getTests(bool small);
 };

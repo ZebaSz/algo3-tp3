@@ -35,5 +35,5 @@ bool isClique(const adjList& graph, const nodeSet& subclique, unsigned int node)
  * @param nodes vector of nodes that will be ordered from higher to lower degree
  * @param adjacencyList this adjacency list will let us know the degree of every node
  */
-void sortByDegree(nodeSet nodes, const adjList adjacencyList);
+void sortByDegree(nodeSet& nodes, adjList& adjacencyList);
 #endif //ALGO3_TP3_HEURISTICS_H
