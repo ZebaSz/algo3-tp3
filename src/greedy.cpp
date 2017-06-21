@@ -5,7 +5,7 @@ cliqueInfo greedyHeuristic(const graphInfo &inputGraph, cliqueInfo partialClique
     nodeSet nodesToConsider;
     node root = 0;
     if (partialClique.nodes.size() == 0){ //if starting from scratch, greedily choose the node that has the gratest frontier
-        for (size_t i = 1; i < adjacencyList.size() ; ++i) {
+        for (unsigned int i = 1; i < adjacencyList.size() ; ++i) {
             if(adjacencyList[root].size() < adjacencyList[i].size()) {
                 root = i;
             }
