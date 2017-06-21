@@ -56,6 +56,7 @@ adjMatrix createAdjacencyMatrix(const graphInfo &input) {
     return adjacencyMatrix;
 }
 
+
 cliqueInfo exactCMF(const graphInfo &input) {
     std::vector<unsigned int> degree(input.n, 0);
     for (size_t i = 0; i < input.edges.size(); i++){

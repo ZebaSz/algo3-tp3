@@ -6,6 +6,7 @@
 typedef unsigned int node;
 typedef std::vector<unsigned int> nodeSet;
 typedef std::vector< std::vector< bool > > adjMatrix;
+typedef std::vector< std::vector< node > > adjList;
 
 struct edge {
     node start;
