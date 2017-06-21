@@ -1,11 +1,9 @@
-#ifndef ALGO3_TP3_HEURISTICS_H
-#define ALGO3_TP3_HEURISTICS_H
+#ifndef ALGO3_TP3_GREEDY_H
+#define ALGO3_TP3_GREEDY_H
 
-#include <algorithm>
 #include "graph.h"
 #include "clique.h"
 #include "Utils.h"
-#include "exact.h"
 
 /**
  * greedily adds nodes to a clique if and only if adding a node yields a clique with a greater frontier
@@ -37,4 +35,4 @@ bool isClique(const adjList& graph, const nodeSet& subclique, unsigned int node)
  * @param adjacencyList this adjacency list will let us know the degree of every node
  */
 void sortByDegree(nodeSet& nodes, adjList& adjacencyList);
-#endif //ALGO3_TP3_HEURISTICS_H
+#endif //ALGO3_TP3_GREEDY_H

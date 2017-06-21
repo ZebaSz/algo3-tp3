@@ -1,5 +1,4 @@
 #include "greedy.h"
-#include <iostream>
 
 cliqueInfo greedyHeuristic(const graphInfo &inputGraph, cliqueInfo partialClique){
     adjList adjacencyList = createAdjacencyList(inputGraph);
@@ -11,14 +10,13 @@ cliqueInfo greedyHeuristic(const graphInfo &inputGraph, cliqueInfo partialClique
                 root = i;
             }
         }
+        partialClique.nodes.push_back(root);
+        partialClique.outgoing += adjacencyList[root].size();
     } else {
         root = partialClique.nodes[0];  //if we have an input clique, any of its nodes suffices as a root
-                                        //TODO ¿tomar cualquier root? dudoso.
     }
     nodesToConsider = adjacencyList[root];
     sortByDegree(nodesToConsider, adjacencyList); //we want to first consider greedily adding nodes that will enlarge the clique's frontier
-    partialClique.nodes.push_back(nodesToConsider[root]);
-    partialClique.outgoing += adjacencyList[root].size();
     for (size_t j = 0; j < nodesToConsider.size() ; ++j) {
         //if the node we wanna add is adjacent to every node in the clique and it enlarges the frontier, we add it
         if(isClique(adjacencyList, partialClique.nodes, nodesToConsider[j]) && partialClique.nodes.size() * 2 < adjacencyList[nodesToConsider[j]].size()){

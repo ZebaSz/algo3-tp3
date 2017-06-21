@@ -33,7 +33,7 @@ if (CMAKE_VERSION VERSION_LESS 2.8.11)
 endif()
 
 
-set(TEST_FILES ExactTest.cpp AbstractTest.h AbstractTest.cpp GreedyTest.cpp)
+set(TEST_FILES ExactTest.cpp AbstractTest.h AbstractTest.cpp GreedyTest.cpp LocalSearchTest.cpp)
 
 add_executable(correrTests ${TEST_FILES})
 target_link_libraries(correrTests algo3-tp3-base gtest_main gtest)
