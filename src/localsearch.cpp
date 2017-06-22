@@ -34,9 +34,27 @@ cliqueInfo localSearchHeuristic(const graphInfo &inputGraph, cliqueInfo partialC
 }
 
 cliqueInfo createNeighborSolution(const graphInfo &inputGraph, cliqueInfo partialClique, adjList adjacencyList, unsigned int i){
-    partialClique.outgoing = (unsigned int)(partialClique.outgoing - adjacencyList[partialClique.nodes[i]].size() - 2 + (partialClique.nodes.size() * 2));
+    unsigned int bestResult = partialClique.outgoing;
+    node erasedNode = partialClique.nodes[i];
+    node newNode = erasedNode;
+    partialClique.outgoing = (unsigned int)(partialClique.outgoing - adjacencyList[partialClique.nodes[i]].size()); //No consideramos el tam de la clique xq despues agregaremos otro nodo
     partialClique.nodes.erase(partialClique.nodes.begin() + i);
-    return greedyHeuristic(inputGraph, partialClique);
+    for (unsigned int j = 0; j < inputGraph.n; j++){
+        if (j != erasedNode && isClique(adjacencyList, partialClique.nodes, j)){
+            unsigned int newOutgoing = (unsigned int)(partialClique.outgoing + adjacencyList[j].size());
+            if (bestResult < newOutgoing){
+                newNode = j;
+            }
+        }
+    }
+    if (newNode != erasedNode){
+        partialClique.nodes.push_back(newNode);
+        partialClique.outgoing += adjacencyList[newNode].size();
+        return greedyHeuristic(inputGraph, partialClique);
+    } else {
+        partialClique.outgoing = 0; //Pasamos una solución basura
+        return partialClique;
+    }
 }
 
 void sortSolutions(std::vector<cliqueInfo>& neighborSolutions){
