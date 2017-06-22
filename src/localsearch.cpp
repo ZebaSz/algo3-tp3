@@ -44,15 +44,19 @@ cliqueInfo createNeighborSolution(const graphInfo &inputGraph, cliqueInfo partia
     node secErasedNode = partialClique.nodes[j];
     node firstNewNode = firstErasedNode;
     node secNewNode = secErasedNode;
-    partialClique.outgoing = (unsigned int)(partialClique.outgoing - adjacencyList[partialClique.nodes[i]].size() - adjacencyList[partialClique.nodes[j]].size()); //No consideramos el tam de la clique xq despues agregaremos otros nodos
+    partialClique.outgoing = 0; //No consideramos el tam de la clique xq despues agregaremos otros nodos
     partialClique.nodes.erase(partialClique.nodes.begin() + j);
     partialClique.nodes.erase(partialClique.nodes.begin() + i - 1); //Ya sacamos un nodo, con j < i, asi que i se atrasó uno
+    for (unsigned int y = 0; y < partialClique.nodes.size(); y++){
+        partialClique.outgoing += (adjacencyList[partialClique.nodes[y]].size() - y);
+    }
+    partialClique.outgoing = (unsigned int)(partialClique.outgoing - partialClique.nodes.size());
     for (unsigned int v = 0; v < inputGraph.n; v++) {
         for (unsigned int w = (v + 1); w < inputGraph.n; w++) {
             if (((v != firstErasedNode && v != secErasedNode) || (w != firstErasedNode && w != secErasedNode)) &&
                 isCliqueWithVariousNodes(adjacencyList, partialClique.nodes, v, w)) {
                 unsigned int newOutgoing = (unsigned int) (partialClique.outgoing + adjacencyList[v].size() +
-                                                           adjacencyList[w].size());
+                                                           adjacencyList[w].size() - (partialClique.nodes.size() * 3) - 3);
                 if (bestResult < newOutgoing) {
                     firstNewNode = v;
                     secNewNode = w;
