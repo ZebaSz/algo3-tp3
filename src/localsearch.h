@@ -14,8 +14,11 @@
  */
 cliqueInfo localSearchHeuristic(const graphInfo &inputGraph, cliqueInfo partialClique);
 
-cliqueInfo createNeighborSolution(const graphInfo &inputGraph, cliqueInfo partialClique, adjList adjacencyList, unsigned int i);
+cliqueInfo createNeighborSolution(const graphInfo &inputGraph, cliqueInfo partialClique, adjList adjacencyList,
+                                  unsigned int i, unsigned int j);
 
 void sortSolutions(std::vector<cliqueInfo>& neighborSolutions);
+
+bool isCliqueWithVariousNodes(const adjList &graph, const nodeSet& subclique, unsigned int v , unsigned int w);
 
 #endif //ALGO3_TP3_LOCALSEARCH_H

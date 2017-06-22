@@ -37,6 +37,15 @@ TEST_F(GreedyTest, adjacencyLust) {
     ASSERT_EQ(aj[0][1], 2); //0 and 2 are adjacent
 }
 
+TEST_F(GreedyTest, allSmall) {
+    cliqueInfo testClique(0,0);
+    std::vector<testcase> tests(getTests(true));
+    for (size_t i = 0; i < tests.size(); ++i) {
+        Utils::log(INFO, "Passed test %d", i);
+        ASSERT_EQ(greedyHeuristic(tests[i].input, testClique).outgoing, tests[i].output.outgoing);
+    }
+}
+
 TEST_F(GreedyTest, sortNodesByDegree) {
     graphInfo graph;
     graph.n = 10;
