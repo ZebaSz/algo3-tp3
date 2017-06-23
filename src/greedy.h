@@ -13,12 +13,6 @@
  */
 cliqueInfo greedyHeuristic(const graphInfo &inputGraph, cliqueInfo partialClique);
 
-/**
- * Creates an adjacency list
- * @param input incidence list
- * @return
- */
-adjList createAdjacencyList(const graphInfo &input);
 
 /**
  *
@@ -28,8 +22,6 @@ adjList createAdjacencyList(const graphInfo &input);
  * @return true if and only if node is adjacent to every node in subclique
  */
 bool itsClique(const nodeSet subclique, const graphInfo& graph, unsigned int node);
-
-bool isClique(const adjList& graph, const nodeSet& subclique, unsigned int node);
 
 /**
  *

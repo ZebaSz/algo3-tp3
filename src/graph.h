@@ -23,7 +23,7 @@ struct graphInfo {
 namespace Graph {
 
     /**
-     * Creates a adjacency matrix
+     * Creates an adjacency matrix
      *
      * @param n the number of vertices
      * @param input the graph as a list of edges
@@ -31,6 +31,15 @@ namespace Graph {
      * @complexity O(|E|)
      */
     adjMatrix createAdjacencyMatrix(const graphInfo &input);
+
+
+    /**
+     * Creates an adjacency list
+     * @param input incidence list
+     * @return the grapsh as an adjacency list
+     * @complexity O(|V| + |E|)
+     */
+    adjList createAdjacencyList(const graphInfo &input);
 
     /**
      * Returns whether adding a given node to a clique yields a new clique

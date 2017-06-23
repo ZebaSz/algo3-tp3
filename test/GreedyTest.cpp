@@ -29,7 +29,7 @@ TEST_F(GreedyTest, adjacencyLust) {
     graph.edges.push_back({7,8});
     graph.edges.push_back({8,9});
     graph.edges.push_back({9,7});
-    adjList aj = createAdjacencyList(graph);
+    adjList aj = Graph::createAdjacencyList(graph);
     ASSERT_EQ(aj.size(), 10); //#nodes
     ASSERT_EQ(aj[0].size(), 2); //degree of first node
     ASSERT_EQ(aj[1].size(), 2); //degree of second node
@@ -52,7 +52,7 @@ TEST_F(GreedyTest, sortNodesByDegree) {
     graph.edges.push_back({7,8});
     graph.edges.push_back({8,9});
     graph.edges.push_back({9,7});
-    adjList al = createAdjacencyList(graph);
+    adjList al = Graph::createAdjacencyList(graph);
     // node | degree    1 2     2 2     3 3     4 3     5 2     6 2     7 3     8 3     9 2     10 2
     nodeSet ns;
     for(size_t i = 0; i < al.size(); i++){
@@ -72,13 +72,13 @@ TEST_F(GreedyTest, sortNodesByDegree) {
 }
 
 TEST_F(GreedyTest, cliqueDetection) {
-    adjList al = createAdjacencyList(k4plus);
+    adjList al = Graph::createAdjacencyList(k4plus);
     nodeSet ns;
     ns.push_back(0);
     ns.push_back(1);
     ns.push_back(2);
-    ASSERT_TRUE(isClique(al, ns, 3));
-    ASSERT_FALSE(isClique(al, ns, 4));
+    ASSERT_TRUE(Graph::allAdjacentTo(al, ns, 3));
+    ASSERT_FALSE(Graph::allAdjacentTo(al, ns, 4));
 }
 
 TEST_F(GreedyTest, allSmall) {

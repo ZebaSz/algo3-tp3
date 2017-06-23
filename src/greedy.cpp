@@ -1,7 +1,7 @@
 #include "greedy.h"
 
 cliqueInfo greedyHeuristic(const graphInfo &inputGraph, cliqueInfo partialClique){
-    adjList adjacencyList = createAdjacencyList(inputGraph);
+    adjList adjacencyList = Graph::createAdjacencyList(inputGraph);
     nodeSet nodesToConsider;
     node root = 0;
     if (partialClique.nodes.size() == 0){ //if starting from scratch, greedily choose the node that has the gratest frontier
@@ -19,7 +19,7 @@ cliqueInfo greedyHeuristic(const graphInfo &inputGraph, cliqueInfo partialClique
     sortByDegree(nodesToConsider, adjacencyList); //we want to first consider greedily adding nodes that will enlarge the clique's frontier
     for (size_t j = 0; j < nodesToConsider.size() ; ++j) {
         //if the node we wanna add is adjacent to every node in the clique and it enlarges the frontier, we add it
-        if(itsClique(partialClique.nodes, inputGraph, nodesToConsider[j]) && partialClique.nodes.size() * 2 < adjacencyList[nodesToConsider[j]].size()){
+        if(Graph::allAdjacentTo(adjacencyList, partialClique.nodes, nodesToConsider[j]) && partialClique.nodes.size() * 2 < adjacencyList[nodesToConsider[j]].size()){
             partialClique.nodes.push_back(nodesToConsider[j]);
             //update frontier size
             partialClique.outgoing += adjacencyList[nodesToConsider[j]].size() + 2 - partialClique.nodes.size() * 2;
@@ -56,31 +56,4 @@ bool itsClique(const nodeSet subclique, const graphInfo& graph, unsigned int nod
         }
     }
     return ret;
-}
-bool isClique(const adjList& graph, const nodeSet& subclique, unsigned int node) {
-    for (int i = 0; i < (int)subclique.size(); i++){ //for every node in the clique
-        bool found = false;
-        for (int j = 0; j < (int)graph[i].size(); ++j) { //check whether or not it is adjacent to the new node
-            if(graph[node][j] == node) return false; //TODO HAY UN PROBLEMA MAS GRANDE QUE ESTO Y NO LO ENCUENTRO
-            if(graph[subclique[i]][j] == node) found = true;
-        }
-        if(!found){
-            return false;
-        }
-    }
-    return true;
-}
-
-adjList createAdjacencyList(const graphInfo &input) {
-    adjList adjacencyList;
-    for (unsigned int i = 0; i < input.n; ++i) { // n nodes
-        std::vector<node> v;
-        adjacencyList.push_back(v);
-    }
-    for (size_t j = 0; j < input.edges.size(); ++j) { //add connections
-        edge e = input.edges[j];
-        adjacencyList[e.start].push_back(e.end);
-        adjacencyList[e.end].push_back(e.start);
-    }
-    return adjacencyList;
 }

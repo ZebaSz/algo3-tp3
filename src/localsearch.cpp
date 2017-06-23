@@ -1,7 +1,7 @@
 #include "localsearch.h"
 
 cliqueInfo localSearchHeuristic(const graphInfo &inputGraph, cliqueInfo partialClique) {
-    adjList adjacencyList = createAdjacencyList(inputGraph);
+    adjList adjacencyList = Graph::createAdjacencyList(inputGraph);
     nodeSet nodes; //TODO Seba asignacion por copia pls
     unsigned int outgoing; //TODO esto es un chikero
     if (partialClique.nodes.size() == 0){

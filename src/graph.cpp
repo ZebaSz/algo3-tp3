@@ -10,6 +10,20 @@ adjMatrix Graph::createAdjacencyMatrix(const graphInfo &input) {
     return adjacencyMatrix;
 }
 
+adjList Graph::createAdjacencyList(const graphInfo &input) {
+    adjList adjacencyList;
+    for (unsigned int i = 0; i < input.n; ++i) { // n nodes
+        std::vector<node> v;
+        adjacencyList.push_back(v);
+    }
+    for (size_t j = 0; j < input.edges.size(); ++j) { //add connections
+        edge e = input.edges[j];
+        adjacencyList[e.start].push_back(e.end);
+        adjacencyList[e.end].push_back(e.start);
+    }
+    return adjacencyList;
+}
+
 bool Graph::allAdjacentTo(const adjMatrix &graph, const nodeSet &subclique, const node node) {
     for (size_t i = 0; i < subclique.size(); i++){
         if (!graph[subclique[i]][node]) {
