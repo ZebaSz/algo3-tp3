@@ -85,9 +85,9 @@ TEST_F(GreedyTest, allSmall) {
     cliqueInfo testClique(0,0);
     std::vector<testcase> tests(getTests(true));
     for (size_t i = 0; i < tests.size(); ++i) {
-        if (greedyHeuristic(tests[i].input, testClique).outgoing == tests[i].output.outgoing){
+        if(greedyHeuristic(tests[i].input, testClique).outgoing == tests[i].output.outgoing) {
             Utils::log(INFO, "Passed test %d", i);
         }
     }
-    ASSERT_EQ(greedyHeuristic(tests[4].input, testClique).outgoing, tests[4].output.outgoing);
+    ASSERT_EQ(greedyHeuristic(tests[0].input, testClique).outgoing, tests[0].output.outgoing);
 }

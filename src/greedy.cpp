@@ -19,7 +19,7 @@ cliqueInfo greedyHeuristic(const graphInfo &inputGraph, cliqueInfo partialClique
     sortByDegree(nodesToConsider, adjacencyList); //we want to first consider greedily adding nodes that will enlarge the clique's frontier
     for (size_t j = 0; j < nodesToConsider.size() ; ++j) {
         //if the node we wanna add is adjacent to every node in the clique and it enlarges the frontier, we add it
-        if(isClique(adjacencyList, partialClique.nodes, nodesToConsider[j]) && partialClique.nodes.size() * 2 < adjacencyList[nodesToConsider[j]].size()){
+        if(itsClique(partialClique.nodes, inputGraph, nodesToConsider[j]) && partialClique.nodes.size() * 2 < adjacencyList[nodesToConsider[j]].size()){
             partialClique.nodes.push_back(nodesToConsider[j]);
             //update frontier size
             partialClique.outgoing += adjacencyList[nodesToConsider[j]].size() + 2 - partialClique.nodes.size() * 2;
@@ -41,7 +41,22 @@ void sortByDegree(nodeSet& nodes, adjList& adjacencyList) {
         }
     }
 }
-
+bool itsClique(const nodeSet subclique, const graphInfo& graph, unsigned int node){ //TODO esta recorriendo todas las aristas todas las veces
+    bool ret = true;
+    for (int i = 0; i < (int)subclique.size(); i++){
+        bool found = false;
+        for (int j = 0; j < graph.n; j++){
+            edge e = graph.edges[j];
+            if((e.start == subclique[i] && e.end == node) || (e.end == subclique[i] && e.start == node)){
+                found = true;
+            }
+        }
+        if (!found){
+            ret = false;
+        }
+    }
+    return ret;
+}
 bool isClique(const adjList& graph, const nodeSet& subclique, unsigned int node) {
     for (int i = 0; i < (int)subclique.size(); i++){ //for every node in the clique
         bool found = false;
@@ -49,7 +64,9 @@ bool isClique(const adjList& graph, const nodeSet& subclique, unsigned int node)
             if(graph[node][j] == node) return false; //TODO HAY UN PROBLEMA MAS GRANDE QUE ESTO Y NO LO ENCUENTRO
             if(graph[subclique[i]][j] == node) found = true;
         }
-        if(!found) return false;
+        if(!found){
+            return false;
+        }
     }
     return true;
 }

@@ -27,6 +27,8 @@ adjList createAdjacencyList(const graphInfo &input);
  * @param node we want to know if we can add
  * @return true if and only if node is adjacent to every node in subclique
  */
+bool itsClique(const nodeSet subclique, const graphInfo& graph, unsigned int node);
+
 bool isClique(const adjList& graph, const nodeSet& subclique, unsigned int node);
 
 /**

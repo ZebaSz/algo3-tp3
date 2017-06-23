@@ -49,7 +49,7 @@ cliqueInfo createNeighborSolution(const graphInfo &inputGraph, cliqueInfo partia
     for (unsigned int v = 0; v < inputGraph.n; v++) {
         for (unsigned int w = (v + 1); w < inputGraph.n; w++) {
             if (((v != firstErasedNode && v != secErasedNode) || (w != firstErasedNode && w != secErasedNode)) &&
-                isCliqueWithVariousNodes(adjacencyList, partialClique.nodes, v, w)) {
+                isCliqueWithVariousNodes(inputGraph, partialClique.nodes, v, w)) {
                 unsigned int newOutgoing = (unsigned int) (partialClique.outgoing + adjacencyList[v].size() +
                                                            adjacencyList[w].size() - (partialClique.nodes.size() * 3) - 3);
                 cliqueInfo aClique(partialClique.nodes, newOutgoing);
@@ -74,10 +74,11 @@ cliqueInfo createNeighborSolution(const graphInfo &inputGraph, cliqueInfo partia
     }
 }
 
-bool isCliqueWithVariousNodes(const adjList &graph, const nodeSet& subclique, unsigned int v , unsigned int w){
-    if (isClique(graph, subclique, v) && isClique(graph, subclique, w)){
-        for (int i = 0; i < (int)graph[v].size(); i++){
-            if (graph[v][i] == w){
+bool isCliqueWithVariousNodes(const graphInfo &graph, const nodeSet& subclique, unsigned int v , unsigned int w){ //TODO esta recorriendo todas las aristas todas las veces
+    if (itsClique(subclique, graph, v) && itsClique(subclique, graph, w)){
+        for (int i = 0; i < graph.n; i++){
+            edge e = graph.edges[i];
+            if((e.start == v && e.end == w) || (e.end == v && e.start == w)){
                 return true;
             }
         }

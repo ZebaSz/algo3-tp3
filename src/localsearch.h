@@ -19,6 +19,6 @@ cliqueInfo createNeighborSolution(const graphInfo &inputGraph, cliqueInfo partia
 
 void sortSolutions(std::vector<cliqueInfo>& neighborSolutions);
 
-bool isCliqueWithVariousNodes(const adjList &graph, const nodeSet& subclique, unsigned int v , unsigned int w);
+bool isCliqueWithVariousNodes(const graphInfo &graph, const nodeSet& subclique, unsigned int v , unsigned int w);
 
 #endif //ALGO3_TP3_LOCALSEARCH_H

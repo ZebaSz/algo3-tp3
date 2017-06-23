@@ -18,9 +18,9 @@ TEST_F(LocalSearchTest, allSmall) {
     cliqueInfo testClique(0,0);
     std::vector<testcase> tests(getTests(true));
     for (size_t i = 0; i < tests.size(); ++i) {
-        if (localSearchHeuristic(tests[i].input, testClique).outgoing == tests[i].output.outgoing){
+        if(localSearchHeuristic(tests[i].input, testClique).outgoing == tests[i].output.outgoing) {
             Utils::log(INFO, "Passed test %d", i);
         }
     }
-    ASSERT_EQ(localSearchHeuristic(tests[7].input, testClique).outgoing, tests[7].output.outgoing);
+    ASSERT_EQ(localSearchHeuristic(tests[0].input, testClique).outgoing, tests[0].output.outgoing);
 }
