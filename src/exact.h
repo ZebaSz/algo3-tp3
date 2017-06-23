@@ -4,15 +4,6 @@
 #include "graph.h"
 #include "clique.h"
 
-/**
- * Returns whether adding a given node to a clique yields a new clique
- *
- * @param graph the graph as an adjacency matrix
- * @param subclique a clique within the graph
- * @param node a node in the graph
- * @return true if the subclique plus the node is a valid clique in the graph
- */
-bool isClique(const adjMatrix& graph, const nodeSet& subclique, unsigned int node);
 
 /**
  * Gets all cliques of size k+1 for a given set of cliques of size k
@@ -31,16 +22,6 @@ void expandCliques(const adjMatrix& graph, const std::vector<nodeSet>& subclique
  * @return a list of all unique cliques
  */
 std::vector<nodeSet> findAllCliques(const adjMatrix& graph);
-
-/**
- * Creates a triangular adjacency matrix
- * Only half of the matrix is filled
- *
- * @param n the number of vertices
- * @param input the graph as a list of edges
- * @return the graph as an adjacency matrix
- */
-adjMatrix createAdjacencyMatrix(const graphInfo &input);
 
 /**
  * Finds the clique with maximum outgoing edges for a given graph

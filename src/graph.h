@@ -23,11 +23,23 @@ struct graphInfo {
 namespace Graph {
 
     /**
+     * Creates a adjacency matrix
+     *
+     * @param n the number of vertices
+     * @param input the graph as a list of edges
+     * @return the graph as an adjacency matrix
+     * @complexity O(|E|)
+     */
+    adjMatrix createAdjacencyMatrix(const graphInfo &input);
+
+    /**
+     * Returns whether adding a given node to a clique yields a new clique
+     *
      * @info Esta es la nueva isClique
-     * @param graph
-     * @param subclique
-     * @param node
-     * @return Si el nodo es adyacente a todos los nodos de la subclique
+     * @param graph the graph as an adjacency matrix
+     * @param subclique a clique within the graph
+     * @param node a node in the graph
+     * @return true if the subclique plus the node is a valid clique in the graph
      * @complexity O(|subclique|))
      */
     bool allAdjacentTo(const adjMatrix& graph, const nodeSet& subclique, const node node);
