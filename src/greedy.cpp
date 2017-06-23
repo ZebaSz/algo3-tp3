@@ -46,7 +46,7 @@ bool isClique(const adjList& graph, const nodeSet& subclique, unsigned int node)
     for (int i = 0; i < (int)subclique.size(); i++){ //for every node in the clique
         bool found = false;
         for (int j = 0; j < (int)graph[i].size(); ++j) { //check whether or not it is adjacent to the new node
-            if(graph[node][j] == node) return false; //TODO el nodo es autoadyacente
+            if(graph[node][j] == node) return false; //TODO HAY UN PROBLEMA MAS GRANDE QUE ESTO Y NO LO ENCUENTRO
             if(graph[subclique[i]][j] == node) found = true;
         }
         if(!found) return false;
