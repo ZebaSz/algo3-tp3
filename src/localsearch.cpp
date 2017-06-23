@@ -4,7 +4,6 @@ cliqueInfo localSearchHeuristic(const graphInfo &inputGraph, cliqueInfo partialC
     adjList adjacencyList = createAdjacencyList(inputGraph);
     nodeSet nodes; //TODO Seba asignacion por copia pls
     unsigned int outgoing; //TODO esto es un chikero
-
     if (partialClique.nodes.size() == 0){
         cliqueInfo aClique(greedyHeuristic(inputGraph, partialClique));
         nodes = aClique.nodes;
@@ -24,10 +23,6 @@ cliqueInfo localSearchHeuristic(const graphInfo &inputGraph, cliqueInfo partialC
             }
         }
         sortSolutions(neighborSolutions);
-        for (int i = 0; i < neighborSolutions.size(); i++){
-            Utils::log(INFO, "Solucion numero %d", i);
-            Utils::log(INFO, " %d \n", neighborSolutions[i].outgoing);
-        }
         if (neighborSolutions[0].nodes == checkClique.nodes){
             cliquesToCheck = false;
         } else {
@@ -44,7 +39,7 @@ cliqueInfo createNeighborSolution(const graphInfo &inputGraph, cliqueInfo partia
     node secErasedNode = partialClique.nodes[j];
     node firstNewNode = firstErasedNode;
     node secNewNode = secErasedNode;
-    partialClique.outgoing = 0; //No consideramos el tam de la clique xq despues agregaremos otros nodos
+    partialClique.outgoing = 0; //Reiniciamos el contador de fronteras de la clique
     partialClique.nodes.erase(partialClique.nodes.begin() + j);
     partialClique.nodes.erase(partialClique.nodes.begin() + i - 1); //Ya sacamos un nodo, con j < i, asi que i se atrasó uno
     for (unsigned int y = 0; y < partialClique.nodes.size(); y++){
@@ -57,7 +52,11 @@ cliqueInfo createNeighborSolution(const graphInfo &inputGraph, cliqueInfo partia
                 isCliqueWithVariousNodes(adjacencyList, partialClique.nodes, v, w)) {
                 unsigned int newOutgoing = (unsigned int) (partialClique.outgoing + adjacencyList[v].size() +
                                                            adjacencyList[w].size() - (partialClique.nodes.size() * 3) - 3);
-                if (bestResult < newOutgoing) {
+                cliqueInfo aClique(partialClique.nodes, newOutgoing);
+                aClique.nodes.push_back(v);
+                aClique.nodes.push_back(w);
+                if (bestResult < greedyHeuristic(inputGraph, aClique).outgoing) {
+                    bestResult = newOutgoing;
                     firstNewNode = v;
                     secNewNode = w;
                 }
@@ -65,13 +64,9 @@ cliqueInfo createNeighborSolution(const graphInfo &inputGraph, cliqueInfo partia
         }
     }
     if ((firstNewNode != firstErasedNode) || (secNewNode != secErasedNode)) {
-        Utils::log(INFO, "outgoing a %d", partialClique.outgoing);
-        partialClique.nodes.push_back(firstNewNode); //TODO si pusheas primero el secNode, cambian los valores (!!!)
+        partialClique.nodes.push_back(firstNewNode);
         partialClique.nodes.push_back(secNewNode);
-        Utils::log(INFO, "outgoing b %d", partialClique.outgoing);
-        partialClique.outgoing += adjacencyList[firstNewNode].size() + adjacencyList[secNewNode].size();
-        Utils::log(INFO, "Solucion con %d y %d, nos da %d", firstNewNode, secNewNode, partialClique.outgoing); //TODO Aca ya se rompio
-        Utils::log(INFO, "porque %d y %d", adjacencyList[firstNewNode].size(), adjacencyList[secNewNode].size());
+        partialClique.outgoing = bestResult;
         return greedyHeuristic(inputGraph, partialClique);
     } else {
         partialClique.outgoing = 0; //Pasamos una solución basura
