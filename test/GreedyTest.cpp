@@ -5,13 +5,11 @@ class GreedyTest : public AbstractTest {
 };
 
 TEST_F(GreedyTest, k4) {
-    cliqueInfo testClique(0,0);
-    ASSERT_EQ(greedyHeuristic(k4, testClique).outgoing, (unsigned int)4);
+    ASSERT_EQ(greedyHeuristic(k4).outgoing, (unsigned int)4);
 }
 
 TEST_F(GreedyTest, k4PlusTwoEdges) {
-    cliqueInfo testClique(0,0);
-    ASSERT_EQ(greedyHeuristic(k4plus, testClique).outgoing, (unsigned int)6);
+    ASSERT_EQ(greedyHeuristic(k4plus).outgoing, (unsigned int)6);
 }
 
 TEST_F(GreedyTest, adjacencyLust) {
@@ -82,10 +80,9 @@ TEST_F(GreedyTest, cliqueDetection) {
 }
 
 TEST_F(GreedyTest, allSmall) {
-    cliqueInfo testClique(0,0);
     std::vector<testcase> tests(getTests(true));
     for (size_t i = 0; i < tests.size(); ++i) {
-        cliqueInfo result = greedyHeuristic(tests[i].input, testClique);
+        cliqueInfo result = greedyHeuristic(tests[i].input);
         ASSERT_LE(result.outgoing, tests[i].output.outgoing) << "Caso small-" << i;
         if(result.outgoing == tests[i].output.outgoing) {
             Utils::log(INFO, "Passed test %d", i);
@@ -94,10 +91,9 @@ TEST_F(GreedyTest, allSmall) {
 }
 
 TEST_F(GreedyTest, allHuge) {
-    cliqueInfo testClique(0,0);
     std::vector<testcase> tests(getTests(false));
     for (size_t i = 0; i < tests.size(); ++i) {
-        cliqueInfo result = greedyHeuristic(tests[i].input, testClique);
+        cliqueInfo result = greedyHeuristic(tests[i].input);
         ASSERT_LE(result.outgoing, tests[i].output.outgoing) << "Caso huge-" << i;
         if(result.outgoing == tests[i].output.outgoing) {
             Utils::log(INFO, "Passed test %d", i);

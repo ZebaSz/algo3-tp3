@@ -15,7 +15,9 @@
 cliqueInfo laDeRoniPorLasDudas(const graphInfo &inputGraph, cliqueInfo partialClique);
 
 
-cliqueInfo localSearchHeuristic(const graphInfo &inputGraph, cliqueInfo partialClique);
+cliqueInfo localSearchHeuristic(const graphInfo &inputGraph);
+cliqueInfo localSearchHeuristic(const adjList &adjacencyList);
+cliqueInfo localSearchHeuristic(const adjList &adjacencyList, cliqueInfo partialClique);
 cliqueInfo findBestNeighborSolution(const adjList &adjacencyList, cliqueInfo partialClique);
 cliqueInfo localAdd(const adjList &adjacencyList, cliqueInfo partialClique);
 cliqueInfo localRemove(const adjList &adjacencyList, cliqueInfo partialClique);

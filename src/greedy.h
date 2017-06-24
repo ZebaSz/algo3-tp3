@@ -5,6 +5,10 @@
 #include "clique.h"
 #include "Utils.h"
 
+
+cliqueInfo greedyHeuristic(const graphInfo &inputGraph);
+
+cliqueInfo greedyHeuristic(const adjList &graph);
 /**
  * greedily adds nodes to a clique if and only if adding a node yields a clique with a greater frontier
  * @param inputGraph

@@ -106,11 +106,9 @@ int runGreedy() {
             for (unsigned int i = 0; i < REPETITIONS; ++i) {
                 std::cout << "impl = greedy, n = " << n << ", m = " << m
                           << "     " << "\r" << std::flush;
-                cliqueInfo partial(0,0);
-
                 auto begin = GET_TIME;
 
-                greedyHeuristic(info, partial);
+                greedyHeuristic(info);
 
                 auto end = GET_TIME;
 
@@ -136,11 +134,9 @@ int runLocal() {
             for (unsigned int i = 0; i < REPETITIONS; ++i) {
                 std::cout << "impl = local, n = " << n << ", m = " << m
                           << "     " << "\r" << std::flush;
-                cliqueInfo partial(0,0);
-
                 auto begin = GET_TIME;
 
-                localSearchHeuristic(info, partial);
+                localSearchHeuristic(info);
 
                 auto end = GET_TIME;
 
@@ -151,7 +147,6 @@ int runLocal() {
     std::cout << "local = done!                " << std::endl;
     fclose(data);
     return 0;
-
 }
 
 int runGrasp() {

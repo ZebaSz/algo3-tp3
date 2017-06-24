@@ -23,12 +23,15 @@ cliqueInfo laDeRoniPorLasDudas(const graphInfo &inputGraph, cliqueInfo partialCl
     }
     return partialClique;
 }
+cliqueInfo localSearchHeuristic(const graphInfo &inputGraph) {
+    return localSearchHeuristic(Graph::createAdjacencyList(inputGraph));
+}
 
-cliqueInfo localSearchHeuristic(const graphInfo &inputGraph, cliqueInfo partialClique) {
-    adjList adjacencyList = Graph::createAdjacencyList(inputGraph);
-    if (partialClique.nodes.empty()) {
-        partialClique = greedyHeuristic(adjacencyList, partialClique);
-    }
+cliqueInfo localSearchHeuristic(const adjList &adjacencyList) {
+    return localSearchHeuristic(adjacencyList, greedyHeuristic(adjacencyList));
+}
+
+cliqueInfo localSearchHeuristic(const adjList &adjacencyList, cliqueInfo partialClique) {
     bool isBetter = true;
     while (isBetter) {
         isBetter = false;
