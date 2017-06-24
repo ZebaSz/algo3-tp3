@@ -26,9 +26,9 @@ cliqueInfo greedyHeuristic(const adjList &adjacencyList, cliqueInfo partialCliqu
 
 bool itsClique(const nodeSet subclique, const graphInfo& graph, unsigned int node){ //TODO esta recorriendo todas las aristas todas las veces
     bool ret = true;
-    for (int i = 0; i < (int)subclique.size(); i++){
+    for (size_t i = 0; i < subclique.size(); i++){
         bool found = false;
-        for (int j = 0; j < graph.n; j++){
+        for (unsigned int j = 0; j < graph.n; j++){
             edge e = graph.edges[j];
             if((e.start == subclique[i] && e.end == node) || (e.end == subclique[i] && e.start == node)){
                 found = true;

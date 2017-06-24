@@ -18,9 +18,22 @@ TEST_F(LocalSearchTest, allSmall) {
     cliqueInfo testClique(0,0);
     std::vector<testcase> tests(getTests(true));
     for (size_t i = 0; i < tests.size(); ++i) {
-        if(localSearchHeuristic(tests[i].input, testClique).outgoing == tests[i].output.outgoing) {
+        cliqueInfo result = localSearchHeuristic(tests[i].input, testClique);
+        ASSERT_LE(result.outgoing, tests[i].output.outgoing) << "Caso small-" << i;
+        if(result.outgoing == tests[i].output.outgoing) {
             Utils::log(INFO, "Passed test %d", i);
         }
     }
-    ASSERT_EQ(localSearchHeuristic(tests[0].input, testClique).outgoing, tests[0].output.outgoing);
+}
+
+TEST_F(LocalSearchTest, allHuge) {
+    cliqueInfo testClique(0,0);
+    std::vector<testcase> tests(getTests(false));
+    for (size_t i = 0; i < tests.size(); ++i) {
+        cliqueInfo result = localSearchHeuristic(tests[i].input, testClique);
+        ASSERT_LE(result.outgoing, tests[i].output.outgoing) << "Caso huge-" << i;
+        if(result.outgoing == tests[i].output.outgoing) {
+            Utils::log(INFO, "Passed test %d", i);
+        }
+    }
 }

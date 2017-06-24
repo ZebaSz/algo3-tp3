@@ -181,7 +181,7 @@ cliqueInfo createNeighborSolution(const graphInfo &inputGraph, cliqueInfo partia
 
 bool isCliqueWithVariousNodes(const graphInfo &graph, const nodeSet& subclique, unsigned int v , unsigned int w){ //TODO esta recorriendo todas las aristas todas las veces
     if (itsClique(subclique, graph, v) && itsClique(subclique, graph, w)){
-        for (int i = 0; i < graph.n; i++){
+        for (unsigned int i = 0; i < graph.n; i++){
             edge e = graph.edges[i];
             if((e.start == v && e.end == w) || (e.end == v && e.start == w)){
                 return true;
