@@ -5,14 +5,15 @@ project(algo3_tp3)
 set(SOURCE_FILES src/Utils.cpp
         src/exact.cpp src/clique.h src/graph.h
         src/greedy.cpp
-        src/localsearch.cpp src/graph.cpp)
+        src/localsearch.cpp
+        src/grasp.cpp)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -pedantic")
 
-add_library(algo3-tp3-base ${SOURCE_FILES} src/graph.cpp)
+add_library(algo3-tp3-base ${SOURCE_FILES})
 
 #TODO agregar ejecutables entregables 
-add_executable(exact src/dataReceptor.cpp src/graph.cpp)
+add_executable(exact src/dataReceptor.cpp)
 target_link_libraries (exact algo3-tp3-base)
 
 #TODO agregar tests en archivo correspondiente
