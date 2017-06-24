@@ -40,7 +40,7 @@ int runGrasp();
 int main(int argc, char* argv[]) {
     if (argc != 2) {
         print_help(argv[0]);
-        return argc;
+        return argc == 1 ? 0 : 1;
     }
     std::string impl(argv[1]);
 
