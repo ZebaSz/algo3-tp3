@@ -1,20 +1,40 @@
 \section{Algoritmo exacto}
 \subsection{Desarrollo}
+Al querer generar un algoritmo que nos de una respuesta exacta, y como no tenemos límites de complejidad ni alguna certeza con respecto al grafo de entrada, consideramos que el mejor enfoque es, simplemente, encontrar todas las cliques y chequear cual de ellas tiene la máxima frontera.
 
+Para esto, es importante hacernos una idea general de los pasos a seguir, para ver no solo por qué esta solución nos dará un resultado preciso, sino también para visualizar los subproblemas donde el costo temporal se tornará alto. Para esto, dividiremos nuestro problema original en dos subproblemas:
+\begin{itemize}
+	\item Encontrar todas las cliques
+	
+	\item Ordenarlas por tamaño de frontera
+
+\end{itemize}
+
+Si nos centramos primero en el tamaño de la frontera, considerando una clique \textit{X}, veremos que esta suma implica simplemente tomar todos los ejes del grafo y, para cada arista \textit{e}, sumarla si tiene un extremo adentro y otro afuera de \textit{X}. Sin embargo, esto implicaría recorrer \textit{m} aristas cada vez que queremos obtener la frontera de una clique, por lo que sería óptimo recorrer estas aristas una sola vez y luego, considerando el grado de cada nodo y la clique a la que pertenece, calcular la frontera.
+
+Para analizar mejor el cálculo a realizar, imaginemos una clique de un solo nodo c. Esta clique tiene frontera ${D_c}$, donde ${D_c}$ es el grado de c (porque todos los nodos adyacentes a él son fronterizos). Supongamos que le agregamos un nodo e. Ahora la clique pasa a tener frontera ${D_c}$ + ${D_e}$ - 2, puesto que ahora contamos todos los nodos adyacentes a \textit{c} menos \textit{e}, y a eso le sumamos todos los nodos adyacentes a \textit{e} menos \textit{c}. Es decir, sumamos los grados de todos los nodos pertenecientes a la clique, y le restamos la suma de las aristas contadas que forman parte de la clique. Este último número es facil de obtener, puesto que en una clique cualquiera de N nodos, cada uno de sus vértices debe tener una arista hacia los otros (N-1) nodos (puesto que sino no sería una clique). Por ende, acabaríamos teniendo la siguiente suma:
+
+\begin{center}
+Para toda clique C, con ${v_i}$ $\in$ C
+
+Frontera(C) $=$ ( $\sum$ ${_{i=0..n}}$ ${d(v_i)}$ ) - N $\times$(N-1)
+\end{center}
+
+Ahora, si reformulamos esta cuenta, tenemos 
+\begin{center}
+Frontera(C) $=$ $\sum$ ${_{i=0..n}}$ (${d(v_i)}$ + 1 - N)
+\end{center}
+
+Por ende, bastará con calcular el grado de cada vértice y luego, para cada clique, realizar la sumatoria correspondiente.
+
+Ahora, nos queda conseguir todas las cliques del grafo dado. Para esto, es importante notar que todo grafo completo G con n $\leq$ 1 tiene, al menos, (n-1) subgrafos completos, lo cual es facil de ver: pensemos un grafo completo de N nodos. Todos los nodos tienen grado ${N-1}$ porque son adyacentes a los demás nodos del grafo, por lo que si sacamos un nodo ${c}$ cualquiera junto a todos sus ejes, los demás nodos pasarán a tener grado ${N-2}$ en un grafo de N-1 nodos. Por ende, seguiría siendo un grafo completo con un nodo menos que el original (es decir, un subgrafo completo de N-1 nodos). Esta misma operación podría realizarse varias veces, lo cual nos dejaría con cada uno de los (n-1) subgrafos completos existentes.
+
+Sin embargo, hay dos cosas que remarcar: nuestro grafo completo G es en realidad una clique de un grafo aún más grande, y cada uno de los nodos pertenecientes al grafo G es distinguible (al menos, en los términos de nuestro problema). Por lo tanto, como consideramos que sacar dos nodos ${c}$ y ${e}$ de G nos devuelve dos subgrafos distintos, tenemos que ser más exhaustivos con la cantidad de cliques a obtener.
 
 \subsection{Cota temporal}
 
 \subsection{Experimentación}
-El problema que vamos a analizar durante todo el informe es el de \textit{clique de máxima frontera}(\textit{CMF}) en un grafo, que consiste en hallar la clique tal que su frontera sea de cardinalidad máxima. Definimos la frontera de una clique K como el conjunto de aristas que tienen un extremo en K y otro por fuera de la clique.
 
-Distintas situaciones problemáticas de la vida real podrían ser representadas por CMF, tales como:
 
-\begin{itemize}
-
-\item MarencoGames desarrolla un juego online y quiere que haya la menor cantidad de gente haciendo trampa. En este juego los jugadores juegan a través de la red, pero no todos están comunicados entre sí. Los desarrolladores quieren hacer un sistema de protección de trampa, por lo que deciden convertir varios jugadores en moderadores, los cuales van a reportar cuales de los participantes a los que están conectados están haciendo trampa. Los moderadores tienen que estar todos conectados entre sí para reportarse las trampas, y lo que se desea es cubrir la mayor cantidad de jugadores posibles.  Cada jugador puede ser representado con un nodo, y la conexión entre dos jugadores a través de aristas. Con esta representación, tendríamos que una clique en el grafo podrá ser un conjunto de moderadores conectados entre sí, y la frontera será la cantidad de jugadores que abarca el sistema de protección.
-
-%TODO poner un problema mas
-
-\end{itemize}
 
 
