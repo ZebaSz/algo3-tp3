@@ -44,7 +44,7 @@ fullCliqueInfo localSearchHeuristic(const graphInfo &inputGraph, fullCliqueInfo 
 fullCliqueInfo findBestNeighborSolution(const adjList &adjacencyList, fullCliqueInfo partialClique) {
     fullCliqueInfo add = localAdd(adjacencyList, partialClique);
     fullCliqueInfo remove = localRemove(adjacencyList, partialClique);
-    fullCliqueInfo swap = localRemove(adjacencyList, partialClique);
+    fullCliqueInfo swap = localSwap(adjacencyList, partialClique);
 
     if (add.outgoing >= remove.outgoing && add.outgoing >= swap.outgoing) {
         return add;
