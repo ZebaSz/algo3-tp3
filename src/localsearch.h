@@ -14,10 +14,12 @@
  */
 cliqueInfo localSearchHeuristic(const graphInfo &inputGraph, cliqueInfo partialClique);
 
-cliqueInfo createNeighborSolution(const graphInfo &inputGraph, cliqueInfo partialClique, adjList adjacencyList,
-                                  unsigned int i, unsigned int j);
+cliqueInfo localSearchHeuristic2(const graphInfo &inputGraph, cliqueInfo partialClique);
 
-void sortSolutions(std::vector<cliqueInfo>& neighborSolutions);
+cliqueInfo findBestNeighborSolution(const adjList &adjacencyList, fullCliqueInfo partialClique);
+
+cliqueInfo createNeighborSolution(const graphInfo &inputGraph, cliqueInfo partialClique, const adjList &adjacencyList,
+                                  node i, node j);
 
 bool isCliqueWithVariousNodes(const graphInfo &graph, const nodeSet& subclique, unsigned int v , unsigned int w);
 
