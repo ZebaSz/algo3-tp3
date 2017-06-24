@@ -3,10 +3,9 @@ project(algo3_tp3)
 
 #TODO agregar archivos fuente aqui
 set(SOURCE_FILES src/Utils.cpp
-        src/exact.cpp src/clique.h src/graph.h
+        src/exact.cpp src/clique.h src/graph.cpp
         src/greedy.cpp
-        src/localsearch.cpp
-        src/grasp.cpp)
+        src/localsearch.cpp)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -pedantic")
 
@@ -16,8 +15,6 @@ add_library(algo3-tp3-base ${SOURCE_FILES})
 add_executable(exact src/dataReceptor.cpp)
 target_link_libraries (exact algo3-tp3-base)
 
-#TODO agregar tests en archivo correspondiente
 add_subdirectory(test)
 
-#TODO agregar recolector de datos en archivo correspondiente
-#add_subdirectory(data)
+add_subdirectory(data)

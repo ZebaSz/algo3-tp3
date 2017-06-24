@@ -2,21 +2,12 @@
 #include "exact.h"
 #include "Utils.h"
 
-bool isClique(const adjMatrix& graph, const nodeSet& subclique, unsigned int node) {
-    for (size_t i = 0; i < subclique.size(); i++){
-        if(!graph[subclique[i]][node]) {
-            return false;
-        }
-    }
-    return true;
-}
-
 void expandCliques(const adjMatrix& graph, const std::vector<nodeSet>& subcliques,
                    std::vector<nodeSet>& cliques) {
     std::vector<nodeSet>::const_iterator it;
     for(it = subcliques.begin(); it != subcliques.end(); ++it) {
         for(unsigned int i = 0; i < graph.size(); ++i) {
-            if(isClique(graph, *it, i)) {
+            if(Graph::allAdjacentTo(graph, *it, i)) {
                 cliques.push_back(*it);
                 cliques.back().push_back(i);
             }
@@ -44,18 +35,6 @@ std::vector<nodeSet> findAllCliques(const adjMatrix& graph) {
     return cliques;
 }
 
-adjMatrix createAdjacencyMatrix(const graphInfo &input) {
-    adjMatrix adjacencyMatrix(input.n, std::vector<bool>(input.n, false));
-    for (size_t i = 0; i < input.edges.size(); i++) {
-        if(input.edges[i].start < input.edges[i].end) {
-            adjacencyMatrix[input.edges[i].start][input.edges[i].end] = true;
-        } else {
-            adjacencyMatrix[input.edges[i].end][input.edges[i].start] = true;
-        }
-    }
-    return adjacencyMatrix;
-}
-
 
 cliqueInfo exactCMF(const graphInfo &input) {
     std::vector<unsigned int> degree(input.n, 0);
@@ -63,7 +42,8 @@ cliqueInfo exactCMF(const graphInfo &input) {
         degree[input.edges[i].start]++;
         degree[input.edges[i].end]++;
     }
-    adjMatrix graph(createAdjacencyMatrix(input));
+    // We use a triangular matrix to avoid generating duplicated cliques
+    adjMatrix graph(Graph::createTriangularMatrix(input));
     unsigned int maxDegree = 0;
     for (size_t i = 0; i < degree.size(); i++){
         if (degree[i] > maxDegree){

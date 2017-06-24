@@ -12,4 +12,15 @@ struct cliqueInfo {
     unsigned int outgoing;
 };
 
+
+struct fullCliqueInfo {
+    fullCliqueInfo(const nodeSet &insideNodes, const nodeSet &outsideNodes, unsigned int outgoing) : insideNodes(
+            insideNodes), outsideNodes(outsideNodes), outgoing(outgoing) {}
+
+    fullCliqueInfo(const fullCliqueInfo& another): insideNodes(another.insideNodes), outsideNodes(another.outsideNodes), outgoing(another.outgoing) {}
+
+    nodeSet insideNodes;
+    nodeSet outsideNodes;
+    unsigned int outgoing;
+};
 #endif //ALGO3_TP3_CLIQUE_H

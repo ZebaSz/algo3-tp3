@@ -1,0 +1,44 @@
+\documentclass[10pt, a4paper, spanish]{article}
+\usepackage[paper=a4paper, left=1.5cm, right=1.5cm, bottom=1.5cm, top=3.5cm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{caratula}
+\usepackage[pdfencoding=auto, colorlinks=true, linkcolor=blue]{hyperref}
+\usepackage[boxruled, longend]{algorithm2e}
+\usepackage{wrapfig}
+\usepackage{tikz}
+\usetikzlibrary{babel}
+
+\tikzset{nodeList/.style={every node/.style={draw, circle}}}
+\tikzset{pathList/.style={every node/.style={midway, fill=white}}}
+
+\begin{document}
+
+% CARATULA
+\materia{Algoritmos y Estructuras de Datos III}
+\submateria{Primer Cuatrimestre de 2017}
+\fecha{\today}
+\grupo{Grupo ``Dijkstraidos''}
+\titulo{Trabajo Práctico 3}
+
+\integrante{Barylko, Roni Ariel}{750/15}{rbarylko@dc.uba.ar}
+\integrante{Giudice, Carlos}{694/15}{cgiudice@dc.uba.ar}
+\integrante{Szperling, Sebastián Ariel}{763/15}{sszperling@dc.uba.ar}
+\integrante{Tarrío, Ignacio}{363/15}{itarrio@dc.uba.ar}
+
+\maketitle
+
+\tableofcontents
+
+\pagebreak
+
+
+\input{secciones/situacionReal}
+\input{secciones/exacto}
+\pagebreak
+
+
+% compilar 2 veces para actualizar las referencias
+
+
+\end{document}

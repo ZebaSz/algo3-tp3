@@ -1,40 +1,145 @@
+#include <algorithm>
 #include "localsearch.h"
 
 cliqueInfo localSearchHeuristic(const graphInfo &inputGraph, cliqueInfo partialClique) {
-    adjList adjacencyList = createAdjacencyList(inputGraph);
-    nodeSet nodes; //TODO Seba asignacion por copia pls
-    unsigned int outgoing; //TODO esto es un chikero
-    if (partialClique.nodes.size() == 0){
-        cliqueInfo aClique(greedyHeuristic(inputGraph, partialClique));
-        nodes = aClique.nodes;
-        outgoing = aClique.outgoing;
-    } else {
-        nodes = partialClique.nodes;
-        outgoing = partialClique.outgoing;
+    adjList adjacencyList = Graph::createAdjacencyList(inputGraph);
+    if (partialClique.nodes.empty()) {
+        partialClique = greedyHeuristic(adjacencyList, partialClique);
     }
-    cliqueInfo checkClique(nodes, outgoing);
     bool cliquesToCheck = true;
-    while (cliquesToCheck){
-        std::vector<cliqueInfo> neighborSolutions;
-        neighborSolutions.push_back(checkClique);
-        for (unsigned int j = 0; j < checkClique.nodes.size(); j++) {
-            for (unsigned int i = (j + 1); i < checkClique.nodes.size(); i++) {
-                neighborSolutions.push_back(createNeighborSolution(inputGraph, checkClique, adjacencyList, i, j));
+    while (cliquesToCheck) {
+        cliquesToCheck = false;
+        cliqueInfo betterSolution = partialClique;
+        for (node j = 0; j < partialClique.nodes.size(); j++) {
+            for (node i = (j + 1); i < partialClique.nodes.size(); i++) {
+                cliqueInfo sol = createNeighborSolution(inputGraph, partialClique, adjacencyList, i, j);
+                if (betterSolution.outgoing < sol.outgoing) {
+                    cliquesToCheck = true;
+                    betterSolution = sol;
+                }
             }
         }
-        sortSolutions(neighborSolutions);
-        if (neighborSolutions[0].nodes == checkClique.nodes){
-            cliquesToCheck = false;
-        } else {
-            checkClique = neighborSolutions[0];
-        }
+        partialClique = betterSolution;
     }
-    return checkClique;
+    return partialClique;
 }
 
-cliqueInfo createNeighborSolution(const graphInfo &inputGraph, cliqueInfo partialClique, adjList adjacencyList,
-                                  unsigned int i, unsigned int j){
-    unsigned int bestResult = partialClique.outgoing;
+cliqueInfo localSearchHeuristic2(const graphInfo &inputGraph, cliqueInfo partialClique) {
+    adjList adjacencyList = Graph::createAdjacencyList(inputGraph);
+
+    bool isBetter = true;
+    while (isBetter) {
+        isBetter = false;
+        cliqueInfo sol = findBestNeighborSolution(adjacencyList, partialClique);
+        if (partialClique.outgoing < sol.outgoing) { //podriamos ver que pasa si no mejora pero queda igual
+            isBetter = true;
+            partialClique = sol;
+        }
+    }
+
+    return partialClique;
+}
+
+
+cliqueInfo findBestNeighborSolution(const adjList &adjacencyList, cliqueInfo partialClique) {
+    cliqueInfo add = localAdd(adjacencyList, partialClique);
+    cliqueInfo remove = localRemove(adjacencyList, partialClique);
+    cliqueInfo swap = localSwap(adjacencyList, partialClique);
+
+    if (add.outgoing >= remove.outgoing && add.outgoing >= swap.outgoing) {
+        return add;
+    } else if (remove.outgoing >= add.outgoing && remove.outgoing >= swap.outgoing) {
+        return remove;
+    } else {
+        return swap;
+    }
+}
+
+cliqueInfo localAdd(const adjList &adjacencyList, cliqueInfo partialClique) {
+    nodeSet nodesToConsider = adjacencyList[partialClique.nodes[0]];
+    std::sort(nodesToConsider.begin(), nodesToConsider.end(), greaterDegreeComparator(adjacencyList));
+    for (auto it = nodesToConsider.begin(); it != nodesToConsider.end(); ) {
+        if (Graph::allAdjacentTo(adjacencyList, partialClique.nodes, *it)) {
+            partialClique.nodes.push_back(*it);
+            partialClique.outgoing += adjacencyList[*it].size() + 2 - partialClique.nodes.size() * 2;
+            break;
+        } else {
+            ++it;
+        }
+    }
+    return partialClique;
+}
+
+cliqueInfo localRemove(const adjList &adjacencyList, cliqueInfo partialClique) {
+    auto toRemove = partialClique.nodes.begin();
+    int bestStatus = 0;
+    for (auto it = partialClique.nodes.begin(); it != partialClique.nodes.end(); ++it) {
+        int status = 2 * ((int) partialClique.nodes.size() - 1) - (int) adjacencyList[*it].size();
+        if (status > bestStatus) {
+            bestStatus = status;
+            toRemove = it;
+        }
+    }
+
+    if (bestStatus != 0) {
+        partialClique.nodes.erase(toRemove);
+        partialClique.outgoing = partialClique.outgoing + (unsigned int) bestStatus;
+    }
+
+    return partialClique;
+}
+
+cliqueInfo localSwap(const adjList &adjacencyList, cliqueInfo partialClique) {
+    std::vector<node>::iterator toRemove;
+    node toAdd;
+    int best = 0;
+
+    nodeSet toConsider;
+    for (node n = 0; n < adjacencyList.size(); n++) {
+        if(std::find(partialClique.nodes.begin(), partialClique.nodes.end(), n) == partialClique.nodes.end()) {
+            toConsider.push_back(n);
+        }
+    }
+
+    for (auto it = partialClique.nodes.begin(); it != partialClique.nodes.end(); ++it) {
+        for (auto ot = toConsider.begin(); ot != toConsider.end(); ++ot) {
+            int status = (int) adjacencyList[*ot].size() - (int) adjacencyList[*it].size();
+            if (status > best && Graph::allAdjacentToExceptFor(adjacencyList, partialClique.nodes, *ot, *it)) {
+                best = status;
+                toRemove = it;
+                toAdd = *ot;
+            }
+        }
+    }
+    if (best > 0) {
+        partialClique.nodes.erase(toRemove);
+        partialClique.nodes.push_back(toAdd);
+    }
+    return partialClique;
+}
+
+/*void swap(const adjList &adjacencyList, cliqueInfo &partialClique, std::vector<node>::iterator &toRemove, std::vector<node>::iterator &toAdd) {
+    node nodeToRemove = *toRemove;
+    node nodeToAdd = *toAdd;
+    partialClique.insideNodes.erase(toRemove);
+    partialClique.outsideNodes.erase(toAdd);
+    partialClique.insideNodes.push_back(nodeToAdd);
+    partialClique.outsideNodes.push_back(nodeToRemove);
+}*/
+
+
+
+
+
+
+
+
+
+
+
+cliqueInfo createNeighborSolution(const graphInfo &inputGraph, cliqueInfo partialClique, const adjList &adjacencyList,
+                                  node i, node j){
+    node bestResult = partialClique.outgoing;
     node firstErasedNode = partialClique.nodes[i];
     node secErasedNode = partialClique.nodes[j];
     node firstNewNode = firstErasedNode;
@@ -76,7 +181,7 @@ cliqueInfo createNeighborSolution(const graphInfo &inputGraph, cliqueInfo partia
 
 bool isCliqueWithVariousNodes(const graphInfo &graph, const nodeSet& subclique, unsigned int v , unsigned int w){ //TODO esta recorriendo todas las aristas todas las veces
     if (itsClique(subclique, graph, v) && itsClique(subclique, graph, w)){
-        for (int i = 0; i < graph.n; i++){
+        for (unsigned int i = 0; i < graph.n; i++){
             edge e = graph.edges[i];
             if((e.start == v && e.end == w) || (e.end == v && e.start == w)){
                 return true;
@@ -86,14 +191,4 @@ bool isCliqueWithVariousNodes(const graphInfo &graph, const nodeSet& subclique, 
     return false;
 }
 
-void sortSolutions(std::vector<cliqueInfo>& neighborSolutions){
-    for (unsigned int i = 0; i < neighborSolutions.size(); i++){
-        for (unsigned int j = i + 1; j < neighborSolutions.size(); j++){
-            while (j > 0 && neighborSolutions[j].outgoing > neighborSolutions[j-1].outgoing){
-                std::swap(neighborSolutions[j], neighborSolutions[j-1]);
-                j--;
-            }
-        }
-    }
-}
 

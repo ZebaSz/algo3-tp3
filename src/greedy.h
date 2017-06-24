@@ -13,12 +13,8 @@
  */
 cliqueInfo greedyHeuristic(const graphInfo &inputGraph, cliqueInfo partialClique);
 
-/**
- * Creates an adjacency list
- * @param input incidence list
- * @return
- */
-adjList createAdjacencyList(const graphInfo &input);
+cliqueInfo greedyHeuristic(const adjList &graph, cliqueInfo partialClique);
+
 
 /**
  *
@@ -29,12 +25,4 @@ adjList createAdjacencyList(const graphInfo &input);
  */
 bool itsClique(const nodeSet subclique, const graphInfo& graph, unsigned int node);
 
-bool isClique(const adjList& graph, const nodeSet& subclique, unsigned int node);
-
-/**
- *
- * @param nodes vector of nodes that will be ordered from higher to lower degree
- * @param adjacencyList this adjacency list will let us know the degree of every node
- */
-void sortByDegree(nodeSet& nodes, adjList& adjacencyList);
 #endif //ALGO3_TP3_GREEDY_H
