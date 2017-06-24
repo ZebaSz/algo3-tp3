@@ -9,14 +9,12 @@ set(SOURCE_FILES src/Utils.cpp
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -pedantic")
 
-add_library(algo3-tp3-base ${SOURCE_FILES} src/graph.cpp)
+add_library(algo3-tp3-base ${SOURCE_FILES})
 
 #TODO agregar ejecutables entregables 
-add_executable(exact src/dataReceptor.cpp src/graph.cpp)
+add_executable(exact src/dataReceptor.cpp)
 target_link_libraries (exact algo3-tp3-base)
 
-#TODO agregar tests en archivo correspondiente
 add_subdirectory(test)
 
-#TODO agregar recolector de datos en archivo correspondiente
-#add_subdirectory(data)
+add_subdirectory(data)

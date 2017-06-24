@@ -42,6 +42,7 @@ cliqueInfo exactCMF(const graphInfo &input) {
         degree[input.edges[i].start]++;
         degree[input.edges[i].end]++;
     }
+    // We use a triangular matrix to avoid generating duplicated cliques
     adjMatrix graph(Graph::createAdjacencyMatrix(input));
     unsigned int maxDegree = 0;
     for (size_t i = 0; i < degree.size(); i++){

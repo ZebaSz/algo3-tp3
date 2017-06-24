@@ -1,5 +1,5 @@
-#ifndef ALGO3_TP2_GRAPH_H
-#define ALGO3_TP2_GRAPH_H
+#ifndef ALGO3_TP3_GRAPH_H
+#define ALGO3_TP3_GRAPH_H
 
 #include <vector>
 
@@ -96,4 +96,4 @@ namespace Graph {
     node nodeWithMaxDegree(const adjList &graph);
 
 }
-#endif //ALGO3_TP2_GRAPH_H
+#endif //ALGO3_TP3_GRAPH_H
