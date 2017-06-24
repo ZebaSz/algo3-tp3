@@ -44,12 +44,6 @@ cliqueInfo exactCMF(const graphInfo &input) {
     }
     // We use a triangular matrix to avoid generating duplicated cliques
     adjMatrix graph(Graph::createTriangularMatrix(input));
-    unsigned int maxDegree = 0;
-    for (size_t i = 0; i < degree.size(); i++){
-        if (degree[i] > maxDegree){
-            maxDegree = degree[i];
-        }
-    }
     std::vector<nodeSet> cliques(findAllCliques(graph));
 
     size_t bestPos = 0;
