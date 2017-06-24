@@ -1,11 +1,14 @@
 #include <iostream>
 #include "graph.h"
 
-adjMatrix Graph::createAdjacencyMatrix(const graphInfo &input) {
+adjMatrix Graph::createTriangularMatrix(const graphInfo &input) {
     adjMatrix adjacencyMatrix(input.n, std::vector<bool>(input.n, false));
     for (size_t i = 0; i < input.edges.size(); i++) {
-        adjacencyMatrix[input.edges[i].start][input.edges[i].end] = true;
-        adjacencyMatrix[input.edges[i].end][input.edges[i].start] = true;
+        if(input.edges[i].start < input.edges[i].end) {
+            adjacencyMatrix[input.edges[i].start][input.edges[i].end] = true;
+        } else {
+            adjacencyMatrix[input.edges[i].end][input.edges[i].start] = true;
+        }
     }
     return adjacencyMatrix;
 }

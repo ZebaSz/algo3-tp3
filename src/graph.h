@@ -33,14 +33,15 @@ struct graphInfo {
 namespace Graph {
 
     /**
-     * Creates an adjacency matrix
+     * Creates a triangular adjacency matrix
+     * For a < b, the matrix will contain edge (a, b) but not (b, a)
      *
      * @param n the number of vertices
      * @param input the graph as a list of edges
      * @return the graph as an adjacency matrix
      * @complexity O(|E|)
      */
-    adjMatrix createAdjacencyMatrix(const graphInfo &input);
+    adjMatrix createTriangularMatrix(const graphInfo &input);
 
 
     /**
