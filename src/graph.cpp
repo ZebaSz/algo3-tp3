@@ -38,12 +38,12 @@ bool Graph::allAdjacentTo(const adjMatrix &graph, const nodeSet &subclique, cons
 
 bool Graph::allAdjacentTo(const adjList &graph, const nodeSet &subclique, const node node) {
     std::vector<bool> cliqueElementsFound(graph.size(), false);
-    for (size_t i = 0; i < graph[node].size(); i++) {
-        cliqueElementsFound[graph[node][i]] = true;
+    for (auto it = graph[node].begin(); it != graph[node].end(); ++it){
+        cliqueElementsFound[*it] = true;
     }
-    for (size_t i = 0; i < subclique.size(); i++) {
-        if (!cliqueElementsFound[i]) {
-           return false;
+    for (auto it = subclique.begin(); it != subclique.end(); ++it){
+        if (!cliqueElementsFound[*it]) {
+            return false;
         }
     }
     return true;
