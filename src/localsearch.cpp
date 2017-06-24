@@ -26,7 +26,9 @@ cliqueInfo localSearchHeuristic(const graphInfo &inputGraph, cliqueInfo partialC
 
 cliqueInfo localSearchHeuristic2(const graphInfo &inputGraph, cliqueInfo partialClique) {
     adjList adjacencyList = Graph::createAdjacencyList(inputGraph);
-
+    if (partialClique.nodes.empty()) {
+        partialClique = greedyHeuristic(adjacencyList, partialClique);
+    }
     bool isBetter = true;
     while (isBetter) {
         isBetter = false;
@@ -67,7 +69,7 @@ cliqueInfo localAdd(const adjList &adjacencyList, cliqueInfo partialClique) {
             ++it;
         }
     }
-    return partialClique;
+    return greedyHeuristic(adjacencyList, partialClique);
 }
 
 cliqueInfo localRemove(const adjList &adjacencyList, cliqueInfo partialClique) {
@@ -86,7 +88,7 @@ cliqueInfo localRemove(const adjList &adjacencyList, cliqueInfo partialClique) {
         partialClique.outgoing = partialClique.outgoing + (unsigned int) bestStatus;
     }
 
-    return partialClique;
+    return greedyHeuristic(adjacencyList, partialClique);
 }
 
 cliqueInfo localSwap(const adjList &adjacencyList, cliqueInfo partialClique) {
@@ -115,7 +117,7 @@ cliqueInfo localSwap(const adjList &adjacencyList, cliqueInfo partialClique) {
         partialClique.nodes.erase(toRemove);
         partialClique.nodes.push_back(toAdd);
     }
-    return partialClique;
+    return greedyHeuristic(adjacencyList, partialClique);
 }
 
 /*void swap(const adjList &adjacencyList, cliqueInfo &partialClique, std::vector<node>::iterator &toRemove, std::vector<node>::iterator &toAdd) {
