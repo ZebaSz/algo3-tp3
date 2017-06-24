@@ -2,35 +2,28 @@
 
 cliqueInfo localSearchHeuristic(const graphInfo &inputGraph, cliqueInfo partialClique) {
     adjList adjacencyList = Graph::createAdjacencyList(inputGraph);
-    nodeSet nodes; //TODO Seba asignacion por copia pls
-    unsigned int outgoing; //TODO esto es un chikero
-    if (partialClique.nodes.size() == 0){
-        cliqueInfo aClique(greedyHeuristic(inputGraph, partialClique));
-        nodes = aClique.nodes;
-        outgoing = aClique.outgoing;
-    } else {
-        nodes = partialClique.nodes;
-        outgoing = partialClique.outgoing;
+    if (partialClique.nodes.empty()) {
+        partialClique = greedyHeuristic(adjacencyList, partialClique);
     }
-    cliqueInfo checkClique(nodes, outgoing);
     bool cliquesToCheck = true;
-    while (cliquesToCheck){
-        std::vector<cliqueInfo> neighborSolutions;
-        neighborSolutions.push_back(checkClique);
-        for (unsigned int j = 0; j < checkClique.nodes.size(); j++) {
-            for (unsigned int i = (j + 1); i < checkClique.nodes.size(); i++) {
-                neighborSolutions.push_back(createNeighborSolution(inputGraph, checkClique, adjacencyList, i, j));
+    while (cliquesToCheck) {
+        cliquesToCheck = false;
+        cliqueInfo betterSolution = partialClique;
+        for (unsigned int j = 0; j < partialClique.nodes.size(); j++) {
+            for (unsigned int i = (j + 1); i < partialClique.nodes.size(); i++) {
+                cliqueInfo sol = createNeighborSolution(inputGraph, partialClique, adjacencyList, i, j);
+                if (betterSolution.outgoing < sol.outgoing) {
+                    cliquesToCheck = true;
+                    betterSolution = sol;
+                }
             }
         }
-        sortSolutions(neighborSolutions);
-        if (neighborSolutions[0].nodes == checkClique.nodes){
-            cliquesToCheck = false;
-        } else {
-            checkClique = neighborSolutions[0];
-        }
+        partialClique = betterSolution;
     }
-    return checkClique;
+    return partialClique;
 }
+
+
 
 cliqueInfo createNeighborSolution(const graphInfo &inputGraph, cliqueInfo partialClique, adjList adjacencyList,
                                   unsigned int i, unsigned int j){
@@ -96,4 +89,6 @@ void sortSolutions(std::vector<cliqueInfo>& neighborSolutions){
         }
     }
 }
+
+
 
