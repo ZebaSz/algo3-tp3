@@ -46,6 +46,19 @@ bool Graph::allAdjacentTo(const adjList &graph, const nodeSet &subclique, const 
     return true;
 }
 
+bool Graph::allAdjacentToExceptFor(const adjList &graph, const nodeSet &subclique, const node nodeToAdd, const node exception) {
+    std::vector<bool> cliqueElementsFound(graph.size(), false);
+    for (size_t i = 0; i < graph[nodeToAdd].size(); i++) {
+        cliqueElementsFound[graph[nodeToAdd][i]] = true;
+    }
+    for (size_t i = 0; i < subclique.size(); i++) {
+        if (!cliqueElementsFound[i] && i != exception) {
+            return false;
+        }
+    }
+    return true;
+}
+
 bool Graph::allAdjacentToOrd(const adjList &graph, const nodeSet &subclique, const node node) {
     std::vector<unsigned int>::const_iterator it;
     size_t cliqueNodeIndex = 0;

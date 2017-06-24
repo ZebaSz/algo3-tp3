@@ -24,13 +24,13 @@ cliqueInfo localSearchHeuristic(const graphInfo &inputGraph, cliqueInfo partialC
     return partialClique;
 }
 
-fullCliqueInfo localSearchHeuristic2(const graphInfo &inputGraph, fullCliqueInfo partialClique) {
+fullCliqueInfo localSearchHeuristic(const graphInfo &inputGraph, fullCliqueInfo partialClique) {
     adjList adjacencyList = Graph::createAdjacencyList(inputGraph);
 
     bool isBetter = true;
     while (isBetter) {
         isBetter = false;
-        cliqueInfo sol = findBestNeighborSolution(adjacencyList, partialClique);
+        fullCliqueInfo sol = findBestNeighborSolution(adjacencyList, partialClique);
         if (partialClique.outgoing < sol.outgoing) { //podriamos ver que pasa si no mejora pero queda igual
             isBetter = true;
             partialClique = sol;
@@ -41,11 +41,18 @@ fullCliqueInfo localSearchHeuristic2(const graphInfo &inputGraph, fullCliqueInfo
 }
 
 
-cliqueInfo findBestNeighborSolution(const adjList &adjacencyList, fullCliqueInfo partialClique) {
-    fullCliqueInfo localAdd = localAdd(adjacencyList, partialClique);
-    fullCliqueInfo localRemove = localRemove(adjacencyList, partialClique);
-    //return min;
-    return cliqueInfo(0, 0);
+fullCliqueInfo findBestNeighborSolution(const adjList &adjacencyList, fullCliqueInfo partialClique) {
+    fullCliqueInfo add = localAdd(adjacencyList, partialClique);
+    fullCliqueInfo remove = localRemove(adjacencyList, partialClique);
+    fullCliqueInfo swap = localRemove(adjacencyList, partialClique);
+
+    if (add.outgoing >= remove.outgoing && add.outgoing >= swap.outgoing) {
+        return add;
+    } else if (remove.outgoing >= add.outgoing && remove.outgoing >= swap.outgoing) {
+        return remove;
+    } else {
+        return swap;
+    }
 }
 
 fullCliqueInfo localAdd(const adjList &adjacencyList, fullCliqueInfo partialClique) {
@@ -66,7 +73,7 @@ fullCliqueInfo localAdd(const adjList &adjacencyList, fullCliqueInfo partialCliq
 fullCliqueInfo localRemove(const adjList &adjacencyList, fullCliqueInfo partialClique) {
     auto toRemove = partialClique.insideNodes.begin();
     int bestStatus = 0;
-    for (auto it = partialClique.insideNodes.begin(); it != partialClique.insideNodes.end(); ) {
+    for (auto it = partialClique.insideNodes.begin(); it != partialClique.insideNodes.end(); ++it) {
         int status = 2 * ((int) partialClique.insideNodes.size() - 1) - (int) adjacencyList[*it].size();
         if (status > bestStatus) {
             bestStatus = status;
@@ -83,6 +90,33 @@ fullCliqueInfo localRemove(const adjList &adjacencyList, fullCliqueInfo partialC
     return partialClique;
 }
 
+fullCliqueInfo localSwap(const adjList &adjacencyList, fullCliqueInfo partialClique) {
+    std::vector<node>::iterator toRemove, toAdd;
+    int best = 0;
+    for (auto it = partialClique.insideNodes.begin(); it != partialClique.insideNodes.end(); ++it) {
+        for (auto ot = partialClique.outsideNodes.begin(); ot != partialClique.outsideNodes.end(); ++ot) {
+            int status = (int) adjacencyList[*ot].size() - (int) adjacencyList[*it].size();
+            if (status > best && Graph::allAdjacentToExceptFor(adjacencyList, partialClique.insideNodes, *ot, *it)) {
+                best = status;
+                toRemove = it;
+                toAdd = ot;
+            }
+        }
+    }
+    if (best > 0) {
+        swap(adjacencyList, partialClique, toRemove, toAdd);
+    }
+    return partialClique;
+}
+
+void swap(const adjList &adjacencyList, fullCliqueInfo &partialClique, std::vector<node>::iterator &toRemove, std::vector<node>::iterator &toAdd) {
+    node nodeToRemove = *toRemove;
+    node nodeToAdd = *toAdd;
+    partialClique.insideNodes.erase(toRemove);
+    partialClique.outsideNodes.erase(toAdd);
+    partialClique.insideNodes.push_back(nodeToAdd);
+    partialClique.outsideNodes.push_back(nodeToRemove);
+}
 
 
 

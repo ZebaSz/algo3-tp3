@@ -65,6 +65,19 @@ namespace Graph {
     bool allAdjacentTo(const adjList& graph, const nodeSet& subclique, const node node);
 
     /**
+     * Returns whether adding a given node to a clique substracting another node yields a new clique except
+     *
+     * @info Esta es la nueva isClique
+     * @param graph the graph as an adjacency matrix
+     * @param subclique a clique within the graph
+     * @param node a node in the graph
+     * @param exception a node in the subclique
+     * @return true if the subclique - exception + node is a valid clique in the graph
+     * @complexity O(|subclique|))
+     */
+    bool allAdjacentToExceptFor(const adjList &graph, const nodeSet &subclique, const node nodeToAdd, const node exception);
+
+    /**
      * @precondition La lista de adyacencias y el la lista de la subclique tiene que estar ordenado
      * @param graph
      * @param subclique

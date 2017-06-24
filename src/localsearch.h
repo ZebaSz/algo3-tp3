@@ -14,9 +14,18 @@
  */
 cliqueInfo localSearchHeuristic(const graphInfo &inputGraph, cliqueInfo partialClique);
 
-cliqueInfo localSearchHeuristic2(const graphInfo &inputGraph, cliqueInfo partialClique);
 
-cliqueInfo findBestNeighborSolution(const adjList &adjacencyList, fullCliqueInfo partialClique);
+fullCliqueInfo localSearchHeuristic2(const graphInfo &inputGraph, fullCliqueInfo partialClique);
+fullCliqueInfo findBestNeighborSolution(const adjList &adjacencyList, fullCliqueInfo partialClique);
+fullCliqueInfo localAdd(const adjList &adjacencyList, fullCliqueInfo partialClique);
+fullCliqueInfo localRemove(const adjList &adjacencyList, fullCliqueInfo partialClique);
+fullCliqueInfo localSwap(const adjList &adjacencyList, fullCliqueInfo partialClique);
+void swap(const adjList &adjacencyList, fullCliqueInfo &partialClique, std::vector<node>::iterator &toRemove, std::vector<node>::iterator &toAdd);
+
+
+
+
+
 
 cliqueInfo createNeighborSolution(const graphInfo &inputGraph, cliqueInfo partialClique, const adjList &adjacencyList,
                                   node i, node j);
