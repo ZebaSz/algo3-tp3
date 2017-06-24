@@ -1,5 +1,5 @@
 find_package(Boost COMPONENTS system filesystem)
-if(!Boost_FOUND)
+if(Boost_FOUND)
 
     # Download and unpack googletest at configure time
     configure_file(CMakeLists.txt.in googletest-download/CMakeLists.txt)
