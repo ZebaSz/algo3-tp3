@@ -1,7 +1,7 @@
 #include <algorithm>
 #include "localsearch.h"
 
-cliqueInfo localSearchHeuristic(const graphInfo &inputGraph, cliqueInfo partialClique) {
+cliqueInfo laDeRoniPorLasDudas(const graphInfo &inputGraph, cliqueInfo partialClique) {
     adjList adjacencyList = Graph::createAdjacencyList(inputGraph);
     if (partialClique.nodes.empty()) {
         partialClique = greedyHeuristic(adjacencyList, partialClique);
@@ -24,7 +24,7 @@ cliqueInfo localSearchHeuristic(const graphInfo &inputGraph, cliqueInfo partialC
     return partialClique;
 }
 
-cliqueInfo localSearchHeuristic2(const graphInfo &inputGraph, cliqueInfo partialClique) {
+cliqueInfo localSearchHeuristic(const graphInfo &inputGraph, cliqueInfo partialClique) {
     adjList adjacencyList = Graph::createAdjacencyList(inputGraph);
     if (partialClique.nodes.empty()) {
         partialClique = greedyHeuristic(adjacencyList, partialClique);

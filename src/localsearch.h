@@ -12,10 +12,10 @@
  * @param partialClique can be used to start the algorithm from any given clique
  * @return
  */
+cliqueInfo laDeRoniPorLasDudas(const graphInfo &inputGraph, cliqueInfo partialClique);
+
+
 cliqueInfo localSearchHeuristic(const graphInfo &inputGraph, cliqueInfo partialClique);
-
-
-cliqueInfo localSearchHeuristic2(const graphInfo &inputGraph, cliqueInfo partialClique);
 cliqueInfo findBestNeighborSolution(const adjList &adjacencyList, cliqueInfo partialClique);
 cliqueInfo localAdd(const adjList &adjacencyList, cliqueInfo partialClique);
 cliqueInfo localRemove(const adjList &adjacencyList, cliqueInfo partialClique);
