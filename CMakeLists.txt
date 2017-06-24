@@ -3,7 +3,7 @@ project(algo3_tp3)
 
 #TODO agregar archivos fuente aqui
 set(SOURCE_FILES src/Utils.cpp
-        src/exact.cpp src/clique.h src/graph.h
+        src/exact.cpp src/clique.h src/graph.cpp
         src/greedy.cpp
         src/localsearch.cpp)
 
