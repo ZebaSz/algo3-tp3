@@ -10,6 +10,8 @@
 #include <random>
 #include <chrono>
 
+cliqueInfo grasp(const adjList &inputGraph, const float percentageToKeep, const unsigned int iterations);
+
 cliqueInfo randomGreedy(const adjList &inputGraph, const float percentageToKeep);
 
 cliqueInfo recurRandomGreedy(const adjList &inputGraph, cliqueInfo &partialClique, nodeSet nodesToConsider, const float percentageToKeep);
