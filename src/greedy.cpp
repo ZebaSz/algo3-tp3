@@ -3,7 +3,7 @@
 
 cliqueInfo greedyHeuristic(const graphInfo &inputGraph, cliqueInfo partialClique){
     adjList adjacencyList = Graph::createAdjacencyList(inputGraph);
-    if (partialClique.nodes.empty()) {
+    if (partialClique.nodes.empty()) { //Si la clique parcial es vacia golosamente agregamos la de mayor grado
         node toAdd = Graph::nodeWithMaxDegree(adjacencyList);
         partialClique.nodes.push_back(toAdd);
         partialClique.outgoing += adjacencyList[toAdd].size();
