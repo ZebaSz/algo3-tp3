@@ -62,5 +62,15 @@ bool Graph::allAdjacentToOrd(const adjList &graph, const nodeSet &subclique, con
     return false;
 }
 
+node Graph::nodeWithMaxDegree(const adjList &graph) {
+    node best = 0;
+    for (node n = 1; n < graph.size() ; ++n) {
+        if(graph[best].size() < graph[n].size()) {
+            best = n;
+        }
+    }
+    return best;
+}
+
 
 

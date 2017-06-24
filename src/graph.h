@@ -8,6 +8,16 @@ typedef std::vector<unsigned int> nodeSet;
 typedef std::vector< std::vector< bool > > adjMatrix;
 typedef std::vector< std::vector< node > > adjList;
 
+
+struct greaterDegreeComparator {
+    greaterDegreeComparator(const adjList &l) : list(l) {}
+
+    bool operator()(const node &n1, const node &n2) {
+        return list[n1].size() > list[n2].size();
+    }
+    const adjList &list;
+};
+
 struct edge {
     node start;
     node end;
@@ -63,6 +73,14 @@ namespace Graph {
      * @complexity O(|adj(node)|))
      */
     bool allAdjacentToOrd(const adjList &graph, const nodeSet &subclique, const node node);
+
+    /**
+     * Search one of the nodes with max degree
+     * @param graph
+     * @return the node with max degree
+     * @complexity O(|V|)
+     */
+    node nodeWithMaxDegree(const adjList &graph);
 
 }
 #endif //ALGO3_TP2_GRAPH_H

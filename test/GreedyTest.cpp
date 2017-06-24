@@ -58,7 +58,7 @@ TEST_F(GreedyTest, sortNodesByDegree) {
     for(size_t i = 0; i < al.size(); i++){
         ns.push_back(i);
     }
-    sortByDegree(ns, al);
+    std::sort(ns.begin(), ns.end(), greaterDegreeComparator(al));
     ASSERT_EQ(al[ns[0]].size(),3);
     ASSERT_EQ(al[ns[1]].size(),3);
     ASSERT_EQ(al[ns[2]].size(),3);
