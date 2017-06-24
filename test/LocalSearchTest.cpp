@@ -19,6 +19,8 @@ TEST_F(LocalSearchTest, allSmall) {
         ASSERT_LE(result.outgoing, tests[i].output.outgoing) << "Caso small-" << i;
         if(result.outgoing == tests[i].output.outgoing) {
             Utils::log(INFO, "Passed test %d", i);
+        } else {
+            Utils::log(INFO, "Test %d, difference: %d", i, tests[i].output.outgoing - result.outgoing);
         }
     }
 }
@@ -30,6 +32,8 @@ TEST_F(LocalSearchTest, allHuge) {
         ASSERT_LE(result.outgoing, tests[i].output.outgoing) << "Caso huge-" << i;
         if(result.outgoing == tests[i].output.outgoing) {
             Utils::log(INFO, "Passed test %d", i);
+        } else {
+            Utils::log(INFO, "Test %d, difference: %d", i, tests[i].output.outgoing - result.outgoing);
         }
     }
 }

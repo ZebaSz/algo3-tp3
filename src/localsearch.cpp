@@ -23,6 +23,7 @@ cliqueInfo laDeRoniPorLasDudas(const graphInfo &inputGraph, cliqueInfo partialCl
     }
     return partialClique;
 }
+
 cliqueInfo localSearchHeuristic(const graphInfo &inputGraph) {
     return localSearchHeuristic(Graph::createAdjacencyList(inputGraph));
 }
@@ -123,23 +124,50 @@ cliqueInfo localSwap(const adjList &adjacencyList, cliqueInfo partialClique) {
     return greedyHeuristic(adjacencyList, partialClique);
 }
 
-/*void swap(const adjList &adjacencyList, cliqueInfo &partialClique, std::vector<node>::iterator &toRemove, std::vector<node>::iterator &toAdd) {
-    node nodeToRemove = *toRemove;
-    node nodeToAdd = *toAdd;
-    partialClique.insideNodes.erase(toRemove);
-    partialClique.outsideNodes.erase(toAdd);
-    partialClique.insideNodes.push_back(nodeToAdd);
-    partialClique.outsideNodes.push_back(nodeToRemove);
-}*/
+cliqueInfo localSwap2(const adjList &adjacencyList, cliqueInfo partialClique) {
+    node toRemove1, toRemove2, toAdd1, toAdd2;
+    int best = 0;
 
+    if (partialClique.nodes.size() > 2) { //SE PUEDE MEJORAR PARA CASOS DE >= 2
+        for (node r1 = 0; r1 < partialClique.nodes.size() - 1; r1++) {
+            for (node r2 = r1; r2 < partialClique.nodes.size(); r2++) {
+                // stillInside es un nodo que sigue estando en la clique si sacamos r1 y r2, va a hacer el primero el segundo o el tercero (dependiendo si r1 o r2 son los primeros)
+                node stillInside = 0;
+                if (r1 == 0) {
+                    stillInside = (r2 == 1) ? 2 : 1;
+                }
 
+                //Si el nodo que sigue dentro de la clique tiene al menos 2 mas nodos adyacentes que los de la clique
+                if (adjacencyList[stillInside].size() > partialClique.nodes.size() + 1) {
+                    for (auto a1 = adjacencyList[stillInside].begin(); a1 != adjacencyList[stillInside].end(); ++a1) {
+                        for (auto a2 = a1; a2 != adjacencyList[stillInside].end(); ++a2) {
+                            if (Graph::isAdjacentTo(adjacencyList, *a1, *a2) &&
+                                    Graph::allAdjacentToExceptForDouble(adjacencyList, partialClique.nodes, *a1, *a2, r1, r2) ) {
+                                //hay que calcular la nueva frontera
+                                //if (status > best) {
+                                toRemove1 = r1;
+                                toRemove2 = r2;
+                                toAdd1 = *a1;
+                                toAdd2 = *a2;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 
+    if (best > 0) {
+        //ELIMINAR
+        //partialClique.nodes.erase(toRemove1);
+        //partialClique.nodes.erase(toRemove2);
 
+        partialClique.nodes.push_back(toAdd1);
+        partialClique.nodes.push_back(toAdd2);
 
-
-
-
-
+    }
+    return partialClique;
+}
 
 
 cliqueInfo createNeighborSolution(const graphInfo &inputGraph, cliqueInfo partialClique, const adjList &adjacencyList,

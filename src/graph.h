@@ -1,10 +1,10 @@
 #ifndef ALGO3_TP3_GRAPH_H
 #define ALGO3_TP3_GRAPH_H
-
+#include <algorithm>
 #include <vector>
 
 typedef unsigned int node;
-typedef std::vector<unsigned int> nodeSet;
+typedef std::vector<node> nodeSet;
 typedef std::vector< std::vector< bool > > adjMatrix;
 typedef std::vector< std::vector< node > > adjList;
 
@@ -30,6 +30,8 @@ struct graphInfo {
     edgeList edges;
 };
 
+void insertSorted(nodeSet &list, node n); //Se usa para crear la lista de adj
+
 namespace Graph {
 
     /**
@@ -43,14 +45,17 @@ namespace Graph {
      */
     adjMatrix createTriangularMatrix(const graphInfo &input);
 
-
     /**
      * Creates an adjacency list
      * @param input incidence list
-     * @return the grapsh as an adjacency list
+     * @return the graph as an adjacency list
      * @complexity O(|V| + |E|)
      */
     adjList createAdjacencyList(const graphInfo &input);
+
+
+    bool isAdjacentTo(const adjMatrix& graph, const node n1, const node n2);
+    bool isAdjacentTo(const adjList& graph, const node n1, const node n2);
 
     /**
      * Returns whether adding a given node to a clique yields a new clique
@@ -77,6 +82,7 @@ namespace Graph {
      * @complexity O(|subclique|))
      */
     bool allAdjacentToExceptFor(const adjList &graph, const nodeSet &subclique, const node nodeToAdd, const node exception);
+    bool allAdjacentToExceptForDouble(const adjList &graph, const nodeSet &subclique, const node n1, const node n2, const node e1, const node e2);
 
     /**
      * @precondition La lista de adyacencias y el la lista de la subclique tiene que estar ordenado

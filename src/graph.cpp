@@ -21,10 +21,15 @@ adjList Graph::createAdjacencyList(const graphInfo &input) {
     }
     for (size_t j = 0; j < input.edges.size(); ++j) { //add connections
         edge e = input.edges[j];
-        adjacencyList[e.start].push_back(e.end);
-        adjacencyList[e.end].push_back(e.start);
+        insertSorted(adjacencyList[e.start], e.end);
+        insertSorted(adjacencyList[e.end], e.start);
     }
     return adjacencyList;
+}
+
+void insertSorted(nodeSet &list, node n) {
+    auto it = std::lower_bound( list.begin(), list.end(), n);
+    list.insert(it, n);
 }
 
 bool Graph::allAdjacentTo(const adjMatrix &graph, const nodeSet &subclique, const node node) {
@@ -62,6 +67,23 @@ bool Graph::allAdjacentToExceptFor(const adjList &graph, const nodeSet &subcliqu
     return true;
 }
 
+bool Graph::allAdjacentToExceptForDouble(const adjList &graph, const nodeSet &subclique, const node n1, const node n2, const node e1, const node e2) {
+    std::vector<bool> cliqueElementsFound1(graph.size(), false);
+    std::vector<bool> cliqueElementsFound2(graph.size(), false);
+    for (size_t i = 0; i < graph[n1].size(); i++) {
+        cliqueElementsFound1[graph[n1][i]] = true;
+    }
+    for (size_t i = 0; i < graph[n2].size(); i++) {
+        cliqueElementsFound2[graph[n2][i]] = true;
+    }
+    for (size_t i = 0; i < subclique.size(); i++) {
+        if ((!cliqueElementsFound1[i] || !cliqueElementsFound2[i]) && i != e1 && i != e2) {
+            return false;
+        }
+    }
+    return true;
+}
+
 bool Graph::allAdjacentToOrd(const adjList &graph, const nodeSet &subclique, const node node) {
     std::vector<unsigned int>::const_iterator it;
     size_t cliqueNodeIndex = 0;
@@ -89,4 +111,18 @@ node Graph::nodeWithMaxDegree(const adjList &graph) {
 }
 
 
+bool ::Graph::isAdjacentTo(const adjMatrix &graph, const node n1, const node n2) {
+    if(n1 < n2) {
+        return graph[n1][n2];
+    } else {
+        return graph[n2][n1];
+    }
+}
 
+bool ::Graph::isAdjacentTo(const adjList &graph, const node n1, const node n2) {
+    if (graph[n1].size() < graph[n2].size()) {
+        return std::binary_search(graph[n1].begin(), graph[n1].end(), n2);
+    } else {
+        return std::binary_search(graph[n2].begin(), graph[n2].end(), n1);
+    }
+}
