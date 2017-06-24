@@ -18,7 +18,7 @@
 
 #define REPETITIONS (unsigned int)100
 #define MIN_N (unsigned int)2
-#define MAX_N (unsigned int)10
+#define MAX_N (unsigned int)20
 
 void print_help(char* name) {
     std::cout << "Uso: " << name << " <impl>" << std::endl
