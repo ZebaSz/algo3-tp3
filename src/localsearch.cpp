@@ -13,7 +13,7 @@ cliqueInfo laDeRoniPorLasDudas(const graphInfo &inputGraph, cliqueInfo partialCl
         for (node j = 0; j < partialClique.nodes.size(); j++) {
             for (node i = (j + 1); i < partialClique.nodes.size(); i++) {
                 cliqueInfo sol = createNeighborSolution(inputGraph, partialClique, adjacencyList, i, j);
-                if (betterSolution.outgoing < sol.outgoing) {
+                if (betterSolution.outgoing <= sol.outgoing) {
                     cliquesToCheck = true;
                     betterSolution = sol;
                 }
