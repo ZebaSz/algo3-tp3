@@ -17,21 +17,76 @@ Para analizar mejor el cálculo a realizar, imaginemos una clique de un solo nod
 \begin{center}
 Para toda clique C, con ${v_i}$ $\in$ C
 
-Frontera(C) $=$ ( $\sum$ ${_{i=0..n}}$ ${d(v_i)}$ ) - N $\times$(N-1)
+Frontera(C) $=$ ( $\sum_{i=0}^{N}$ ${d(v_i)}$ ) - N $\times$(N-1)
 \end{center}
 
 Ahora, si reformulamos esta cuenta, tenemos 
 \begin{center}
-Frontera(C) $=$ $\sum$ ${_{i=0..n}}$ (${d(v_i)}$ + 1 - N)
+Frontera(C) $=$ $\sum_{i=0}^{N}$ (${d(v_i)}$ + 1 - N)
 \end{center}
 
 Por ende, bastará con calcular el grado de cada vértice y luego, para cada clique, realizar la sumatoria correspondiente.
 
 Ahora, nos queda conseguir todas las cliques del grafo dado. Para esto, es importante notar que todo grafo completo G con n $\leq$ 1 tiene, al menos, (n-1) subgrafos completos, lo cual es facil de ver: pensemos un grafo completo de N nodos. Todos los nodos tienen grado ${N-1}$ porque son adyacentes a los demás nodos del grafo, por lo que si sacamos un nodo ${c}$ cualquiera junto a todos sus ejes, los demás nodos pasarán a tener grado ${N-2}$ en un grafo de N-1 nodos. Por ende, seguiría siendo un grafo completo con un nodo menos que el original (es decir, un subgrafo completo de N-1 nodos). Esta misma operación podría realizarse varias veces, lo cual nos dejaría con cada uno de los (n-1) subgrafos completos existentes.
 
-Sin embargo, hay dos cosas que remarcar: nuestro grafo completo G es en realidad una clique de un grafo aún más grande, y cada uno de los nodos pertenecientes al grafo G es distinguible (al menos, en los términos de nuestro problema). Por lo tanto, como consideramos que sacar dos nodos ${c}$ y ${e}$ de G nos devuelve dos subgrafos distintos, tenemos que ser más exhaustivos con la cantidad de cliques a obtener.
+Sin embargo, hay dos cosas que remarcar: nuestro grafo completo G es en realidad una clique de un grafo aún más grande, y cada uno de los nodos pertenecientes al grafo G es distinguible (al menos, en los términos de nuestro problema). Por lo tanto, como consideramos que sacar dos nodos ${c}$ y ${e}$ de G nos devuelve dos subgrafos distintos aún siendo isomorfos, tenemos que ser más exhaustivos con la cantidad de cliques a obtener. Por ende, si tomamos de nuevo al grafo completo G con N nodos, y consideramos todos los grafos completos que se pueden formar, tendremos:
+
+\begin{itemize}
+	\item Tamaño 1: cada uno de los grafos triviales (es decir, N grafos)
+	
+	\item Tamaño 2: cada combinación posible de dos nodos sobre los N nodos de G
+	
+	\textbf{...}
+	
+	\item Tamaño N-1: cada combinación posible de N-1 nodos sobre los N nodos de G
+	
+	\item Tamaño N: el grafo G original
+\end{itemize}
+
+Es decir, si generamos todos los subgrafos completos de G de tamaño {i}, con i entre 0 y N, tendremos la combinatoria entre i y N: ${N \choose i}$. Por lo tanto, al generar todos los subgrafos completos del grafo G, obtendremos la cuenta:
+
+\begin{center}
+ $\sum_{i=0}^{N}$ ${N \choose i}$
+\end{center}
+
+Donde cada uno de estos subgrafos completos es, por definición, una clique a considerar.
+
+Por lo tanto, para encontrar todas las cliques mencionadas realizaremos una búsqueda invertida. Es decir, en vez de empezar por la clique más grande y obtener todos los subgrafos de ella, tomaremos cada uno de los nodos como una clique de tamaño 1 y extenderemos cada una de ellas de forma que, llegado el momento donde no se puedan agregar nodos, hayamos alcanzado la clique de tamaño máximo que puede alcanzar ese nodo. Con esta idea, cada vez que agregando un nodo obtengamos un subgrafo completo lo agregaremos a la lista de cliques y seguiremos agregando nodos desde él, para así limitarnos a obtener cada clique una única vez y reducir la complejidad tanto del código como temporal.
+
+Sin embargo, pensemos el caso en el cual tenemos los nodos 1, 2 y 3 donde todos los nodos tienen aristas entre sí. Como expusimos anteriormente, la idea es empezar teniendo tres cliques triviales (de un único nodo) y extenderlas nodo a nodo. Por lo tanto, con el nodo 1 generaremos la clique (1,2) y la clique (1,3). De ellas dos, generaremos dos veces la clique (1,2,3). A su vez, el nodo 2 generará la clique (2,3) y (2,1), las cuales generarán dos veces más la clique (1,2,3), etc.
+
+Si bien el hecho de generar varias veces la misma clique no es un problema en cuanto a soluciones (al fin y al cabo, nuestra CMF seguirá siendo la misma y la alcanzaremos), el tiempo que tarde la generación y el análisis de las cliques crecerá de manera dramática si permitimos que esto ocurra. Por lo tanto, utilizaremos una matriz de adyacencia triangulada que considere solo una de las dos conexiones. Así, si volvemos a considerar el caso inicial, el nodo 1 generará las cliques (1,2) y (1,3), pero el nodo 2 generará solo (2,3) y el nodo 3 no generará ninguna clique. De este modo, nos aseguramos una reducción importante en los costos temporales y de memoria. Así, acabaremos teniendo un algoritmo de este estilo:
+
+\begin{algorithm}[H]
+	\NoCaptionOfAlgo
+	\caption{\algoritmo{agregarTodasLasCliques}{\In{matrizAdyacencia}{matriz},  \In{n}{nat}}{conjunto(clique)}}
+	res $\leftarrow$ AgregarCliquesTriviales(matrizAdyacencia)
+	
+	\For{j $<$ n}{
+		Agregar(res, expandirClique(j, matrizAdyacencia, n, res))
+	}
+\end{algorithm}
+
+\begin{algorithm}[H]
+	\NoCaptionOfAlgo
+	\caption{\algoritmo{expandirClique}{\In{subclique}{clique}, \In{matrizAdyacencia}{matriz}, \In{n}{nat}, \Inout{cliques}{conjunto(clique)}}{}}
+	\For{i $<$ n}{
+		\If{esAdyacenteATodos(i, subclique, matrizAdyacencia)}{
+			clique: nuevaClique $\leftarrow$ agregarNodoAClique(subclique, i)
+			
+			Agregar(cliques, nuevaClique)
+			
+			expandirClique(nuevaClique, matrizAdyacencia, n, cliques)
+	}
+}
+\end{algorithm}
+
+Es importante resaltar que, como explicamos anteriormente, nuestra matriz esta triangulada. Por ende, cuando nos fijamos si un nodo es adyacente a todos lo hacemos mirando su columna de la matriz, y si dos nodos son adyacentes solo una de las dos columnas tendrá el dato como verdadero. Asi evitamos la obtención de la misma clique varias veces.
+
+Finalmente, con los dos subproblemas ya solucionados, solo nos queda ver cada clique y quedarnos con la de mayor frontera. Como obtuvimos todas las cliques posibles, y nos estamos quedando con la que tiene más nodos fronterizos, esta acaba siendo CMF, y por ende, la solución.
 
 \subsection{Cota temporal}
+
 
 \subsection{Experimentación}
 
