@@ -102,5 +102,8 @@ namespace Graph {
      */
     node nodeWithMaxDegree(const adjList &graph);
 
+    void sortByDegree(nodeSet nodesToSort, const adjList &graph);
+
+
 }
 #endif //ALGO3_TP3_GRAPH_H
