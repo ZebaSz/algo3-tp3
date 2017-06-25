@@ -38,7 +38,8 @@ if(Boost_FOUND)
     set(TEST_FILES AbstractTest.h AbstractTest.cpp
             ExactTest.cpp
             GreedyTest.cpp
-            LocalSearchTest.cpp)
+            LocalSearchTest.cpp
+            GraspTest.cpp)
     add_executable(correrTests ${TEST_FILES})
     target_link_libraries(correrTests algo3-tp3-base gtest_main gtest)
     target_link_libraries(correrTests ${Boost_FILESYSTEM_LIBRARY} ${Boost_SYSTEM_LIBRARY})

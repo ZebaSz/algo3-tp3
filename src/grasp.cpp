@@ -4,69 +4,62 @@
 
 #include "grasp.h"
 
+cliqueInfo grasp(const graphInfo &inputGraph, const float percentageToKeep, const unsigned int iterations) {
+    return grasp(Graph::createAdjacencyList(inputGraph), percentageToKeep, iterations);
+}
+
 cliqueInfo grasp(const adjList &inputGraph, const float percentageToKeep, const unsigned int iterations) {
     cliqueInfo bestClique(0,0);
     int i = 0;
     while(i < iterations){
         i++;
-        cliqueInfo tempClique;  //TODO: aca irian las llamadas a local(randomGreedy())
-                                //TODO: dejar de usar listas de incidencia como input y pasar todo a lista de adyacencia
+        cliqueInfo tempClique = localSearchHeuristic(inputGraph, randomGreedy(inputGraph, percentageToKeep));
         if(bestClique.outgoing < tempClique. outgoing) bestClique = tempClique;
     }
     return bestClique;
 }
 
 cliqueInfo randomGreedy(const adjList &inputGraph, const float percentageToKeep) {
-    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-    std::default_random_engine generator (seed);
     nodeSet nodesToConsider;
     cliqueInfo partialClique(0,0);
-    unsigned int i = 0;
-    while(nodesToConsider.size() < inputGraph.size()){
+    for (unsigned int i = 0; i < inputGraph.size(); i++) {
         nodesToConsider.push_back(i);
-        i++;
     }
-    sortByDegree(nodesToConsider, inputGraph);
-    eraseTail(nodesToConsider, percentageToKeep);
-    std::uniform_int_distribution<int> distribution(0, nodesToConsider.size());
-    node toAdd = distribution(generator);
+    Graph::sortByDegree(nodesToConsider, inputGraph);
+    unsigned int indexToAdd = randomNode(nodesToConsider, percentageToKeep);
+    node toAdd = nodesToConsider[indexToAdd];
     partialClique.nodes.push_back(toAdd);
     partialClique.outgoing += inputGraph[toAdd].size();
     return recurRandomGreedy(inputGraph, partialClique, inputGraph[toAdd], percentageToKeep);
 }
+
 cliqueInfo recurRandomGreedy(const adjList &inputGraph, cliqueInfo &partialClique, nodeSet nodesToConsider, const float percentageToKeep){
     if (nodesToConsider.size() == 0) return partialClique; //if nodes can't be added, terminate
-    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-    std::default_random_engine generator (seed);
-    sortByDegree(nodesToConsider, inputGraph);
-    while(inputGraph[nodesToConsider.back()] < partialClique.nodes.size() * 2){ //TODO: asegurarse de que vector.back() devuelve el ultimo elemento
-        nodesToConsider.pop_back(); //erase nodes that won't enlarge frontier size
-    }
-    vector<node>::iterator it = nodesToConsider.begin();
-    for ( ; it != nodesToConsider.end(); ) {   //don't consider nodes that wouldn't form a clique
-        if (isClique(inputGraph, partialClique, *(it))) {
+
+    Graph::sortByDegree(nodesToConsider, inputGraph);
+
+    for (auto it = nodesToConsider.begin() ; it != nodesToConsider.end(); ) {   //don't consider nodes that wouldn't form a clique
+        if (inputGraph[*it].size() >= partialClique.nodes.size() * 2 && Graph::allAdjacentTo(inputGraph, partialClique.nodes, *it)) {
             ++it;
         } else {
             it = nodesToConsider.erase(it);
         }
     }
+
     if (nodesToConsider.size() == 0) return partialClique; //if nodes can't be added, terminate
 
-    int amountToConsider = nodes.size() * (1-percentageToKeep);
-    std::uniform_int_distribution<int> distribution(0, amountToConsider);
-    unsigned int index = distribution(generator);
-    node toAdd = nodesToConsider[index];
-    it = nodesToConsider.begin();
-    nodesToConsider.erase(it + index);
+    unsigned int nodeIndexToAdd = randomNode(nodesToConsider, percentageToKeep);
+    node toAdd = nodesToConsider[nodeIndexToAdd];
     partialClique.nodes.push_back(toAdd);
-    partialClique.outgoing += adjacencyList[toAdd].size() + 2 - partialClique.nodes.size() * 2; //TODO: no estoy seguro sobre esta aritmetica
+    partialClique.outgoing += inputGraph[toAdd].size() + 2 - partialClique.nodes.size() * 2; //TODO: no estoy seguro sobre esta aritmetica
+    nodesToConsider.erase(nodesToConsider.begin() + nodeIndexToAdd);
     return recurRandomGreedy(inputGraph, partialClique, nodesToConsider, percentageToKeep);
 }
 
-void eraseTail(nodeSet nodes, const float percentageToKeep) {
-    int amountToErase = nodes.size() * (1-percentageToKeep);
-    while(amountToErase > 0) {
-     nodes.pop_back();
-        amountToErase--;
-    }
+node randomNode(const nodeSet &nodes, const float percentageToKeep) {
+    unsigned int amountToConsider = (unsigned int) (nodes.size() * (percentageToKeep));
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    std::default_random_engine generator (seed);
+    std::uniform_int_distribution<unsigned int> distribution(0, amountToConsider);
+    return distribution(generator);
 }

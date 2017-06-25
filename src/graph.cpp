@@ -126,3 +126,7 @@ bool ::Graph::isAdjacentTo(const adjList &graph, const node n1, const node n2) {
         return std::binary_search(graph[n2].begin(), graph[n2].end(), n1);
     }
 }
+
+void ::Graph::sortByDegree(nodeSet nodesToSort, const adjList &graph) {
+    std::sort(nodesToSort.begin(), nodesToSort.end(), greaterDegreeComparator(graph));
+}

@@ -5,7 +5,8 @@ project(algo3_tp3)
 set(SOURCE_FILES src/Utils.cpp
         src/exact.cpp src/clique.h src/graph.cpp
         src/greedy.cpp
-        src/localsearch.cpp)
+        src/localsearch.cpp
+        src/grasp.cpp)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -pedantic")
 
