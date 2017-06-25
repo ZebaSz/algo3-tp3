@@ -6,6 +6,7 @@
 #include "grafGen.h"
 #include "../src/greedy.h"
 #include "../src/localsearch.h"
+#include "../src/grasp.h"
 
 #define FILE_EXACT  "exact.csv"
 #define FILE_GREEDY "greedy.csv"
@@ -17,8 +18,12 @@
  std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin).count()
 
 #define REPETITIONS (unsigned int)100
-#define MIN_N (unsigned int)2
-#define MAX_N (unsigned int)20
+#define MIN_N  (unsigned int)2
+#define MAX_N  (unsigned int)40
+#define MIN_M  (unsigned int)0
+#define MAX_M  (unsigned int)80
+
+#define MAX_IT (unsigned int)50
 
 void print_help(char* name) {
     std::cout << "Uso: " << name << " <impl>" << std::endl
@@ -71,12 +76,12 @@ int runExact() {
     fprintf(data, "n,m,ns\n");
     for (unsigned int n = MIN_N; n <= MAX_N; ++n) {
         edgeList kGraph = genKGraph(n);
-        for (unsigned int m = 0; m <= (n*(n-1)) >> 1; ++m) {
+        for (unsigned int m = MIN_M; m <= (n*(n-1)) >> 1; ++m) {
             edgeList graph = getSubgraph(m, kGraph);
             graphInfo info = {n, graph};
             for (unsigned int i = 0; i < REPETITIONS; ++i) {
                 std::cout << "impl = exact, n = " << n << ", m = " << m
-                          << "     " << "\r" << std::flush;
+                          << "                " << "\r" << std::flush;
 
                 auto begin = GET_TIME;
 
@@ -100,12 +105,12 @@ int runGreedy() {
     fprintf(data, "n,m,ns\n");
     for (unsigned int n = MIN_N; n <= MAX_N; ++n) {
         edgeList kGraph = genKGraph(n);
-        for (unsigned int m = 0; m <= (n*(n-1)) >> 1; ++m) {
+        for (unsigned int m = MIN_M; m <= (n*(n-1)) >> 1; ++m) {
             edgeList graph = getSubgraph(m, kGraph);
             graphInfo info = {n, graph};
             for (unsigned int i = 0; i < REPETITIONS; ++i) {
                 std::cout << "impl = greedy, n = " << n << ", m = " << m
-                          << "     " << "\r" << std::flush;
+                          << "                " << "\r" << std::flush;
                 auto begin = GET_TIME;
 
                 greedyHeuristic(info);
@@ -128,12 +133,12 @@ int runLocal() {
     fprintf(data, "n,m,ns\n");
     for (unsigned int n = MIN_N; n <= MAX_N; ++n) {
         edgeList kGraph = genKGraph(n);
-        for (unsigned int m = 0; m <= (n*(n-1)) >> 1; ++m) {
+        for (unsigned int m = MIN_M; m <= (n*(n-1)) >> 1; ++m) {
             edgeList graph = getSubgraph(m, kGraph);
             graphInfo info = {n, graph};
             for (unsigned int i = 0; i < REPETITIONS; ++i) {
                 std::cout << "impl = local, n = " << n << ", m = " << m
-                          << "     " << "\r" << std::flush;
+                          << "                " << "\r" << std::flush;
                 auto begin = GET_TIME;
 
                 localSearchHeuristic(info);
@@ -150,6 +155,35 @@ int runLocal() {
 }
 
 int runGrasp() {
-    std::cout << "Oh noes! GRASP no esta listo!" << std::endl;
-    return 1;
+    remove(FILE_GRASP);
+    FILE* data = fopen(FILE_GRASP, "a");
+
+    fprintf(data, "n,m,p,it,ns\n");
+    for (unsigned int n = MIN_N; n <= MAX_N; ++n) {
+        edgeList kGraph = genKGraph(n);
+        for (unsigned int m = MIN_M; m <= (n*(n-1)) >> 1; ++m) {
+            edgeList graph = getSubgraph(m, kGraph);
+            graphInfo info = {n, graph};
+            for (unsigned int p = 0; p <= 10; ++p) {
+                float fp = (float)p/10;
+                for (unsigned int it = 1; it <= MAX_IT; ++it) {
+                    for (unsigned int i = 0; i < REPETITIONS; ++i) {
+                        std::cout << "impl = grasp, n = " << n << ", m = " << m
+                                  << ", p = " << fp << ", it = " << it
+                                  << "     " << "\r" << std::flush;
+                        auto begin = GET_TIME;
+
+                        grasp(info, p, it);
+
+                        auto end = GET_TIME;
+
+                        fprintf(data, "%d,%d,%.1f,%d,%ld\n", n, m, fp, it, GET_TIME_DELTA(begin, end));
+                    }
+                }
+            }
+        }
+    }
+    std::cout << "grasp = done!                " << std::endl;
+    fclose(data);
+    return 0;
 }
