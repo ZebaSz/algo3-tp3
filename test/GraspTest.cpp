@@ -35,7 +35,7 @@ TEST_F(GraspTest, allSmall) {
 TEST_F(GraspTest, allHuge) {
     std::vector<testcase> tests(getTests(false));
     for (size_t i = 0; i < tests.size(); ++i) {
-        cliqueInfo result = grasp(tests[i].input, 0.1, 10);
+        cliqueInfo result = grasp(tests[i].input, 0.3, 10);
         nodeSet resultNodes = result.nodes;
         ASSERT_LE(result.outgoing, tests[i].output.outgoing) << "Caso huge-" << i;
         //ASSERT_GE(result.outgoing, localSearchHeuristic(tests[i].input).outgoing) << "Caso huge-" << i;
