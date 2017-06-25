@@ -2,6 +2,7 @@
 // Created by catofthecannals on 21/06/17.
 //
 
+#include <iostream>
 #include "grasp.h"
 
 cliqueInfo grasp(const graphInfo &inputGraph, const float percentageToKeep, const unsigned int iterations) {
@@ -13,9 +14,17 @@ cliqueInfo grasp(const adjList &inputGraph, const float percentageToKeep, const 
     int i = 0;
     while(i < iterations){
         i++;
-        cliqueInfo tempClique = localSearchHeuristic(inputGraph, randomGreedy(inputGraph, percentageToKeep));
+        cliqueInfo random = randomGreedy(inputGraph, percentageToKeep);
+        if (Graph::frontier(inputGraph, random.nodes) != random.outgoing) {
+            std::cout << "peron";
+        }
+        cliqueInfo tempClique = localSearchHeuristic(inputGraph, random);
+        if (Graph::frontier(inputGraph, tempClique.nodes) != tempClique.outgoing) {
+            std::cout << "peron";
+        }
         if(bestClique.outgoing < tempClique. outgoing) bestClique = tempClique;
     }
+
     return bestClique;
 }
 
@@ -50,8 +59,8 @@ cliqueInfo recurRandomGreedy(const adjList &inputGraph, cliqueInfo &partialCliqu
 
     unsigned int nodeIndexToAdd = randomNode(nodesToConsider, percentageToKeep);
     node toAdd = nodesToConsider[nodeIndexToAdd];
+    partialClique.outgoing += inputGraph[toAdd].size() - partialClique.nodes.size() * 2; //TODO: no estoy seguro sobre esta aritmetica
     partialClique.nodes.push_back(toAdd);
-    partialClique.outgoing += inputGraph[toAdd].size() + 2 - partialClique.nodes.size() * 2; //TODO: no estoy seguro sobre esta aritmetica
     nodesToConsider.erase(nodesToConsider.begin() + nodeIndexToAdd);
     return recurRandomGreedy(inputGraph, partialClique, nodesToConsider, percentageToKeep);
 }

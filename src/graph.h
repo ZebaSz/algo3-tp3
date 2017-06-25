@@ -105,5 +105,9 @@ namespace Graph {
     void sortByDegree(nodeSet nodesToSort, const adjList &graph);
 
 
+    bool isClique(const adjList &graph, const nodeSet &clique);
+    unsigned int frontier(const adjList &graph, const nodeSet &clique);
+
+
 }
 #endif //ALGO3_TP3_GRAPH_H

@@ -17,11 +17,11 @@ TEST_F(GraspTest, k4PlusTwoEdges) {
     ASSERT_EQ(grasp(k4plus, 0.5, 10).outgoing, (unsigned int)6);
     ASSERT_EQ(grasp(k4plus, 0.7, 10).outgoing, (unsigned int)6);
 }
-/*
+
 TEST_F(GraspTest, allSmall) {
     std::vector<testcase> tests(getTests(true));
     for (size_t i = 0; i < tests.size(); ++i) {
-        cliqueInfo result = localSearchHeuristic(tests[i].input);
+        cliqueInfo result = grasp(tests[i].input, 0.1, 50);
         ASSERT_LE(result.outgoing, tests[i].output.outgoing) << "Caso small-" << i;
         if(result.outgoing == tests[i].output.outgoing) {
             Utils::log(INFO, "Passed test %d", i);
@@ -34,7 +34,13 @@ TEST_F(GraspTest, allSmall) {
 TEST_F(GraspTest, allHuge) {
     std::vector<testcase> tests(getTests(false));
     for (size_t i = 0; i < tests.size(); ++i) {
-        cliqueInfo result = localSearchHeuristic(tests[i].input);
+        cliqueInfo result = grasp(tests[i].input, 0.1, 50);
+        nodeSet resultNodes = result.nodes;
+        auto adj = Graph::createAdjacencyList(tests[i].input);
+        //ASSERT_EQ(result.outgoing, frontierSize);
+        if (result.outgoing  != Graph::frontier(adj, result.nodes)){
+            ASSERT_TRUE(true);
+        }
         ASSERT_LE(result.outgoing, tests[i].output.outgoing) << "Caso huge-" << i;
         if(result.outgoing == tests[i].output.outgoing) {
             Utils::log(INFO, "Passed test %d", i);
@@ -42,4 +48,4 @@ TEST_F(GraspTest, allHuge) {
             Utils::log(INFO, "Test %d, difference: %d", i, tests[i].output.outgoing - result.outgoing);
         }
     }
-}*/
+}

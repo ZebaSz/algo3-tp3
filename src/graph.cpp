@@ -130,3 +130,22 @@ bool ::Graph::isAdjacentTo(const adjList &graph, const node n1, const node n2) {
 void ::Graph::sortByDegree(nodeSet nodesToSort, const adjList &graph) {
     std::sort(nodesToSort.begin(), nodesToSort.end(), greaterDegreeComparator(graph));
 }
+
+bool ::Graph::isClique(const adjList &graph, const nodeSet &clique) {
+    for (node k = 0; k < clique.size() - 1; ++k) {
+        for (node j = k+1; j < clique.size(); ++j) {
+            if (!Graph::isAdjacentTo(graph, clique[k], clique[j])){
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+unsigned int ::Graph::frontier(const adjList &graph, const nodeSet &clique) {
+    unsigned int size = 0;
+    for (auto it = clique.begin(); it != clique.end(); ++it) {
+        size += graph[*it].size() - (clique.size() -1);
+    }
+    return size;
+}
