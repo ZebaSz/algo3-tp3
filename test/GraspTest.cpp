@@ -36,11 +36,6 @@ TEST_F(GraspTest, allHuge) {
     for (size_t i = 0; i < tests.size(); ++i) {
         cliqueInfo result = grasp(tests[i].input, 0.1, 50);
         nodeSet resultNodes = result.nodes;
-        auto adj = Graph::createAdjacencyList(tests[i].input);
-        //ASSERT_EQ(result.outgoing, frontierSize);
-        if (result.outgoing  != Graph::frontier(adj, result.nodes)){
-            ASSERT_TRUE(true);
-        }
         ASSERT_LE(result.outgoing, tests[i].output.outgoing) << "Caso huge-" << i;
         if(result.outgoing == tests[i].output.outgoing) {
             Utils::log(INFO, "Passed test %d", i);
