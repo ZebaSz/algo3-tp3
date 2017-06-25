@@ -14,14 +14,7 @@ cliqueInfo grasp(const adjList &inputGraph, const float percentageToKeep, const 
     int i = 0;
     while(i < iterations){
         i++;
-        cliqueInfo random = randomGreedy(inputGraph, percentageToKeep);
-        if (Graph::frontier(inputGraph, random.nodes) != random.outgoing) {
-            std::cout << "peron";
-        }
-        cliqueInfo tempClique = localSearchHeuristic(inputGraph, random);
-        if (Graph::frontier(inputGraph, tempClique.nodes) != tempClique.outgoing) {
-            std::cout << "peron";
-        }
+        cliqueInfo tempClique = localSearchHeuristic(inputGraph, randomGreedy(inputGraph, percentageToKeep));
         if(bestClique.outgoing < tempClique. outgoing) bestClique = tempClique;
     }
 
