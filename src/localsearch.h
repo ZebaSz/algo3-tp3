@@ -22,6 +22,8 @@ cliqueInfo findBestNeighborSolution(const adjList &adjacencyList, cliqueInfo par
 cliqueInfo localAdd(const adjList &adjacencyList, cliqueInfo partialClique);
 cliqueInfo localRemove(const adjList &adjacencyList, cliqueInfo partialClique);
 cliqueInfo localSwap(const adjList &adjacencyList, cliqueInfo partialClique);
+cliqueInfo localSwap2(const adjList &adjacencyList, cliqueInfo partialClique);
+
 void swap(const adjList &adjacencyList, cliqueInfo &partialClique, std::vector<node>::iterator &toRemove, std::vector<node>::iterator &toAdd);
 
 
