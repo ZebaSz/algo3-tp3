@@ -17,6 +17,7 @@ TEST_F(LocalSearchTest, allSmall) {
     for (size_t i = 0; i < tests.size(); ++i) {
         cliqueInfo result = localSearchHeuristic(tests[i].input);
         ASSERT_LE(result.outgoing, tests[i].output.outgoing) << "Caso small-" << i;
+        ASSERT_GE(result.outgoing, greedyHeuristic(tests[i].input).outgoing) << "Caso small-" << i;
         if(result.outgoing == tests[i].output.outgoing) {
             Utils::log(INFO, "Passed test %d", i);
         } else {
@@ -30,6 +31,7 @@ TEST_F(LocalSearchTest, allHuge) {
     for (size_t i = 0; i < tests.size(); ++i) {
         cliqueInfo result = localSearchHeuristic(tests[i].input);
         ASSERT_LE(result.outgoing, tests[i].output.outgoing) << "Caso huge-" << i;
+        ASSERT_GE(result.outgoing, greedyHeuristic(tests[i].input).outgoing) << "Caso huge-" << i;
         if(result.outgoing == tests[i].output.outgoing) {
             Utils::log(INFO, "Passed test %d", i);
         } else {

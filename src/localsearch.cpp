@@ -108,7 +108,7 @@ cliqueInfo localSwap(const adjList &adjacencyList, cliqueInfo partialClique) {
             toConsider.push_back(n);
         }
     }
-    for (int i = 0; i < partialClique.nodes.size(); i++){
+    for (size_t i = 0; i < partialClique.nodes.size(); i++){
         for (auto ot = toConsider.begin(); ot != toConsider.end(); ++ot) {
             int status = (int) adjacencyList[*ot].size() - (int) adjacencyList[i].size();
             cliqueInfo testClique = partialClique;
@@ -130,11 +130,11 @@ cliqueInfo localSwap(const adjList &adjacencyList, cliqueInfo partialClique) {
 
 cliqueInfo localSwap2(const adjList &adjacencyList, cliqueInfo partialClique) {
     node toRemove1, toRemove2, toAdd1, toAdd2;
-    int best = 0;
+    unsigned int best = 0;
 
     //if (partialClique.nodes.size() > 2) { //SE PUEDE MEJORAR PARA CASOS DE >= 2
         for (node r1 = 0; r1 < partialClique.nodes.size() - 1; r1++) {
-            for (node r2 = r1; r2 < partialClique.nodes.size(); r2++) {
+            for (node r2 = r1 + 1; r2 < partialClique.nodes.size() - 1; r2++) {
                 // stillInside es un nodo que sigue estando en la clique si sacamos r1 y r2, va a hacer el primero el segundo o el tercero (dependiendo si r1 o r2 son los primeros)
                 node stillInside = 0;
                 if (r1 == 0) {
@@ -143,27 +143,27 @@ cliqueInfo localSwap2(const adjList &adjacencyList, cliqueInfo partialClique) {
 
                 //Si el nodo que sigue dentro de la clique tiene al menos 2 mas nodos adyacentes que los de la clique
                 //if (adjacencyList[partialClique.nodes[stillInside]].size() > partialClique.nodes.size() + 1) {
-                    for (node a1 = 0; a1 < adjacencyList[partialClique.nodes[stillInside]].size(); a1++){
-                        for (node a2 = a1; a1 < adjacencyList[partialClique.nodes[stillInside]].size(); a1++) {
-                            cliqueInfo testClique = partialClique;
-                            testClique.nodes.erase(testClique.nodes.begin() + r2);
-                            testClique.nodes.erase(testClique.nodes.begin() + r1);
-                            if (Graph::isAdjacentTo(adjacencyList, a1, a2) &&
-                                Graph::allAdjacentTo(adjacencyList, testClique.nodes, a1) &&
-                                Graph::allAdjacentTo(adjacencyList, testClique.nodes, a2)){
-                                testClique.nodes.push_back(a1);
-                                testClique.nodes.push_back(a2);
-                                testClique.outgoing = 0;
-                                for (int i = 0; i < testClique.nodes.size(); i++){
-                                    testClique.outgoing = (unsigned int) (testClique.outgoing + adjacencyList[testClique.nodes[i]].size() + 1 - testClique.nodes.size());
-                                }
-                                testClique = greedyHeuristic(adjacencyList, testClique);
-                                if (testClique.outgoing > best){
-                                    toRemove1 = r1;
-                                    toRemove2 = r2;
-                                    toAdd1 = a1;
-                                    toAdd2 = a2;
-                                    best = testClique.outgoing;
+                for (node a1 = 0; a1 < adjacencyList[partialClique.nodes[stillInside]].size(); a1++){
+                    for (node a2 = a1; a1 < adjacencyList[partialClique.nodes[stillInside]].size(); a1++) {
+                        cliqueInfo testClique = partialClique;
+                        testClique.nodes.erase(testClique.nodes.begin() + r2);
+                        testClique.nodes.erase(testClique.nodes.begin() + r1);
+                        if (Graph::isAdjacentTo(adjacencyList, a1, a2) &&
+                            Graph::allAdjacentTo(adjacencyList, testClique.nodes, a1) &&
+                            Graph::allAdjacentTo(adjacencyList, testClique.nodes, a2)){
+                            testClique.nodes.push_back(a1);
+                            testClique.nodes.push_back(a2);
+                            testClique.outgoing = 0;
+                            for (size_t i = 0; i < testClique.nodes.size(); i++){
+                                testClique.outgoing += (unsigned int) (adjacencyList[testClique.nodes[i]].size() + 1 - testClique.nodes.size());
+                            }
+                            testClique = greedyHeuristic(adjacencyList, testClique);
+                            if (testClique.outgoing > best){
+                                toRemove1 = r1;
+                                toRemove2 = r2;
+                                toAdd1 = a1;
+                                toAdd2 = a2;
+                                best = testClique.outgoing;
                             }
                         }
                     }
@@ -177,7 +177,7 @@ cliqueInfo localSwap2(const adjList &adjacencyList, cliqueInfo partialClique) {
         partialClique.nodes.push_back(toAdd1);
         partialClique.nodes.push_back(toAdd2);
         partialClique.outgoing = 0;
-        for (int i = 0; i < partialClique.nodes.size(); i++){
+        for (size_t i = 0; i < partialClique.nodes.size(); i++){
             partialClique.outgoing = (unsigned int) (partialClique.outgoing + adjacencyList[partialClique.nodes[i]].size() + 1 - partialClique.nodes.size());
         }
     }

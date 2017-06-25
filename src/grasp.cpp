@@ -59,8 +59,8 @@ cliqueInfo recurRandomGreedy(const adjList &inputGraph, cliqueInfo &partialCliqu
 }
 
 node randomNode(const nodeSet &nodes, const float percentageToKeep) {
-    unsigned int amountToConsider = (unsigned int) (nodes.size() * (percentageToKeep));
-    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    unsigned int amountToConsider = (unsigned int) ((nodes.size() - 1) * (percentageToKeep));
+    long seed = std::chrono::system_clock::now().time_since_epoch().count();
     std::default_random_engine generator (seed);
     std::uniform_int_distribution<unsigned int> distribution(0, amountToConsider);
     return distribution(generator);

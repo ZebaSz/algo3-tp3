@@ -164,7 +164,7 @@ int runGrasp() {
         for (unsigned int m = MIN_M; m <= (n*(n-1)) >> 1; ++m) {
             edgeList graph = getSubgraph(m, kGraph);
             graphInfo info = {n, graph};
-            for (unsigned int p = 0; p <= 10; ++p) {
+            for (unsigned int p = 1; p <= 10; ++p) {
                 float fp = (float)p/10;
                 for (unsigned int it = 1; it <= MAX_IT; ++it) {
                     for (unsigned int i = 0; i < REPETITIONS; ++i) {
@@ -173,7 +173,7 @@ int runGrasp() {
                                   << "     " << "\r" << std::flush;
                         auto begin = GET_TIME;
 
-                        grasp(info, p, it);
+                        grasp(info, fp, it);
 
                         auto end = GET_TIME;
 

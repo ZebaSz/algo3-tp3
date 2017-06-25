@@ -23,6 +23,7 @@ TEST_F(GraspTest, allSmall) {
     for (size_t i = 0; i < tests.size(); ++i) {
         cliqueInfo result = grasp(tests[i].input, 0.1, 10);
         ASSERT_LE(result.outgoing, tests[i].output.outgoing) << "Caso small-" << i;
+        //ASSERT_GE(result.outgoing, localSearchHeuristic(tests[i].input).outgoing) << "Caso small-" << i;
         if(result.outgoing == tests[i].output.outgoing) {
             Utils::log(INFO, "Passed test %d", i);
         } else {
@@ -37,6 +38,7 @@ TEST_F(GraspTest, allHuge) {
         cliqueInfo result = grasp(tests[i].input, 0.1, 10);
         nodeSet resultNodes = result.nodes;
         ASSERT_LE(result.outgoing, tests[i].output.outgoing) << "Caso huge-" << i;
+        //ASSERT_GE(result.outgoing, localSearchHeuristic(tests[i].input).outgoing) << "Caso huge-" << i;
         if(result.outgoing == tests[i].output.outgoing) {
             Utils::log(INFO, "Passed test %d", i);
         } else {
