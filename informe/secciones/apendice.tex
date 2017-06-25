@@ -1,0 +1,44 @@
+\section{Apéndices}
+	\subsection{Apéndice I: generación y análisis de datos}
+
+	Para poder analizar las complejidades de los algoritmos propuestos, se utilizaron las siguientes herramientas:
+
+	\begin{itemize}
+		\item Un generador de grafos aleatorios con \texttt{std::random} (parte de la biblioteca estándar de C++11).
+
+		Para poder probar las distintas implementaciones, creamos un generador de grafos aleatorios. El mismo consiste básicamente en un generador de grafos completos y una función de mezclado aleatorio, basado en los generadores de distribuciones uniformes provistas por la \texttt{std} de C++.
+
+		Cada uno de los grafos generados se utilizó multiples veces para testear varios aspectos de un mismo algoritmo.
+
+		\item Mediciones de tiempo con \texttt{std::chrono} (parte de la biblioteca estándar de C++11).
+
+		Cada algoritmo fue probado 100 veces consecutivas con cada entrada, conservando solo el valor de tiempo menor para reducir el ruido por procesos ajenos al problema.
+
+		La unidad de medición preferida fue nanosegundos (\texttt{std::chrono::nanoseconds}, $seg \times 10^{-9}$).
+
+		\item Graficado con \texttt{matplotlib.pyplot}, \texttt{pandas} y \texttt{seaborn} (con Python y Jupyter Notebook)
+
+		Se utilizaron los DataFrames de Pandas para el manejo de datos (guardados en \texttt{.csv}) y las funciones de regresión de Seaborn para el graficado, en conjunto con matplotlib.
+
+		Algunos gráficos incluyen el coeficiente de correlación (o ``r'') de Pearson, al igual que un p-valor para la hipotesis nula que los valores pueden haber sido generados sin correlación real. Esto quiere decir, un R cercano a 1 con un p-valor mínimo indica que hay una fuerte correlación positiva entre los valores graficados; un p-valor elevado, por otro lado, invalida una posible correlación positiva o negativa.
+
+	\end{itemize}
+
+	\subsection{Apéndice II: herramientas de compilación y testing}
+	Durante el desarrollo se utilizaron las siguientes herramientas:
+
+	\begin{itemize}
+		\item CMake
+
+		Se decidió utilizar CMake para la compilación por su simplicidad y compatibilidad con otras herramientras. Junto con el código se provee el archivo \texttt{CMakeLists.txt} para compilar el mismo.
+
+		\item Google Test
+
+		Para generar tests unitarios con datos reutilizables se usó Google Test. Dichos archivos eran importados por otro \texttt{CMakeLists.txt} y no están incluídos en la presente entrega del trabajo práctico.
+
+		\item Namespace \texttt{Utils}
+
+		Dentro de \texttt{Utils.h} se definieron algunas funciones ajenas a los algoritmos en sí e independientes de implementación. Entre ellas se encuentran fuciones de parseo de input, así como una función de logging que fue utilizada al programar para detectar errores y ver otros detalles del proceso.
+
+		La función \texttt{log} sigue estando incluída en los algoritmos, pero su funcionalidad se encuentra apagada por un \texttt{\#define} y no debería generar ningún costo adicional (ya que usa printf por detrás y no computa el output salvo que sea necesario).
+	\end{itemize}
