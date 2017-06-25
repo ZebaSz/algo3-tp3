@@ -29,11 +29,12 @@ void print_help(char* name) {
     std::cout << "Uso: " << name << " <impl>" << std::endl
               << std::endl
               << "donde las implementaciones son:" << std::endl
-              << "      all : ejectuar todas las implementaciones" << std::endl
-              << "    exact : brute-force" << std::endl
-              << "   greedy : heuristica golosa" << std::endl
-              << "    local : heuristica de busqueda local" << std::endl
-              << "    grasp : heuristica golosa con metaheuristica GRASP" << std::endl
+              << "        all : ejectuar todas las implementaciones" << std::endl
+              << "      exact : brute-force" << std::endl
+              << "  heuristic : ejecutar todas las heuristicas" << std::endl
+              << "     greedy : heuristica golosa" << std::endl
+              << "      local : heuristica de busqueda local" << std::endl
+              << "      grasp : heuristica golosa con metaheuristica GRASP" << std::endl
               << std::endl;
 }
 
@@ -51,6 +52,11 @@ int main(int argc, char* argv[]) {
 
     if(impl == "all") {
         runExact();
+        runGreedy();
+        runLocal();
+        runGrasp();
+        return 0;
+    } else if(impl == "heuristic") {
         runGreedy();
         runLocal();
         runGrasp();
