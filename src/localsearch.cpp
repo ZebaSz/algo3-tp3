@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <iostream>
 #include "localsearch.h"
 
 cliqueInfo laDeRoniPorLasDudas(const graphInfo &inputGraph, cliqueInfo partialClique) {

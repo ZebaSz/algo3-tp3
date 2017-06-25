@@ -24,9 +24,10 @@ cliqueInfo greedyHeuristic(const adjList &adjacencyList, cliqueInfo partialCliqu
     for (size_t j = 0; j < nodesToConsider.size() ; ++j) {
         //if the node we wanna add is adjacent to every node in the clique and it enlarges the frontier, we add it
         if(Graph::allAdjacentTo(adjacencyList, partialClique.nodes, nodesToConsider[j]) && partialClique.nodes.size() * 2 < adjacencyList[nodesToConsider[j]].size()){
-            partialClique.nodes.push_back(nodesToConsider[j]);
+
             //update frontier size
-            partialClique.outgoing += adjacencyList[nodesToConsider[j]].size() + 2 - partialClique.nodes.size() * 2;
+            partialClique.outgoing += adjacencyList[nodesToConsider[j]].size() - partialClique.nodes.size() * 2;
+            partialClique.nodes.push_back(nodesToConsider[j]);
         }
     }
     return partialClique;
