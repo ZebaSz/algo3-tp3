@@ -1,0 +1,38 @@
+\section{Heurística de búsqueda local}
+\subsection{Introducción}
+Las heurísticas de búsqueda local son capaces de iterar sobre cualquier solución dada y
+mejorarla, buscando soluciones vecinas a la solución inicial.
+
+Para plantear la búsqueda local tenemos que definir sobre qué soluciones vecinas buscará el algoritmo, es decir tenemos que definir una relación de vecindad entre el espacio de soluciones del problema. Para que el enfoque no sea complejo, definimos 3 vecindades simples:
+
+\begin{enumerate}
+	\item Agregar un nodo a la clique, siempre y cuando siga manteniendo la propiedad de clique.
+
+	\item Eliminar un nodo perteneciente a la clique.
+
+	\item Intercambiar un nodo de la clique por uno que no pertenezca a ella.
+
+	\item Intercambiar un par de nodos de la clique por otro par que no pertenezca a ella.
+
+\end{enumerate}
+
+Ya definidas las vecindades, lo que vamos a hacer en el algoritmo es buscar entre estas soluciones vecinas y quedarnos con la que más nos mejora la frontera, y podemos repetir este procedimiento hasta que las soluciones encontradas no mejoren.
+
+
+\subsection{Desarrollo}
+Como las búsquedas de cada tipo de vecindad son diferentes entre sí, vamos a implementar una función que nos encuentre la mejor solución para cada tipo y después vamos a comparar estas soluciones, esto nos trae el beneficio de que si queremos agregar vecindades no tenemos que tocar mucho la implementación.
+
+\subsubsection{Vecindad: Agregar Nodo}
+
+Esta vecindad es la que se aplica en la heurística golosa constructiva, y como ya vimos la solución que nos va a mejorar más la solución, es agregar la arista que siga siendo clique que más aristas tenga.
+
+\subsubsection{Vecindad: Eliminar Nodo}
+
+Aquí queremos encontrar nodos que al eliminarlos nos aumente la frontera, estos nodos van a tener la característica de tener más adyacentes en la clique que afuera, ya que si por ejemplo el nodo tiene 2 nodos adyacentes por afuera de la clique y esta es de grado 4(por lo que tendrá 3 adyacentes pertenecientes a la clique) si lo eliminamos, la frontera perderá los 2 ejes los nodos adyacentes, pero ganará 3 ejes de los que estaban internos a la clique, por lo que podemos definir el beneficio de eliminar un nodo de la clique como $2 * (grado de la clique - 1) - cantidad de adyacentes al nodo$.
+
+La implementación es bastante directa, recorremos los nodos de la clique y buscamos el que más nos aporte a la frontera si lo eliminamos.
+
+\subsubsection{Vecindad: Intercambiar Nodo}
+
+\subsection{Complejidad Temporal}
+

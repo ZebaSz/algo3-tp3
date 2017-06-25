@@ -1,8 +1,15 @@
 \section{Heurística constructiva golosa}
-\subsection{Desarrollo}
-Para esta heurística, decidimos resolver el problema con un simple procedimiento: tratar de agregar un nodo a la clique que nos aumente la frontera, hasta que no haya nodos que aumenten la frontera a la clique.
-La implementación es fácil, primero representamos el grafo como una lista de adyacencia para obtener los adyacentes a un nodo rápidamente, luego golosamente definimos la clique inicial con el nodo de mayor grado, como los nodos de la clique son todos adyacentes entre sí, para agregarle nuevos nodos estos tienen que ser adyacentes al primer nodo que agregamos. Entonces para seguir agregando nodos a la clique los vamos a seleccionar entre los adyacentes al primer nodo, para seguir construyendo la clique golosamente ordenamos estos nodos por grado, los recorremos y vamos agregandolos a la clique si pueden pertenecer a la clique actual, y cómo están ordenados por grado, se agregaran los de mayor grado primero.
+\subsection{Introducción}
+Dado que la complejidad del algoritmo exacto resulta prohibitiva en la práctica, podemos aplicar heurísticas que resuelvan el problema en tiempo polinomial, a cuestas de la calidad final de la solución.
 
+Las heurísticas tienen un factor importante de intuición sobre por qué podrían llegar a funcionar mejor o peor y no justificación formal. Debido a esto es difícil decidir qué criterio utilizar puesto que siempre es posible encontrar instancias para las cuales la heurística sea mala.
+
+Nosotros decidimos encarar el criterio de una manera simple y segura, agregar nodos a la clique que nos aumenten la frontera de nuestra clique actual, hasta que no nos queden más aristas por agregar a la clique nos aumenten la frontera.
+
+\subsection{Desarrollo}
+La implementación de nuestra heurística golosa es simple, primero representamos el grafo como una lista de adyacencia para obtener los adyacentes a un nodo rápidamente, luego golosamente definimos la clique inicial con el nodo de mayor grado, como los nodos de la clique son todos adyacentes entre sí, para agregarle nuevos nodos estos tienen que ser adyacentes al primer nodo que agregamos.
+
+Entonces para seguir agregando nodos a la clique los vamos a seleccionar entre los adyacentes al primer nodo, para seguir construyendo la clique golosamente ordenamos estos nodos por grado, los recorremos y vamos agregandolos a la clique si pueden pertenecer a la clique actual, y cómo están ordenados por grado, se agregaran los de mayor grado primero.
 
 \begin{algorithm}[H]
 	\NoCaptionOfAlgo
@@ -29,17 +36,18 @@ La implementación es fácil, primero representamos el grafo como una lista de a
 Esta implementación es bastante sencilla y solo utiliza unas pocas funciones, veamos la complejidad temporal en peor caso de ellas para después ver la del algoritmo general.
 
 \begin{itemize}
-	 \item \textbf{nodoDeMayorGrado}: Recorre los n nodos en la lista y se fija el largo de sus adyacentes en $O(1)$ por lo que la función es $O(n)$.
+	\item \textbf{nodoDeMayorGrado}: Recorre los n nodos en la lista y se fija el largo de sus adyacentes en $O(1)$ por lo que la función es $O(n)$.
 
 	\item \textbf{ordenarPorGrado}: Esta función utiliza por detrás el sort de la STD por lo que su complejidad en peor caso es de $O(n*log(n))$.
 
-\item \textbf{esAdyacenteATodos}: Busca si hay un nodo en la clique que no sea adyacente a este nuevo nodo, para eso arma un arreglo de booleanos y recorre los nodos adyacentes al nodo a insertar (pueden ser hasta $n-1$) y pone verdadero en el arreglo si es adyacente, después basta con recorrer los nodos de la clique y fijarse en el arreglo si son adyacentes, por lo que el algoritmo tiene una complejidad temporal $O(|adyacentes| + |clique|)$ o una cota más burda de $O(n)$.
+    \item \textbf{esAdyacenteATodos}: Busca si hay un nodo en la clique que no sea adyacente a este nuevo nodo, para eso arma un arreglo de booleanos y recorre los nodos adyacentes al nodo a insertar (pueden ser hasta $n-1$) y pone verdadero en el arreglo si es adyacente, después basta con recorrer los nodos de la clique y fijarse en el arreglo si son adyacentes, por lo que el algoritmo tiene una complejidad temporal $O(|adyacentes| + |clique|)$ o una cota más burda de $O(n)$.
 
-\item \textbf{aumentaLaFrontera}: Hace una simple aritmética entre la cantidad de nodos y la cantidad de adyacentes de la clique por lo que su complejidad es $O(1)$.
+    \item \textbf{aumentaLaFrontera}: Hace una simple aritmética entre la cantidad de nodos y la cantidad de adyacentes de la clique por lo que su complejidad es $O(1)$.
 
-\item \textbf{agregarNodoAClique}: Se encarga de actualizar la clique agregando atrás del vector de nodos en la clique el nodo a insertar en $O(1)$.
+    \item \textbf{agregarNodoAClique}: Se encarga de actualizar la clique agregando atrás del vector de nodos en la clique el nodo a insertar en $O(1)$.
 
 \end{itemize}
 
 Terminando el análisis de complejidad, iteramos entre la cantidad de adyacentes del nodo de mayor grado por lo que podrían ser $n-1$ así que la complejidad temporal en peor caso de la Heurística Constructiva Golosa será de $O(n^2)$
 
+%\subsection{Instancias subóptimas}
