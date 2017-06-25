@@ -1,6 +1,7 @@
 #include <cstdio>
 #include <iostream>
 #include <chrono>
+#include <boost/filesystem/operations.hpp>
 #include "../src/exact.h"
 #include "../src/Utils.h"
 #include "grafGen.h"
@@ -12,6 +13,7 @@
 #define FILE_GREEDY "greedy.csv"
 #define FILE_LOCAL  "local.csv"
 #define FILE_GRASP  "grasp.csv"
+#define FILE_FIT    "fit.csv"
 
 #define GET_TIME std::chrono::high_resolution_clock::now()
 #define GET_TIME_DELTA(begin, end) \
@@ -25,16 +27,26 @@
 
 #define MAX_IT (unsigned int)50
 
+struct testcase {
+    graphInfo input;
+    cliqueInfo output;
+};
+
+#define BIGDIR "enormes"
+#define IN_FILEEXT ".in"
+#define OUT_FILEEXT ".out"
+
 void print_help(char* name) {
     std::cout << "Uso: " << name << " <impl>" << std::endl
               << std::endl
               << "donde las implementaciones son:" << std::endl
-              << "        all : ejectuar todas las implementaciones" << std::endl
-              << "      exact : brute-force" << std::endl
-              << "  heuristic : ejecutar todas las heuristicas" << std::endl
+              << "        all : ejectuar pruebas de perf de todas las implementaciones" << std::endl
+              << "      exact : metodo por fuerza bruta" << std::endl
+              << "  heuristic : ejecutar pruebas de perf de todas las heuristicas" << std::endl
               << "     greedy : heuristica golosa" << std::endl
               << "      local : heuristica de busqueda local" << std::endl
               << "      grasp : heuristica golosa con metaheuristica GRASP" << std::endl
+              << "        fit : genera datos de fitteo para GRASP" << std::endl
               << std::endl;
 }
 
@@ -42,6 +54,8 @@ int runExact();
 int runGreedy();
 int runLocal();
 int runGrasp();
+int runFit();
+std::vector<testcase> getTests();
 
 int main(int argc, char* argv[]) {
     if (argc != 2) {
@@ -69,6 +83,8 @@ int main(int argc, char* argv[]) {
         return runLocal();
     } else if(impl == "grasp") {
         return runGrasp();
+    } else if(impl == "fit") {
+        return runFit();
     } else {
         std::cout << "No entendi que implementacion es." << std::endl;
         return 1;
@@ -85,9 +101,9 @@ int runExact() {
         for (unsigned int m = MIN_M; m <= (n*(n-1)) >> 1; ++m) {
             edgeList graph = getSubgraph(m, kGraph);
             graphInfo info = {n, graph};
+            std::cout << "impl = exact, n = " << n << ", m = " << m
+                      << "                " << "\r" << std::flush;
             for (unsigned int i = 0; i < REPETITIONS; ++i) {
-                std::cout << "impl = exact, n = " << n << ", m = " << m
-                          << "                " << "\r" << std::flush;
 
                 auto begin = GET_TIME;
 
@@ -114,9 +130,9 @@ int runGreedy() {
         for (unsigned int m = MIN_M; m <= (n*(n-1)) >> 1; ++m) {
             edgeList graph = getSubgraph(m, kGraph);
             graphInfo info = {n, graph};
+            std::cout << "impl = greedy, n = " << n << ", m = " << m
+                      << "                " << "\r" << std::flush;
             for (unsigned int i = 0; i < REPETITIONS; ++i) {
-                std::cout << "impl = greedy, n = " << n << ", m = " << m
-                          << "                " << "\r" << std::flush;
                 auto begin = GET_TIME;
 
                 greedyHeuristic(info);
@@ -142,9 +158,9 @@ int runLocal() {
         for (unsigned int m = MIN_M; m <= (n*(n-1)) >> 1; ++m) {
             edgeList graph = getSubgraph(m, kGraph);
             graphInfo info = {n, graph};
+            std::cout << "impl = local, n = " << n << ", m = " << m
+                      << "                " << "\r" << std::flush;
             for (unsigned int i = 0; i < REPETITIONS; ++i) {
-                std::cout << "impl = local, n = " << n << ", m = " << m
-                          << "                " << "\r" << std::flush;
                 auto begin = GET_TIME;
 
                 localSearchHeuristic(info);
@@ -173,10 +189,10 @@ int runGrasp() {
             for (unsigned int p = 1; p <= 10; ++p) {
                 float fp = (float)p/10;
                 for (unsigned int it = 1; it <= MAX_IT; ++it) {
+                    std::cout << "impl = grasp, n = " << n << ", m = " << m
+                              << ", p = " << fp << ", it = " << it
+                              << "     " << "\r" << std::flush;
                     for (unsigned int i = 0; i < REPETITIONS; ++i) {
-                        std::cout << "impl = grasp, n = " << n << ", m = " << m
-                                  << ", p = " << fp << ", it = " << it
-                                  << "     " << "\r" << std::flush;
                         auto begin = GET_TIME;
 
                         grasp(info, fp, it);
@@ -192,4 +208,65 @@ int runGrasp() {
     std::cout << "grasp = done!                " << std::endl;
     fclose(data);
     return 0;
+}
+
+int runFit() {
+    std::vector<testcase> tests = getTests();
+    if(tests.empty()) {
+        std::cout << "¡No hay casos de test para fittear!" << std::endl;
+        return 1;
+    }
+    remove(FILE_FIT);
+    FILE* data = fopen(FILE_FIT, "a");
+
+    fprintf(data, "n,m,p,it,diff\n");
+
+    std::vector<testcase>::const_iterator it;
+    for (it = tests.begin(); it != tests.end(); ++it) {
+        unsigned int n = (*it).input.n;
+        size_t m = (*it).input.edges.size();
+
+        unsigned int best = (*it).output.outgoing;
+
+        for (unsigned int p = 1; p <= 10; ++p) {
+            float fp = (float)p/10;
+            for (unsigned int i = 1; i <= MAX_IT; ++i) {
+                std::cout << "n = " << n
+                          << ", m = " << m
+                          << ", p = " << fp
+                          << ", it = " << i
+                          << "     " << "\r"
+                          << std::flush;
+
+                cliqueInfo result = grasp((*it).input, fp, i);
+
+                unsigned int diff = best - result.outgoing;
+
+                fprintf(data, "%d,%ld,%.1f,%d,%d\n", n, m, fp, i, diff);
+            }
+        }
+    }
+    std::cout << "fitting = done!                        " << std::endl;
+    fclose(data);
+    return 0;
+}
+
+std::vector<testcase> getTests() {
+    std::vector<testcase> tests;
+    std::string dirname = BIGDIR;
+
+    if(boost::filesystem::exists(dirname)) {
+        boost::filesystem::directory_iterator end_itr;
+        for (boost::filesystem::directory_iterator itr(dirname); itr != end_itr; ++itr) {
+            if (itr->path().extension() == OUT_FILEEXT) {
+                std::string outputName = itr->path().string();
+                std::string inputName = outputName.substr(0, outputName.size() - 4) + IN_FILEEXT;
+
+                std::ifstream inputFile(inputName);
+                tests.push_back({Utils::parseGraph(inputFile), Utils::parseCliqueInfo(outputName)});
+                inputFile.close();
+            }
+        }
+    }
+    return tests;
 }
