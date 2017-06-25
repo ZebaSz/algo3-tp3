@@ -46,18 +46,20 @@ cliqueInfo localSearchHeuristic(const adjList &adjacencyList, cliqueInfo partial
     return partialClique;
 }
 
-
 cliqueInfo findBestNeighborSolution(const adjList &adjacencyList, cliqueInfo partialClique) {
     cliqueInfo add = localAdd(adjacencyList, partialClique);
     cliqueInfo remove = localRemove(adjacencyList, partialClique);
     cliqueInfo swap = localSwap(adjacencyList, partialClique);
+    cliqueInfo swap2 = localSwap2(adjacencyList, partialClique);
 
-    if (add.outgoing >= remove.outgoing && add.outgoing >= swap.outgoing) {
+    if (add.outgoing >= remove.outgoing && add.outgoing >= swap.outgoing && add.outgoing >= swap2.outgoing) {
         return add;
-    } else if (remove.outgoing >= add.outgoing && remove.outgoing >= swap.outgoing) {
+    } else if (remove.outgoing >= add.outgoing && remove.outgoing >= swap.outgoing && remove.outgoing >= swap2.outgoing) {
         return remove;
-    } else {
+    } else if (swap.outgoing >= add.outgoing && swap.outgoing >= remove.outgoing && swap.outgoing >= swap2.outgoing) {
         return swap;
+    } else {
+        return swap2;
     }
 }
 
@@ -141,10 +143,9 @@ cliqueInfo localSwap2(const adjList &adjacencyList, cliqueInfo partialClique) {
                 if (adjacencyList[stillInside].size() > partialClique.nodes.size() + 1) {
                     for (auto a1 = adjacencyList[stillInside].begin(); a1 != adjacencyList[stillInside].end(); ++a1) {
                         for (auto a2 = a1; a2 != adjacencyList[stillInside].end(); ++a2) {
-                            if (Graph::isAdjacentTo(adjacencyList, *a1, *a2) &&
+                            int status = (int) adjacencyList[*a1].size() + (int) adjacencyList[*a2].size() -  (int) adjacencyList[r1].size() - (int) adjacencyList[r2].size();
+                            if (status > best && Graph::isAdjacentTo(adjacencyList, *a1, *a2) &&
                                     Graph::allAdjacentToExceptForDouble(adjacencyList, partialClique.nodes, *a1, *a2, r1, r2) ) {
-                                //hay que calcular la nueva frontera
-                                //if (status > best) {
                                 toRemove1 = r1;
                                 toRemove2 = r2;
                                 toAdd1 = *a1;
@@ -158,10 +159,8 @@ cliqueInfo localSwap2(const adjList &adjacencyList, cliqueInfo partialClique) {
     }
 
     if (best > 0) {
-        //ELIMINAR
-        //partialClique.nodes.erase(toRemove1);
-        //partialClique.nodes.erase(toRemove2);
-
+        partialClique.nodes.erase(std::remove(partialClique.nodes.begin(), partialClique.nodes.end(), toRemove1), partialClique.nodes.end());
+        partialClique.nodes.erase(std::remove(partialClique.nodes.begin(), partialClique.nodes.end(), toRemove2), partialClique.nodes.end());
         partialClique.nodes.push_back(toAdd1);
         partialClique.nodes.push_back(toAdd2);
 
