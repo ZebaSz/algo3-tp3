@@ -6,7 +6,7 @@ Para esto, es importante hacernos una idea general de los pasos a seguir, para v
 \begin{itemize}
 	\item Encontrar todas las cliques
 	
-	\item Ordenarlas por tamaño de frontera
+	\item Ordenarlas por tamaño de frontera (encontrar la mayor)
 
 \end{itemize}
 
@@ -27,7 +27,7 @@ Frontera(C) $=$ $\sum_{i=0}^{N}$ (${d(v_i)}$ + 1 - N)
 
 Por ende, bastará con calcular el grado de cada vértice y luego, para cada clique, realizar la sumatoria correspondiente.
 
-Ahora, nos queda conseguir todas las cliques del grafo dado. Para esto, es importante notar que todo grafo completo G con n $\leq$ 1 tiene, al menos, (n-1) subgrafos completos, lo cual es facil de ver: pensemos un grafo completo de N nodos. Todos los nodos tienen grado ${N-1}$ porque son adyacentes a los demás nodos del grafo, por lo que si sacamos un nodo ${c}$ cualquiera junto a todos sus ejes, los demás nodos pasarán a tener grado ${N-2}$ en un grafo de N-1 nodos. Por ende, seguiría siendo un grafo completo con un nodo menos que el original (es decir, un subgrafo completo de N-1 nodos). Esta misma operación podría realizarse varias veces, lo cual nos dejaría con cada uno de los (n-1) subgrafos completos existentes.
+Ahora, nos queda conseguir todas las cliques del grafo dado. Para esto, es importante notar que todo grafo completo G con n $\geq$ 1 tiene, al menos, (n-1) subgrafos completos, lo cual es facil de ver: pensemos un grafo completo de N nodos. Todos los nodos tienen grado ${N-1}$ porque son adyacentes a los demás nodos del grafo, por lo que si sacamos un nodo ${c}$ cualquiera junto a todos sus ejes, los demás nodos pasarán a tener grado ${N-2}$ en un grafo de N-1 nodos. Por ende, seguiría siendo un grafo completo con un nodo menos que el original (es decir, un subgrafo completo de N-1 nodos). Esta misma operación podría realizarse varias veces, lo cual nos dejaría con cada uno de los (n-1) subgrafos completos existentes.
 
 Sin embargo, hay dos cosas que remarcar: nuestro grafo completo G es en realidad una clique de un grafo aún más grande, y cada uno de los nodos pertenecientes al grafo G es distinguible (al menos, en los términos de nuestro problema). Por lo tanto, como consideramos que sacar dos nodos ${c}$ y ${e}$ de G nos devuelve dos subgrafos distintos aún siendo isomorfos, tenemos que ser más exhaustivos con la cantidad de cliques a obtener. Por ende, si tomamos de nuevo al grafo completo G con N nodos, y consideramos todos los grafos completos que se pueden formar, tendremos:
 
@@ -86,6 +86,30 @@ Es importante resaltar que, como explicamos anteriormente, nuestra matriz esta t
 Finalmente, con los dos subproblemas ya solucionados, solo nos queda ver cada clique y quedarnos con la de mayor frontera. Como obtuvimos todas las cliques posibles, y nos estamos quedando con la que tiene más nodos fronterizos, esta acaba siendo CMF, y por ende, la solución.
 
 \subsection{Cota temporal}
+Repasemos, de manera más puntillosa, los pasos a seguir en nuestro algoritmo. El primer paso importante será obtener todas las cliques, para lo cual necesitaremos el grado de todos los nodos y una matriz de adyacencia triangulada. Ambos pasos nos costarán $O(m)$, donde $m$ es la cantidad de aristas pertenecientes al grafo original, mientras que la creación de la matriz tendrá un costo de $O(n^2)$, por lo cual acabaríamos teniendo $O(m)$ + $O(m)$ + $O(n^2)$, y como m $\leq$ n $\times$ (n-1) tenemos $O(m)$ + $O(m)$ + $O(n^2)$ $\subseteq$ $O(3(n^2))$ $\subseteq$ $O(n^2)$
+
+Ahora si, pasemos a analizar los dos subproblemas mencionados en el desarrollo:
+
+\begin{center}
+	\textbf{Agregar todas las cliques}
+\end{center}
+Este algoritmo toma cada una de los nodos, genera una clique trivial y agrega recursivamente los demás nodos para generar nuevas cliques y agregarlas a la lista. Esto quiere decir que, pensando en el peor caso, por cada llamada a expandirClique tendremos $n$ llamadas nuevas, lo cual nos acabaría dejando con una cota de $O(n^n)$. Sin embargo, como usamos una matriz triangular, vimos que solo se genera una vez cada clique. Por ende, suponiendo que nuestro grafo inicial fuera completo, tendríamos $\sum_{i=0}^{n}$ ${n \choose i}$ llamadas, y por el \textbf{Teorema del Binomio}, sabemos que:
+\begin{center}
+ $$(a+b)^{n}  = \sum_{k=0}^{n} \binom{n}{k} a^{k}b^{n-k}$$
+\end{center}
+Por lo tanto, con a = 1, b = 1, tendríamos:
+\begin{center}
+ $$(1+1)^{n}  = \sum_{k=0}^{n} \binom{n}{k} 1^{k}1^{n-k}$$
+\end{center}
+Lo cual acaba siendo $2^n$ y es exactamente igual a la cantidad de llamadas que realizamos para el grafo completo de tamaño n. Por ende, la complejidad de nuestro algoritmo acaba siendo $O(2^n)$.
+
+\begin{center}
+	\textbf{Encontrar CMF}
+\end{center}
+Como vimos, en el peor caso tenemos $2^n$ cliques. Sabemos que para encontrar la mejor deberemos recorrerlas todas, y sumar la frontera de cada una de ellas. Esto significará que, para cada clique, deberemos recorrer los $k$ nodos que la componen. Y como en el peor caso tendremos una clique de $n$ nodos, nuestra cota temporal se reducirá al costo de recorrer $2^n$ veces $n$ nodos, es decir: $O(2^n\times n)$
+\bigskip
+
+Finalmente, considerando las complejidades vistas, nuestra cota quedará en $O(n^2)$ + $O(2^n \times n)$, que acaba siendo $O(n^2 + 2^n\times n)$.
 
 
 \subsection{Experimentación}
