@@ -1,0 +1,66 @@
+\section{Metaheurística GRASP}
+	\subsection{Desarrollo}
+Hemos propuesto dos métodos que computan una solución, formulándola en base a criterios heurísticos. La limitación de los enfoques anteriores reside en que se recorre el espacio de soluciones hasta que no es posible mejorar la solución. Como sabemos que una solución maximal no necesariamente es máxima, sería útil poder contrastar distintas soluciones maximales y elegir a la mejor. En otras palabras quisiéramos ramificar la exploración del espacio de soluciones.
+
+Habiendo notado que heurísticas determinísticas siempre toman la misma decisión en el mismo paso, se propone la utilización de una heurística pseudo-greedy. Esta heurística aleatoriamente tomará decisiones localmente buenas pero no necesariamente óptimas. Se considerará que la decisión de agregar un nodo es buena si agregarlo aumenta el tamaño de la frontera. Para tener cierto control sobre que tan goloso es el comportamiento de esta heurística se puede pedir que la elección aleatoria sea tomada teniendo en cuenta solo el mejor porcentaje de las decisiones posibles. Si el porcentaje es chico, solo se consideraran las mejores opciones y el comportamiento será muy similar a la heurística greedy pura. Esto restringiría la ramificación que buscabamos. Si el porcentaje es muy alto existirá la posibilidad de agregar un nodo de grado muy bajo a la clique, lo cual restringirá en gran medida la cantidad de nodos que se pueden agregar, obteniendo muy posiblemente una clique pequeña. 
+
+
+\begin{algorithm}[H]
+	\NoCaptionOfAlgo
+	\caption{\algoritmo{randomGreedy}{\In{listaAdyacencia}{lista}, \In{float}{porcentajeConsiderado}}{clique}}
+	
+	nodosConsiderados $\leftarrow$ nodos(lista)
+	
+	ordenarPorGrado(nodosConsiderados)
+	
+	indiceNodoAleatorio $\leftarrow$ nodoAleatorio(nodosConsiderados, porcentajeConsiderado)
+	
+	nodoPorAgregar $\leftarrow$ nodosConsiderados[indiceNodoAleatorio]
+	
+	agregarNodoAClique(res, nodoPorAgregar)
+	
+	res $\leftarrow$ recurRandomGreedy(lista, res, nodosConsiderados, porcentajeConsiderado)
+
+    nodosAdyacentes $\leftarrow$ adyacentes(lista, mayor)
+
+\end{algorithm}
+
+\begin{algorithm}[H]
+	\NoCaptionOfAlgo
+	\caption{\algoritmo{randomGreedy}{\In{listaAdyacencia}{lista}, \In{float}{porcentajeConsiderado}}{clique}}
+	
+	nodosConsiderados $\leftarrow$ nodos(lista)
+	
+	ordenarPorGrado(nodosConsiderados)
+	
+	indiceNodoAleatorio $\leftarrow$ nodoAleatorio(nodosConsiderados, porcentajeConsiderado)
+	
+	nodoPorAgregar $\leftarrow$ nodosConsiderados[indiceNodoAleatorio]
+	
+	agregarNodoAClique(res, nodoPorAgregar)
+	
+	res $\leftarrow$ recurRandomGreedy(lista, res, nodosConsiderados, porcentajeConsiderado)
+
+    nodosAdyacentes $\leftarrow$ adyacentes(lista, mayor)
+
+
+    \For{$i \leftarrow 0$ \KwTo nodosAdyacentes.largo}{
+		\If{esAdyacenteATodos(nodosAdyacentes[i], res, listaAdyacencia) $\land$ \\ aumentaLaFrontera(nodosAdyacentes[i], res, listaAdyacencia)}{
+			agregarNodoAClique(res, nodosAdyacentes[i])
+
+	}
+}
+\end{algorithm}
+
+\subsection{Cota temporal}
+Dado que grasp esta compuesto por un ciclo que corre tantas veces como se le especifique en el parámetro iteraciones, el costo temporal va a depender linealmente del número de iteraciones. En cada iteración del ciclo se realiza una llamada a localSearch(randomGreedy()).
+
+
+\subsection{Experimentación}
+
+
+
+
+
+
+
