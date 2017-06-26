@@ -1,15 +1,38 @@
 \section{Heurística constructiva golosa}
-\subsection{Introducción}
+\subsection{Introduccion}
 Dado que la complejidad del algoritmo exacto resulta prohibitiva en la práctica, podemos aplicar heurísticas que resuelvan el problema en tiempo polinomial, a cuestas de la calidad final de la solución.
 
 Las heurísticas tienen un factor importante de intuición sobre por qué podrían llegar a funcionar mejor o peor y no justificación formal. Debido a esto es difícil decidir qué criterio utilizar puesto que siempre es posible encontrar instancias para las cuales la heurística sea mala.
 
-Nosotros decidimos encarar el criterio de una manera simple y segura, agregar nodos a la clique que nos aumenten la frontera de nuestra clique actual, hasta que no nos queden más aristas por agregar a la clique nos aumenten la frontera.
+Nosotros decidimos encarar el criterio de una manera simple y segura, agregar nodos a la clique que nos aumenten la frontera de nuestra clique actual, hasta que no nos queden más aristas por agregar a la clique que nos aumenten la frontera.
 
 \subsection{Desarrollo}
-La implementación de nuestra heurística golosa es simple, primero representamos el grafo como una lista de adyacencia para obtener los adyacentes a un nodo rápidamente, luego golosamente definimos la clique inicial con el nodo de mayor grado, como los nodos de la clique son todos adyacentes entre sí, para agregarle nuevos nodos estos tienen que ser adyacentes al primer nodo que agregamos.
+A la hora de aplicar esta heurística sobre nuestro problema, debimos poner el foco sobre donde queríamos realizar la construcción golosa. Rápidamente, y considerando que al utilizar la idea greedy debemos siempre tomar la decisión que mejora nuestra solución de manera óptima a corto plazo (es decir, que dada una clique de tamaño $n$, se obtiene la mejor solución de tamaño $(n+1)$ que contiene a la clique anterior), notamos que la forma acertada de aplicar esta heurística sería, en cada paso, agregar el nodo de mayor grado que genere una clique y mejore la frontera. Es decir que en el primer paso tomaremos siempre al nodo de mayor grado (puesto que esta es la clique de máxima frontera de tamaño 1) y en cada paso le agregaremos el nodo de mayor grado que sea adyacente a toda la clique y que mejore la frontera.
 
-Entonces para seguir agregando nodos a la clique los vamos a seleccionar entre los adyacentes al primer nodo, para seguir construyendo la clique golosamente ordenamos estos nodos por grado, los recorremos y vamos agregandolos a la clique si pueden pertenecer a la clique actual, y cómo están ordenados por grado, se agregaran los de mayor grado primero.
+Es importante, antes de seguir, marcar algunas cosas importantes sobre nuestra solución. Para empezar, consideremos que cada vez que agregamos un nodo nuevo a la clique, debemos sumar el grado del nuevo nodo y restar dos veces el tamaño de la subclique (una vez para descontar las aristas que van del nuevo nodo a la clique, y otra para descontar las aristas que iban de cada nodo de la clique al nuevo nodo). Simplificando, tenemos que realizar el siguiente cálculo:
+
+\begin{center}
+Para $V_i$ vértice que se agrega a subclique
+$Frontera(Clique) = Frontera(Subclique) + d(V_i) - tam(subclique)$ $\times$ $2$
+\end{center}
+
+Como vemos, la única variable que cambia cada vez que agregamos un nodo a la clique es el grado del mismo. Por lo tanto, sabemos que si agregar el nodo de mayor grado posible implica empeorar la frontera, entonces todos los nodos de menor grado a él también la empeoraran (lo cual, visto de otra forma, significa también que agregar ese nodo implica tomar la mejor decisión a corto plazo).
+
+Por lo tanto, sabemos que estamos tomando siempre la mejor decisión rápida. Ahora bien, es importante marcar que, llegado el punto en el cual no conseguimos una manera de agrandar la clique mejorando la frontera, la mejor decisión es detenerse. Esto implica no solo que no podemos dar el próximo paso sin achicar la frontera, sino que a partir de este punto no se podrá mejorar la frontera en ningún paso. Esto es fácil de ver si consideramos lo que vimos antes: si el nodo de mayor grado posible empeora la frontera, todos los de grado menor a él también lo hacen. Supongamos que, efectivamente decidimos agregar un nodo $j$ a la clique, de manera que nuestra frontera disminuya, pero luego encontramos un nodo $i$ que podemos agregar a la clique de forma que la frontera crezca. Esto implicará lo siguiente:
+
+\begin{center}
+Para $C$ clique original, $C_i$ clique con nodo i, $C_{ij}$ clique con nodos i y j.
+$$Frontera(C_i) = Frontera(C) + d(i) - tamano(C) \times 2$$
+$$Frontera(C_{ij}) = Frontera(C_i) + d(j) - (tamano(C) + 1) \times 2$$
+
+Vimos que $Frontera(C_{ij})$ $>$ $Frontera(C_i)$, lo cual implica $d(j) > (tamano(C) + 1) \times 2)$, es decir, $d(j) > tamano(C) \times 2$
+
+Pero $Frontera(C_i)$ $<$ $Frontera(C)$, lo cual implica $d(i) < tamano(C) \times 2$ 
+
+Por lo tanto, tenemos $d(j) > tamano(C) \times 2 > d(i)$, es decir, $d(j) > d(i)$. Pero entonces, eso implica que al agregar el nodo $i$ no agregamos el de mayor grado, puesto que $j$ es adyacente a todos los nodos de $C$ y es de mayor grado que $i$. Absurdo.
+\end{center}
+
+De este modo, tenemos una heurística constructiva golosa válida, que toma siempre la mejor decisión posible relacionada al próximo paso y se detiene cuando ya no hay forma de agrandar su frontera agregando nodos a la clique. Considerando entonces este desarrollo, obtenemos el siguiente algoritmo:
 
 \begin{algorithm}[H]
 	\NoCaptionOfAlgo
@@ -33,21 +56,20 @@ Entonces para seguir agregando nodos a la clique los vamos a seleccionar entre l
 
 \subsection{Complejidad Temporal}
 
-Esta implementación es bastante sencilla y solo utiliza unas pocas funciones, veamos la complejidad temporal en peor caso de ellas para después ver la del algoritmo general.
+Esta implementación es bastante sencilla y solo utiliza unas pocas funciones. Veamos la complejidad temporal en peor caso de ellas para después ver la del algoritmo general.
 
 \begin{itemize}
-	\item \textbf{nodoDeMayorGrado}: Recorre los n nodos en la lista y se fija el largo de sus adyacentes en $O(1)$ por lo que la función es $O(n)$.
+	 \item \textbf{nodoDeMayorGrado}: Recorre los n nodos en la lista y se fija el largo de sus adyacentes en $O(1)$ por lo que la función es $O(n)$.
 
-	\item \textbf{ordenarPorGrado}: Esta función utiliza por detrás el sort de la STD por lo que su complejidad en peor caso es de $O(n*log(n))$.
+	\item \textbf{ordenarPorGrado}: Esta función utiliza por detrás el sort de la STD, y por ende su complejidad en peor caso es de $O(n*log(n))$.
 
-    \item \textbf{esAdyacenteATodos}: Busca si hay un nodo en la clique que no sea adyacente a este nuevo nodo, para eso arma un arreglo de booleanos y recorre los nodos adyacentes al nodo a insertar (pueden ser hasta $n-1$) y pone verdadero en el arreglo si es adyacente, después basta con recorrer los nodos de la clique y fijarse en el arreglo si son adyacentes, por lo que el algoritmo tiene una complejidad temporal $O(|adyacentes| + |clique|)$ o una cota más burda de $O(n)$.
+\item \textbf{esAdyacenteATodos}: Busca si hay un nodo en la clique que no sea adyacente a este nuevo nodo. Para eso, arma un arreglo de booleanos y recorre los nodos adyacentes al nodo a insertar (pueden ser hasta $n-1$). Después, basta con recorrer los nodos de la clique y fijarse en el arreglo si son adyacentes o no. Siguiento este procedimiento, el algoritmo tiene una complejidad temporal $O(|adyacentes| + |clique|)$, donde $O(|adyacentes|)$ $\subseteq$ $O(n)$ y $O(|clique)$ $\subseteq$ $O(n)$. Por lo tanto, tenemos $O(n + n)$  $\subseteq$ $O(n)$.
 
-    \item \textbf{aumentaLaFrontera}: Hace una simple aritmética entre la cantidad de nodos y la cantidad de adyacentes de la clique por lo que su complejidad es $O(1)$.
+\item \textbf{aumentaLaFrontera}: Hace una simple aritmética entre la cantidad de nodos y la cantidad de adyacentes de la clique por lo que su complejidad es $O(1)$.
 
-    \item \textbf{agregarNodoAClique}: Se encarga de actualizar la clique agregando atrás del vector de nodos en la clique el nodo a insertar en $O(1)$.
+\item \textbf{agregarNodoAClique}: Se encarga de actualizar la clique agregando atrás del vector de nodos en la clique el nodo a insertar en $O(1)$.
 
 \end{itemize}
 
-Terminando el análisis de complejidad, iteramos entre la cantidad de adyacentes del nodo de mayor grado por lo que podrían ser $n-1$ así que la complejidad temporal en peor caso de la Heurística Constructiva Golosa será de $O(n^2)$
+Terminando el análisis de complejidad, iteramos entre la cantidad de adyacentes del nodo de mayor grado, que podrían ser $n-1$. Por lo tanto, concluímos que la complejidad temporal en peor caso de la Heurística Constructiva Golosa será de $O(n^2)$
 
-%\subsection{Instancias subóptimas}
