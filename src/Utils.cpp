@@ -46,4 +46,12 @@ namespace Utils {
 
         return info;
     }
+
+    void printClique(const cliqueInfo &clique) {
+        printf("%u %lu", clique.outgoing, clique.nodes.size());
+        for(size_t i = 0; i < clique.nodes.size(); ++i) {
+            printf(" %u", clique.nodes[i] + 1);
+        }
+        printf("\n");
+    }
 }

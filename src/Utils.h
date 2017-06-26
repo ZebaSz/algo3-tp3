@@ -17,6 +17,8 @@ namespace Utils {
 
     cliqueInfo parseCliqueInfo(std::string filename);
 
+    void printClique(const cliqueInfo& clique);
+
     template<typename T>
     void addAll(std::vector<T> &dest, const std::vector<T> &src) {
         dest.insert(dest.end(), src.begin(), src.end());

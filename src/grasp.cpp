@@ -1,7 +1,3 @@
-    //
-// Created by catofthecannals on 21/06/17.
-//
-
 #include <iostream>
 #include "grasp.h"
 
