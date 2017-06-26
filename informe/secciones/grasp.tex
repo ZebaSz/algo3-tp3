@@ -132,9 +132,76 @@ Dado que GRASP esta compuesto por un ciclo que corre tantas veces como se le esp
 
 \subsection{Experimentación}
 
+Al experimentar con la metaheurística, primero decidimos analizar el impacto lineal de las iteraciones:
 
+\noindent
+\begin{minipage}{0.55\textwidth}
+    \hfill
+    \includegraphics[scale=0.6]{img/grasp-it.png}
+\end{minipage}
+\hfill
+\begin{minipage}{0.44\textwidth}
+    \begin{center}
+        Datos del gráfico
 
+        \begin{tabular}{ | l l |}
+            \hline
+             & $n = 10$ \\ 
+             & $m = 20$ \\ 
+            Porcentaje de nodos & \\
+            considerados & $p = 0.5$ \\ 
+            Curva aproximada & $f(x) = 72500 * x * 10000$ \\
+            \hline
+        \end{tabular}
+    \end{center}
+\end{minipage}
 
+Este resultado era más que esperado, ya que resulta de ejecutar las mismas operaciones una cantidad fija de veces. Teniendo esto en cuenta, podemos analizar los demás factores en el caso de una única iteración.
 
+\noindent
+\begin{minipage}{0.55\textwidth}
+    \hfill
+    \includegraphics[scale=0.6]{img/grasp-p.png}
+\end{minipage}
+\hfill
+\begin{minipage}{0.44\textwidth}
+    \begin{center}
+        Datos del gráfico
 
+        \begin{tabular}{ | l l |}
+            \hline
+             & $n = 10$ \\ 
+             & $m = 20$ \\ 
+            Iteraciones & $it = 1$ \\
+            \hline
+        \end{tabular}
+    \end{center}
+\end{minipage}
 
+Por el otro lado, el porcentaje de nodos del grafo a considerar se comporta de manera muy peculiar con respecto a la complejidad. Procedimos a analizar más casos para comprender este comportamiento:
+
+\begin{center}
+    \includegraphics[scale=0.6]{img/grasp-p-multi.png}
+\end{center}
+
+La variación en performance se debe en particular a 2 motivos. Por un lado, las búsquedas golosas aleatorias generan una cierta variabilidad en los resultados obtenidos, por lo que resulta difícil determinar qué corresponde a ruido y qué a un camino de decisiones distinto. Por el otro, a medida que aumentamos el porcentaje de los nodos a considerar, permitimos que ciertas instancias ``menos óptimas'' (desde una perspectiva golosa) sean utilizadas, lo cual puede llevar a decisiones no tan útiles y, por ende, cliques más pequeñas. Esto aplica en particular a los grafos con menor cantidad de aristas, ya que mientras más tenga, mayor será en general el grado los nodos, y por consiguiente siempre se considerará agregar más nodos a la clique final.
+
+Además de experimentar con los tiempos de ejecución, decidimos analizar la influencia de ambos parámetros de entrada de la metaheurística en la precisión de los resultados obtenidos. Para esto, utilizamos un conjunto de tests de tamaño moderado, cuyas soluciones fueron obtenidas a través del algoritmo exacto. Para cada caso de prueba, probamos distintos valores para dichos parámetros y comparamos el resultado con el obtenido por fuerza bruta.
+
+A fines prácticos, llamaremos $it$ al número de iteraciones realizadas, y $p$ al porcentaje de nodos a considerar (entre 0 y 1).
+
+\begin{center}
+    \includegraphics[scale=0.6]{img/grasp-4x4.png}
+\end{center}
+
+Este set de resultados nos resultó muy interesante. Pudimos comprobar que, casi siempre, realizar más iteraciones del algoritmo resulta en un resultado mejor (cosa que nos resultaba trivial, aunque podría no haber mejorado mucho). Por otro lado, también confirmamos que, por si solo, considerar más nodos no mejora de manera muy significativa los resultados. Sin embargo, nos tomó por sorpresa que, al realizar múltiples iteraciones ($it \geq 30$), considerar más nodos ($p \geq 0.6$) aparenta también mejorar bastante los resultados, aunque no en todas las situaciones.
+ 
+Se debe tener en cuenta que estos resultados no son 100\% determinísticos, ya que los nodos escogidos varían de acuerdo al valor de p. Sin embargo, en base a este gráfico podemos afirmar que (para los casos de prueba utilizados) realizar aproximadamente 50 iteraciones y considerando el 60\% de los nodos de mayor grado, nuestra implementación de la metaheurística GRASP es casi tan precisa como una búsqueda por fuerza bruta.
+
+\begin{center}
+    \includegraphics[scale=0.6]{img/grasp-it-v-p.png}
+\end{center}
+
+Al ver más de cerca los datos, promediando las diferencias de todos nuestros casos de prueba, podemos observar la variabilidad de nuestro algoritmo: en promedio, nuestras pruebas dieron resultados igual de precisos con $p = 0.6$ realizando 35 o 50 iteraciones. Es más, para ningún valor de p obtuvimos una linea estrictamente decreciente, que sería lo esperable de algorítmos determinísticos.
+
+También podemos ver que en varias ocasiones, para distintas cantidades de iteraciones, otros valores de p dieron resultados más precisos. Sin embargo, consideramos que aumentar la cantidad de iteraciones reduce la variabilidad introducida por las búsquedas golosas aleatorias (porque al iterar siempre conservamos el mejor resultado), por lo que la mayor cantidad de iteraciones es más representativa del valor óptimo de p.

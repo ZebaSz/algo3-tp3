@@ -71,8 +71,56 @@ Esta implementación es bastante sencilla y solo utiliza unas pocas funciones. V
 
 \end{itemize}
 
-Ahora analisemos la complejidad de la heurística completa, inicialmente buscamos el nodo de mayor grado y ordenamos sus adyacentes, la operación más costosa aquí es la de ordenar que es $O(n*log n)$.
+Ahora analicemos la complejidad de la heurística completa, inicialmente buscamos el nodo de mayor grado y ordenamos sus adyacentes, la operación más costosa aquí es la de ordenar que es $O(n*log n)$.
 
 Nos queda ver la iteración sobre los nodos del grafo: para cada nodo del grafo vamos a llamar a esAdyacenteATodos, como vimos esta función tiene una complejidad de $O(|adyacentes| + |clique|)$ que dijimos que estaba acotado por $n$ por lo que una cota temporal del algoritmo burda sería $O(n^2)$, pero podemos ajustar más esta cota.
 
 Cómo recorremos todos los nodos y para cada nodo iteramos entre sus adyacentes en esAdyacenteATodos, estamos recorriendo todos los ejes 2 veces($m$) en total, pero además en cada iteración recorremos la cantidad de nodos en la clique actual. Podemos acotar la cantidad de nodos en la clique por la cantidad de nodos de la clique máxima, por lo que podemos decir que el algoritmo tiene una complejidad temporal en peor caso de $O( n*log(n) + n*|cliqueMax| + m)$.
+
+
+\subsection{Experimentación}
+
+El mayor desafío al analizar nuestra complejidad fue visualizar el impacto de $n$ en el tiempo de ejecución.
+
+\noindent
+\begin{minipage}{0.55\textwidth}
+    \hfill
+    \includegraphics[scale=0.6]{img/greedy-n.png}
+\end{minipage}
+\hfill
+\begin{minipage}{0.44\textwidth}
+    \begin{center}
+        Datos del gráfico
+
+        \begin{tabular}{ | l l |}
+            \hline
+             & $m = 40$ \\ 
+            Curva aproximada & $f(x) = 100 * x * log(x)$\\
+             & $+ 10 * x + 32000$ \\
+            \hline
+        \end{tabular}
+    \end{center}
+\end{minipage}
+
+Nos resultó muy dificil medir el impacto del tamaño de la clique máxima, ya que la misma depende mucho de las aristas del grafo generado. Esto resultó en algunos resultados dispares. Sin embargo, podemos ver por el r de Pearson que la correlación se aproxima a lineal.
+
+\noindent
+\begin{minipage}{0.55\textwidth}
+    \hfill
+    \includegraphics[scale=0.6]{img/greedy-m.png}
+\end{minipage}
+\hfill
+\begin{minipage}{0.44\textwidth}
+    \begin{center}
+        Datos del gráfico
+
+        \begin{tabular}{ | l l |}
+            \hline
+             & $n = 20$\\ 
+            Curva aproximada & $f(x) = 650 * x + 10000$ \\
+            \hline
+        \end{tabular}
+    \end{center}
+\end{minipage}
+
+Por otro lado, el impacto lineal de la cantidad de aristas fue más que evidente, ya que el mismo coeficiente r dio exactamente 1 con margen de error ínfimo. La curva aproximada debio ser graficada en otro color por este motivo.

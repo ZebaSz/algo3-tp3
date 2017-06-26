@@ -7,7 +7,7 @@ cliqueInfo grasp(const graphInfo &inputGraph, const float percentageToKeep, cons
 
 cliqueInfo grasp(const adjList &inputGraph, const float percentageToKeep, const unsigned int iterations) {
     cliqueInfo bestClique(0,0);
-    int i = 0;
+    unsigned int i = 0;
     while(i < iterations){
         i++;
         cliqueInfo tempClique = localSearchHeuristic(inputGraph, randomGreedy(inputGraph, percentageToKeep));

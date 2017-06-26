@@ -1,3 +1,5 @@
+\newcommand{\tikzcircle}[1][red,fill=red]{\tikz[baseline=-0.5ex]\draw[#1,radius=2pt] (0,0) circle ;}
+
 \section{Algoritmo exacto}
 \subsection{Desarrollo}
 Al querer generar un algoritmo que nos de una respuesta exacta, y como no tenemos límites de complejidad ni alguna certeza con respecto al grafo de entrada, consideramos que el mejor enfoque es, simplemente, encontrar todas las cliques y chequear cual de ellas tiene la máxima frontera.
@@ -114,6 +116,50 @@ Finalmente, considerando las complejidades vistas, nuestra cota quedará en $O(n
 
 \subsection{Experimentación}
 
+Al experimentar con el algoritmo exacto, nos encontramos con la dificultad de generar grafos con distribuciones similares de aristas. Al realizar un primer análisis, nos encontramos con la siguiente gráfica:
 
+\noindent
+\begin{minipage}{0.55\textwidth}
+	\hfill
+	\includegraphics[scale=0.6]{img/exact-bad.png}
+\end{minipage}
+\hfill
+\begin{minipage}{0.44\textwidth}
+	\begin{center}
+		Datos del gráfico
 
+		\begin{tabular}{ | l |}
+			\hline
+			m = 40 \\
+			\hline
+		\end{tabular}
+	\end{center}
+\end{minipage}
 
+Si bien nuestro análisis dio una cota de complejidad superior en base a $n$, no debemos descartar el hecho que un grafo con más nodos y misma cantidad de aristas puede poseer menos cliques. Por lo tanto, al generar cliques de mayor tamaño en base a otras más pequeñas, o al calcular la frontera de todas las cliques halladas, la cantidad de cliques a procesar puede ser mucho menor.
+
+Por este motivo, decidimos analizar en particular el caso de los grafos completos. Allí podemos estudiar de manera determinística la cota propuesta:
+
+\noindent
+\begin{minipage}{0.49\textwidth}
+	\hfill
+	\includegraphics[scale=0.55]{img/exact-2n.png}
+\end{minipage}
+\hfill
+\begin{minipage}{0.49\textwidth}
+	\hfill
+	\includegraphics[scale=0.55]{img/exact-2n-log.png}
+\end{minipage}
+
+\begin{center}
+	Datos de los gráficos
+
+	\begin{tabular}{ | l l |}
+		\hline
+		\tikzcircle[fill=blue] & $f(x) = 200 * x * 2^x + 3000 * (x^2)$ \\
+		\tikzcircle[fill=green] & $f(x) = 3000 * 2^x$ \\
+		\hline
+	\end{tabular}
+\end{center}
+
+Aqui podemos ver que el tiempo de ejecución se ajusta correctamente a la complejidad propuesta. A la derecha presentamos la misma gráfica en escala logarítmica, que nos permite apreciar la naturaleza exponencial del problema.
