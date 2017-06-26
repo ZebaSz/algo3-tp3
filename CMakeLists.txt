@@ -23,6 +23,6 @@ target_link_libraries (ej3 algo3-tp3-base)
 add_executable(ej4 src/ej4.cpp)
 target_link_libraries (ej4 algo3-tp3-base)
 
-#add_subdirectory(test)
+add_subdirectory(test)
 
-#add_subdirectory(data)
+add_subdirectory(data)
