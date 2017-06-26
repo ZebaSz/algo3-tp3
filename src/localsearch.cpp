@@ -44,7 +44,7 @@ cliqueInfo localAdd(const adjList &adjacencyList, cliqueInfo partialClique) {
     nodeSet nodesToConsider = adjacencyList[partialClique.nodes[0]];
     std::sort(nodesToConsider.begin(), nodesToConsider.end(), greaterDegreeComparator(adjacencyList));
     for (auto it = nodesToConsider.begin(); it != nodesToConsider.end(); ) {
-        if (Graph::allAdjacentTo(adjacencyList, partialClique.nodes, *it)) {
+        if (Graph::allAdjacentTo(adjacencyList, partialClique.nodes, *it)) { //TODO ¿estamos chequeando si la mejora?
             partialClique.nodes.push_back(*it);
             partialClique.outgoing += adjacencyList[*it].size() + 2 - partialClique.nodes.size() * 2;
             break;
@@ -57,7 +57,7 @@ cliqueInfo localAdd(const adjList &adjacencyList, cliqueInfo partialClique) {
 
 cliqueInfo localRemove(const adjList &adjacencyList, cliqueInfo partialClique) {
     auto toRemove = partialClique.nodes.begin();
-    int bestStatus = 0;
+    int bestStatus = 0; //Solo tomaremos una solucion si al quitar un nodo mejora
     for (auto it = partialClique.nodes.begin(); it != partialClique.nodes.end(); ++it) {
         int status = 2 * ((int) partialClique.nodes.size() - 1) - (int) adjacencyList[*it].size();
         if (status > bestStatus) {
@@ -66,7 +66,7 @@ cliqueInfo localRemove(const adjList &adjacencyList, cliqueInfo partialClique) {
         }
     }
 
-    if (bestStatus != 0) {
+    if (bestStatus > 0) {
         partialClique.nodes.erase(toRemove);
         partialClique.outgoing = partialClique.outgoing + (unsigned int) bestStatus;
     }
@@ -77,7 +77,7 @@ cliqueInfo localRemove(const adjList &adjacencyList, cliqueInfo partialClique) {
 cliqueInfo localSwap(const adjList &adjacencyList, cliqueInfo partialClique) {
     std::vector<node>::iterator toRemove;
     node toAdd;
-    int best = -1000;
+    unsigned int best = 0;
 
     nodeSet toConsider;
     for (node n = 0; n < adjacencyList.size(); n++) {
@@ -87,17 +87,24 @@ cliqueInfo localSwap(const adjList &adjacencyList, cliqueInfo partialClique) {
     }
     for (size_t i = 0; i < partialClique.nodes.size(); i++){
         for (auto ot = toConsider.begin(); ot != toConsider.end(); ++ot) {
-            int status = (int) adjacencyList[*ot].size() - (int) adjacencyList[i].size();
             cliqueInfo testClique = partialClique;
             testClique.nodes.erase(testClique.nodes.begin() + i);
-            if (status > best && Graph::allAdjacentTo(adjacencyList, testClique.nodes, *ot)) {
-                best = status;
-                toRemove = partialClique.nodes.begin() + i;
-                toAdd = *ot;
+            if (Graph::allAdjacentTo(adjacencyList, testClique.nodes, *ot)){
+                testClique.nodes.push_back(*ot);
+                testClique.outgoing = 0;
+                for (size_t j = 0; j < testClique.nodes.size(); j++){
+                    testClique.outgoing += (unsigned int) (adjacencyList[testClique.nodes[j]].size() + 1 - testClique.nodes.size());
+                }
+                testClique = greedyHeuristic(adjacencyList, testClique);
+                if (testClique.outgoing > best){
+                    best = testClique.outgoing;
+                    toRemove = partialClique.nodes.begin() + i;
+                    toAdd = *ot;
+                }
             }
         }
     }
-    if (best > -1000) {
+    if (best > 0) {
         partialClique.outgoing = (unsigned int)(partialClique.outgoing - adjacencyList[*toRemove].size()  + adjacencyList[toAdd].size());
         partialClique.nodes.erase(toRemove);
         partialClique.nodes.push_back(toAdd);
@@ -107,9 +114,10 @@ cliqueInfo localSwap(const adjList &adjacencyList, cliqueInfo partialClique) {
 
 cliqueInfo localSwap2(const adjList &adjacencyList, cliqueInfo partialClique) {
     node toRemove1, toRemove2, toAdd1, toAdd2;
+    bool changes = false;
     unsigned int best = 0;
 
-    //if (partialClique.nodes.size() > 2) { //SE PUEDE MEJORAR PARA CASOS DE >= 2
+    //if (partialClique.nodes.size() > 2) { //SE PUEDE MEJORAR PARA CASOS DE >= 2 TODO podriamos hacer un unico swap que haga swap 1 y swap 2, y esta condicion vuela
         for (node r1 = 0; r1 < partialClique.nodes.size() - 1; r1++) {
             for (node r2 = r1 + 1; r2 < partialClique.nodes.size() - 1; r2++) {
                 // stillInside es un nodo que sigue estando en la clique si sacamos r1 y r2, va a hacer el primero el segundo o el tercero (dependiendo si r1 o r2 son los primeros)
@@ -134,12 +142,13 @@ cliqueInfo localSwap2(const adjList &adjacencyList, cliqueInfo partialClique) {
                             for (size_t i = 0; i < testClique.nodes.size(); i++){
                                 testClique.outgoing += (unsigned int) (adjacencyList[testClique.nodes[i]].size() + 1 - testClique.nodes.size());
                             }
-                            testClique = greedyHeuristic(adjacencyList, testClique);
-                            if (testClique.outgoing > best){
+                            testClique = greedyHeuristic(adjacencyList, testClique); //TODO swap tambien deberia hacer esto
+                            if ((!changes || testClique.outgoing > best)){
                                 toRemove1 = r1;
                                 toRemove2 = r2;
                                 toAdd1 = a1;
                                 toAdd2 = a2;
+                                changes = true;
                                 best = testClique.outgoing;
                             }
                         }
@@ -148,7 +157,7 @@ cliqueInfo localSwap2(const adjList &adjacencyList, cliqueInfo partialClique) {
             }
         }
     //}
-    if (best > 0) {
+    if (changes) { //TODO creo que este if esta al pedo
         partialClique.nodes.erase(partialClique.nodes.begin() + toRemove2);
         partialClique.nodes.erase(partialClique.nodes.begin() + toRemove1);
         partialClique.nodes.push_back(toAdd1);
