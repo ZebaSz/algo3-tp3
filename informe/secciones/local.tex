@@ -131,6 +131,56 @@ La idea de intercambiar un par de nodos es similar a la explicada a la hora de i
 	\item Algoritmo goloso sobre la nueva clique
 \end{itemize}
 
+\subsubsection{Algoritmo final}
+Finalmente, considerando estas cuatro vecindades, acabaremos teniendo un algoritmo general de este estilo:
+
+\begin{algorithm}[H]
+ \NoCaptionOfAlgo
+ \caption{\algoritmo{heuristicaDeBusquedaLocal}{\In{listaAdyacencia}{lista}, \Inout{clique}{solucion}}{}}
+
+    \While {esMejor}{
+        esMejor $\leftarrow$ falso
+
+        posibleMejorSolucion $\leftarrow$ buscarMejorSolucionVecina(lista, solucion)
+
+        \If{posibleMejorSolucion.fronter > solucion.frontera)}{
+            esMejor $\leftarrow$ verdadero
+
+            solucion $\leftarrow$ posibleMejorSolucion
+        }
+    }
+
+\end{algorithm}
+
+Donde buscarMejorSolucionVecina corre las cuatro vecindades y se fija cual es la mejor.
+
 \subsection{Complejidad Temporal}
+Para analizar la complejidad temporal de este ejercicio, debemos analizar la complejidad de cada una de los algoritmos que corremos para realizar la búsqueda en sus vecindades. Por lo tanto, tendremos las siguientes complejidades:
 
+\begin{center}
+	\textbf{Agregar nodo}
+\end{center}
+Este algoritmo recorre los nodos que no pertenecen a la clique (que son, como máximo, $n$) y, para cada uno de ellos, chequea si es o no adyacente a los nodos de la clique, y si agregarlo aumenta la frontera. Por lo tanto, para $n$ nodos, se fijará si el vértice es adyacente a la clique y realizará el cálculo correspondiente. Como vimos anteriormente, el algoritmo \textbf{esAdyacenteATodos} tiene una cota temporal de $O(n)$, mientras que el cálculo correspondiente a la frontera se realiza en $O(1)$. Por ende, acabamos teniendo n veces que realizar una operación de complejidad $O(n)$ (es decir, complejidad de $O(n^2)$). A esta solución obtenida le aplicamos finalmente el \textbf{Algoritmo Goloso}, cuya complejidad vimos que es $O( n*log(n) + n*|cliqueMax| + m)$, donde $O(n*log(n))$, $O(n*|cliqueMax|)$ y $O(m)$ se pueden acotar por $O(n^2)$, por lo que terminaríamos teniendo $O(n^2 + n^2)$. Por lo tanto, acotando por última vez esta complejidad, concluímos que la complejidad de Agregar Nodo es $O(n^2)$.
 
+\begin{center}
+	\textbf{Eliminar nodo}
+\end{center}
+Este algoritmo recorre los nodos de la clique (máximo $n$ nodos) y para cada uno de ellos se fija si, al quitar este nodo, la frontera de la clique mejora. Como nuevamente, lo único que tenemos que hacer es realizar el cálculo de la frontera en $O(1)$, la complejidad de este ciclo será $O(n)$. Finalmente, como vimos, le corremos el \textbf{Algoritmo Goloso} a la solución, lo cual tiene una complejidad $O( n*log(n) + n*|cliqueMax| + m)$ pero que, como vimos, se puede acotar por $O(n^2)$. Por ende, como sabemos que esta complejidad se sumará con la de Agregar Nodo, y el resto de la complejidad de Eliminar Nodo es despreciable frente al Algoritmo Goloso, definimos que la cota temporal de Eliminar Nodo es $O(n^2)$.
+
+\begin{center}
+	\textbf{Intercambiar nodos}
+\end{center}
+Si bien tenemos dos tipos de intercambios, de la manera en que definimos cada uno de ellos podemos asegurarnos que la cota temporal de intercambiar un solo nodo es menor a la de intercambiar dos. Por lo tanto, como a la larga sus complejidades se sumarán y una de ellas será despreciable, vamos a centrarnos en la complejidad de intercambiar dos nodos internos por dos externos.
+
+Este algoritmo tomará la clique original deberá sacar dos nodos de ella (donde la cantidad máxima es $n$) e ingresar dos nuevos. Es facil ver que extraer cada par de nodos es igual a separarlos y realizar la siguiente operación:
+
+\textbf{Para cada nodo $i$ $\in$ clique, para cada nodo $j$ $\in$ clique, j $\neq$ i, extraer j e i.}
+
+Esto nos deja con una complejidad de $O(n^2)$, a la cual se le debe sumar la de agregar los nodos externos de la clique. De nuevo, tendremos la misma operación, pero esta vez por afuera de la clique, es decir:
+
+\textbf{Para cada nodo $i$ fuera de clique, para cada nodo $j$ fuera de  clique, j $\neq$ i, agregar j e i.}
+
+Por lo tanto, como debemos tanto agregar como sacar nodos, acabaremos teniendo $O(n^2 * n^2)$, lo cual acaba siendo $O(n^4)$, el hecho de tan solo recorrer todas las cliques que podríamos generar. A su vez, para cada una de estas posibles cliques debemos asegurarnos si los dos nodos agregados son adyacentes a todos los demas, y como vimos \textbf{esAdyacenteATodos} tiene una cota temporal de $O(n)$, y al realizarlo dos veces (una por cada nodo del par) tendremos $O(2n)$ $\subseteq$ $O(n)$. Por lo demás, son cálculos realizables en $O(1)$ que no afectan nuestra complejidad, por lo que acabaremos teniendo, para cada posible clique, una complejidad de $O(n)$, lo cual acaba siendo al considerar todas las complejidades $O(n^5)$.
+\bigskip
+
+Así, alcanzamos las complejidades de cada una de nuestras vecindades. Por lo tanto, la complejidad de buscar la mejor solución vecina será $O(n^2 + n^2 + n^5)$, que por propiedades de O grande se acota finalmente con $O(n^5)$. Puesto que el algoritmo general es, simplemente, tomar una clique y correrle el algoritmo hasta que no mejore, el mismo correrá un máximo de $n$ veces (o bien agrega $n$ nodos, o bien los saca). Por lo tanto, al considerar el peor caso, habremos corrido $n$ veces un algoritmo de costo $O(n^5)$, dejándonos con una complejidad temporal final de $O(n^6)$
