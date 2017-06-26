@@ -26,13 +26,84 @@ Como las búsquedas de cada tipo de vecindad son diferentes entre sí, vamos a i
 
 Esta vecindad es la que se aplica en la heurística golosa constructiva, y como ya vimos la solución que nos va a mejorar más la solución, es agregar la arista que siga siendo clique que más aristas tenga.
 
+\begin{algorithm}[H]
+	\NoCaptionOfAlgo
+	\caption{\algoritmo{localAgregar}{\In{listaAdyacencia}{lista}, \Inout{clique}{solucion}}{}}
+
+    nodosAdyacentes $\leftarrow$ adyacentes(lista, mayor)
+
+    ordenarPorGrado(nodosAdyacentes)
+
+    \For{$i \leftarrow 0$ \KwTo nodosAdyacentes.largo}{
+		\If{esAdyacenteATodos(nodosAdyacentes[i], solucion, listaAdyacencia) $\land$ \\ aumentaLaFrontera(nodosAdyacentes[i], solucion, listaAdyacencia)}{
+			agregarNodoAClique(solucion, nodosAdyacentes[i])
+
+			break
+	    }
+    }
+\end{algorithm}
+
 \subsubsection{Vecindad: Eliminar Nodo}
 
 Aquí queremos encontrar nodos que al eliminarlos nos aumente la frontera, estos nodos van a tener la característica de tener más adyacentes en la clique que afuera, ya que si por ejemplo el nodo tiene 2 nodos adyacentes por afuera de la clique y esta es de grado 4(por lo que tendrá 3 adyacentes pertenecientes a la clique) si lo eliminamos, la frontera perderá los 2 ejes los nodos adyacentes, pero ganará 3 ejes de los que estaban internos a la clique, por lo que podemos definir el beneficio de eliminar un nodo de la clique como $2 * (grado de la clique - 1) - cantidad de adyacentes al nodo$.
 
 La implementación es bastante directa, recorremos los nodos de la clique y buscamos el que más nos aporte a la frontera si lo eliminamos.
 
+\begin{algorithm}[H]
+	\NoCaptionOfAlgo
+	\caption{\algoritmo{localEliminar}{\In{listaAdyacencia}{lista}, \Inout{clique}{solucion}}{}}
+
+    mejora $\leftarrow$ 0
+
+    \For{$i \leftarrow 0$ \KwTo solucion.nodos.largo}{
+        mejoraNodo $\leftarrow$ (solucion.nodos.largo - 1) - adyacentesA(lista, solucion.nodos[i]).largo
+
+		\If{mejoraNodo > mejora)}{
+			nodoABorrar $\leftarrow$ i
+
+			mejora $\leftarrow$ mejoraNodo
+	    }
+    }
+
+    \If{mejora > 0)}{
+        borrarNodoClique(solucion, solucion.nodos[nodoABorrar])
+    }
+
+\end{algorithm}
+
 \subsubsection{Vecindad: Intercambiar Nodo}
+
+Para encontrar el par de nodos(uno interno a la clique y otro externo) que mejoren la clique, lo que vamos a hacer es, recorrer los nodos internos y por cada nodo buscar en los ejes externos cuanto nos mejora la solución si los intercambiamos.
+
+\begin{algorithm}[H]
+	\NoCaptionOfAlgo
+	\caption{\algoritmo{localIntercambiar}{\In{listaAdyacencia}{lista}, \Inout{clique}{solucion}}{}}
+
+    mejora $\leftarrow$ 0
+
+    \For{$i \leftarrow 0$ \KwTo solucion.nodos.largo}{
+        \For{$j \leftarrow 0$ \KwTo solucion.nodosExternos.largo}{
+
+            mejoraNodo $\leftarrow$ mejoraEnFronteraAlIntercambiar(solucion.nodosExternos[j], solucion.nodos[i], solucion, listaAdyacencia)
+
+            \If{esAdyacenteATodosMenosA(solucion.nodosExternos[j], solucion.nodos[i], solucion, listaAdyacencia) $\land$ \\ mejoraNodo > mejora }{
+                nodoABorrar $\leftarrow$ i
+
+                nodoAAgregar $\leftarrow$ j
+
+                mejora $\leftarrow$ mejoraNodo
+            }
+
+        }
+    }
+
+    \If{mejora > 0)}{
+        borrarNodoClique(solucion, nodoABorrar[nodoABorrar])
+
+        agregarNodoClique(solucion, solucion.nodos[nodoAAgregar])
+    }
+
+\end{algorithm}
 
 \subsection{Complejidad Temporal}
 
