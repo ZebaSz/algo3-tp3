@@ -72,14 +72,14 @@ La implementación es bastante directa, recorremos los nodos de la clique y busc
     \For{$i \leftarrow 0$ \KwTo solucion.nodos.largo}{
         mejoraNodo $\leftarrow$ (solucion.nodos.largo - 1) - adyacentesA(lista, solucion.nodos[i]).largo
 
-		\If{mejoraNodo > mejora)}{
+		\If{mejoraNodo $>$ mejora)}{
 			nodoABorrar $\leftarrow$ i
 
 			mejora $\leftarrow$ mejoraNodo
 	    }
     }
 
-    \If{mejora > 0)}{
+    \If{mejora $>$ 0)}{
         borrarNodoClique(solucion, solucion.nodos[nodoABorrar])
     }
     
@@ -113,7 +113,7 @@ Para encontrar el par de nodos(uno interno a la clique y otro externo) que mejor
         }
     }
 
-    \If{mejora > 0)}{
+    \If{mejora $>$ 0)}{
         borrarNodoClique(solucion, nodoABorrar[nodoABorrar])
 
         agregarNodoClique(solucion, solucion.nodos[nodoAAgregar])
