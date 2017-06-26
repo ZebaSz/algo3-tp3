@@ -19,26 +19,27 @@ Habiendo notado que heurísticas determinísticas siempre toman la misma decisi�
 	
 	agregarNodoAClique(res, nodoPorAgregar)
 	
+	nodosConsiderados $\leftarrow$ nodoPorAgregar.adyacentes()
+
+	ordenarPorGrado(nodosConsiderados)
+	
 	res $\leftarrow$ recurRandomGreedy(lista, res, nodosConsiderados, porcentajeConsiderado)
 
-    nodosAdyacentes $\leftarrow$ adyacentes(lista, mayor)
 
 \end{algorithm}
 
 \begin{algorithm}[H]
 	\NoCaptionOfAlgo
-	\caption{\algoritmo{randomGreedy}{\In{listaAdyacencia}{lista}, \In{clique}{cliqueParcial}, \In{listaNodos}{nodosConsiderados}\In{float}{porcentajeConsiderado}}{clique}}
+	\caption{\algoritmo{recurRandomGreedy}{\In{listaAdyacencia}{lista}, \In{clique}{cliqueParcial}, \In{listaNodos}{nodosConsiderados}\In{float}{porcentajeConsiderado}}{clique}}
 	
 	\If{nodosConsiderados.size() $=$ 0}
 	{
 		return cliqueParcial
 	}
 	
-	ordenarPorGrado(nodosConsiderados)
-	
 	\For{nodo $\in$ nodosConsiderados}
 	{
-		\If{nodo.grado() $\wedge$ cliqueParcial.size() * 2 $\vee$ clique.noEsAgregable(nodo)}
+		\If{nodo.grado() $<$ cliqueParcial.size() * 2 $\vee$ nodo.esAdyacenteATodos(clique, lista)}
 		{
 			nodosConsiderados.borrar(nodo)
 		}
@@ -99,7 +100,34 @@ La metaheurística GRASP utiliza tanto búsqueda local como greedy aleatorio. La
 \end{algorithm}
 
 \subsection{Cota temporal}
-Dado que grasp esta compuesto por un ciclo que corre tantas veces como se le especifique en el parámetro iteraciones, el costo temporal va a depender linealmente del número de iteraciones. En cada iteración del ciclo se realiza una llamada a localSearch(randomGreedy()).
+La complejidad de randomGreedy está dada por:
+
+\begin{itemize}
+    \item \textbf{•}xtbf{nodos(lista)}: Devuelve una lista que contiene a todos los nodos del grafo en $O(n)$.
+
+	\item \textbf{ordenarPorGrado}: Esta función utiliza por detrás el sort de la STD, y por ende su complejidad en peor caso es de $O(n*log(n))$.
+
+	\item \textbf{indiceNodoAleatorio}: Devuelve un número aleatorio en $O(1)$.
+
+	\item \textbf{agregarNodoAClique}: Se encarga de actualizar la clique agregando atrás del vector de nodos en la clique el nodo a insertar en $O(1)$.	
+
+	\item \textbf{agregarNodoAClique}: Se encarga de actualizar la clique agregando atrás del vector de nodos en la clique el nodo a insertar en $O(1)$.	
+
+\end{itemize}
+
+Vemos que el costo de esta función es dependerá del costo de la función recursiva:
+
+\begin{itemize}
+
+    \item \textbf{esAdyacenteATodos}: Busca si hay un nodo en la clique que no sea adyacente a este nuevo nodo. Para eso, arma un arreglo de booleanos y recorre los nodos adyacentes al nodo a insertar (pueden ser hasta $n-1$). Después, basta con recorrer los nodos de la clique y fijarse en el arreglo si son adyacentes o no. Siguiento este procedimiento, el algoritmo tiene una complejidad temporal $O(|adyacentes| + |clique|)$, donde $O(|adyacentes|)$ $\subseteq$ $O(n)$ y $O(|clique|)$ $\subseteq$ $O(n)$. Por lo tanto, tenemos $O(n + n)$  $\subseteq$ $O(n)$.
+
+    \item \textbf{agregarNodoAClique}: Se encarga de actualizar la clique agregando atrás del vector de nodos en la clique el nodo a insertar en $O(1)$.
+
+\end{itemize}
+
+Dado que la función recursiva termina cuando el parámetro nodosPorConsiderar es de tamaño cero y que en el peor de los casos puede empezar siendo de tamaño $O(n)$ y decrecer en una unidad en cada llamada recursiva, se concluye que en el peor de los casos se realizarán $O(n)$ llamadas recursivas. En cada una hay un ciclo de $O(nodosPorConsiderar)$ iteraciones y adentro se llama a la funcion esAdyacenteATodos que es $O(n)$ como en el peor de los casos nodosPorConsiderar decrece de a una unidad, la complejidad será $O(n * \Sigma in) = O(n^2 * \Sigma i) = O(n^3)$.
+
+Dado que GRASP esta compuesto por un ciclo que corre tantas veces como se le especifique en el parámetro iteraciones, el costo temporal va a depender linealmente del número de iteraciones. En cada iteración del ciclo se realiza una llamada a localSearch(randomGreedy()) lo cual cuesta $O(n^3 + n^6) = O(n^6)$. Por lo tanto el costo de la metaheuristica GRASP será $O(iteraciones * n^6)$
 
 
 \subsection{Experimentación}
