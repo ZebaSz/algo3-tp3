@@ -19,14 +19,4 @@ cliqueInfo greedyHeuristic(const graphInfo &inputGraph, cliqueInfo partialClique
 
 cliqueInfo greedyHeuristic(const adjList &graph, cliqueInfo partialClique);
 
-
-/**
- *
- * @param graph
- * @param subclique we want to expand
- * @param node we want to know if we can add
- * @return true if and only if node is adjacent to every node in subclique
- */
-bool itsClique(const nodeSet subclique, const graphInfo& graph, unsigned int node);
-
 #endif //ALGO3_TP3_GREEDY_H

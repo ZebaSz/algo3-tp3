@@ -8,7 +8,6 @@ typedef std::vector<node> nodeSet;
 typedef std::vector< std::vector< bool > > adjMatrix;
 typedef std::vector< std::vector< node > > adjList;
 
-
 struct greaterDegreeComparator {
     greaterDegreeComparator(const adjList &l) : list(l) {}
 
@@ -54,7 +53,6 @@ namespace Graph {
     adjList createAdjacencyList(const graphInfo &input);
 
 
-    bool isAdjacentTo(const adjMatrix& graph, const node n1, const node n2);
     bool isAdjacentTo(const adjList& graph, const node n1, const node n2);
 
     /**
@@ -71,30 +69,6 @@ namespace Graph {
     bool allAdjacentTo(const adjList& graph, const nodeSet& subclique, const node node);
 
     /**
-     * Returns whether adding a given node to a clique substracting another node yields a new clique except
-     *
-     * @info Esta es la nueva isClique
-     * @param graph the graph as an adjacency matrix
-     * @param subclique a clique within the graph
-     * @param node a node in the graph
-     * @param exception a node in the subclique
-     * @return true if the subclique - exception + node is a valid clique in the graph
-     * @complexity O(|subclique|))
-     */
-    bool allAdjacentToExceptFor(const adjList &graph, const nodeSet &subclique, const node nodeToAdd, const node exception);
-    bool allAdjacentToExceptForDouble(const adjList &graph, const nodeSet &subclique, const node n1, const node n2, const node e1, const node e2);
-
-    /**
-     * @precondition La lista de adyacencias y el la lista de la subclique tiene que estar ordenado
-     * @param graph
-     * @param subclique
-     * @param node
-     * @return Si el nodo es adyacente a todos los nodos de la subclique
-     * @complexity O(|adj(node)|))
-     */
-    bool allAdjacentToOrd(const adjList &graph, const nodeSet &subclique, const node node);
-
-    /**
      * Search one of the nodes with max degree
      * @param graph
      * @return the node with max degree
@@ -103,11 +77,6 @@ namespace Graph {
     node nodeWithMaxDegree(const adjList &graph);
 
     void sortByDegree(nodeSet nodesToSort, const adjList &graph);
-
-
-    bool isClique(const adjList &graph, const nodeSet &clique);
-    unsigned int frontier(const adjList &graph, const nodeSet &clique);
-
 
 }
 #endif //ALGO3_TP3_GRAPH_H

@@ -54,52 +54,6 @@ bool Graph::allAdjacentTo(const adjList &graph, const nodeSet &subclique, const 
     return true;
 }
 
-bool Graph::allAdjacentToExceptFor(const adjList &graph, const nodeSet &subclique, const node nodeToAdd, const node exception) {
-    std::vector<bool> cliqueElementsFound(graph.size(), false);
-    for (size_t i = 0; i < graph[nodeToAdd].size(); i++) {
-        cliqueElementsFound[graph[nodeToAdd][i]] = true;
-    }
-    for (size_t i = 0; i < subclique.size(); i++) {
-        if (!cliqueElementsFound[i] && i != exception) {
-            return false;
-        }
-    }
-    return true;
-}
-
-bool Graph::allAdjacentToExceptForDouble(const adjList &graph, const nodeSet &subclique, const node n1, const node n2, const node e1, const node e2) {
-    std::vector<bool> cliqueElementsFound1(graph.size(), false);
-    std::vector<bool> cliqueElementsFound2(graph.size(), false);
-    for (size_t i = 0; i < graph[n1].size(); i++) {
-        cliqueElementsFound1[graph[n1][i]] = true;
-    }
-    for (size_t i = 0; i < graph[n2].size(); i++) {
-        cliqueElementsFound2[graph[n2][i]] = true;
-    }
-    for (size_t i = 0; i < subclique.size(); i++) {
-        if ((!cliqueElementsFound1[i] || !cliqueElementsFound2[i]) && i != e1 && i != e2) {
-            return false;
-        }
-    }
-    return true;
-}
-
-bool Graph::allAdjacentToOrd(const adjList &graph, const nodeSet &subclique, const node node) {
-    std::vector<unsigned int>::const_iterator it;
-    size_t cliqueNodeIndex = 0;
-    for (it = graph[node].begin(); it != graph[node].end(); ++it) {
-        if (*it > subclique[cliqueNodeIndex]) {
-            return false;
-        } else if (*it == subclique[cliqueNodeIndex]) {
-            cliqueNodeIndex++;
-            if (cliqueNodeIndex == subclique.size()) {
-                return true;
-            }
-        }
-    }
-    return false;
-}
-
 node Graph::nodeWithMaxDegree(const adjList &graph) {
     node best = 0;
     for (node n = 1; n < graph.size() ; ++n) {
@@ -111,14 +65,6 @@ node Graph::nodeWithMaxDegree(const adjList &graph) {
 }
 
 
-bool ::Graph::isAdjacentTo(const adjMatrix &graph, const node n1, const node n2) {
-    if(n1 < n2) {
-        return graph[n1][n2];
-    } else {
-        return graph[n2][n1];
-    }
-}
-
 bool ::Graph::isAdjacentTo(const adjList &graph, const node n1, const node n2) {
     if (graph[n1].size() < graph[n2].size()) {
         return std::binary_search(graph[n1].begin(), graph[n1].end(), n2);
@@ -129,23 +75,4 @@ bool ::Graph::isAdjacentTo(const adjList &graph, const node n1, const node n2) {
 
 void ::Graph::sortByDegree(nodeSet nodesToSort, const adjList &graph) {
     std::sort(nodesToSort.begin(), nodesToSort.end(), greaterDegreeComparator(graph));
-}
-
-bool ::Graph::isClique(const adjList &graph, const nodeSet &clique) {
-    for (node k = 0; k < clique.size() - 1; ++k) {
-        for (node j = k+1; j < clique.size(); ++j) {
-            if (!Graph::isAdjacentTo(graph, clique[k], clique[j])){
-                return false;
-            }
-        }
-    }
-    return true;
-}
-
-unsigned int ::Graph::frontier(const adjList &graph, const nodeSet &clique) {
-    unsigned int size = 0;
-    for (auto it = clique.begin(); it != clique.end(); ++it) {
-        size += graph[*it].size() - (clique.size() -1);
-    }
-    return size;
 }

@@ -2,29 +2,6 @@
 #include <iostream>
 #include "localsearch.h"
 
-cliqueInfo laDeRoniPorLasDudas(const graphInfo &inputGraph, cliqueInfo partialClique) {
-    adjList adjacencyList = Graph::createAdjacencyList(inputGraph);
-    if (partialClique.nodes.empty()) {
-        partialClique = greedyHeuristic(adjacencyList, partialClique);
-    }
-    bool cliquesToCheck = true;
-    while (cliquesToCheck) {
-        cliquesToCheck = false;
-        cliqueInfo betterSolution = partialClique;
-        for (node j = 0; j < partialClique.nodes.size(); j++) {
-            for (node i = (j + 1); i < partialClique.nodes.size(); i++) {
-                cliqueInfo sol = createNeighborSolution(inputGraph, partialClique, adjacencyList, i, j);
-                if (betterSolution.outgoing <= sol.outgoing) {
-                    cliquesToCheck = true;
-                    betterSolution = sol;
-                }
-            }
-        }
-        partialClique = betterSolution;
-    }
-    return partialClique;
-}
-
 cliqueInfo localSearchHeuristic(const graphInfo &inputGraph) {
     return localSearchHeuristic(Graph::createAdjacencyList(inputGraph));
 }
@@ -184,60 +161,3 @@ cliqueInfo localSwap2(const adjList &adjacencyList, cliqueInfo partialClique) {
 
     return greedyHeuristic(adjacencyList, partialClique);
 }
-
-
-cliqueInfo createNeighborSolution(const graphInfo &inputGraph, cliqueInfo partialClique, const adjList &adjacencyList,
-                                  node i, node j){
-    node bestResult = partialClique.outgoing;
-    node firstErasedNode = partialClique.nodes[i];
-    node secErasedNode = partialClique.nodes[j];
-    node firstNewNode = firstErasedNode;
-    node secNewNode = secErasedNode;
-    partialClique.outgoing = 0; //Reiniciamos el contador de fronteras de la clique
-    partialClique.nodes.erase(partialClique.nodes.begin() + j);
-    partialClique.nodes.erase(partialClique.nodes.begin() + i - 1); //Ya sacamos un nodo, con j < i, asi que i se atrasó uno
-    for (unsigned int y = 0; y < partialClique.nodes.size(); y++){
-        partialClique.outgoing += (adjacencyList[partialClique.nodes[y]].size() - y);
-    }
-    partialClique.outgoing = (unsigned int)(partialClique.outgoing - partialClique.nodes.size());
-    for (unsigned int v = 0; v < inputGraph.n; v++) {
-        for (unsigned int w = (v + 1); w < inputGraph.n; w++) {
-            if (((v != firstErasedNode && v != secErasedNode) || (w != firstErasedNode && w != secErasedNode)) &&
-                isCliqueWithVariousNodes(inputGraph, partialClique.nodes, v, w)) {
-                unsigned int newOutgoing = (unsigned int) (partialClique.outgoing + adjacencyList[v].size() +
-                                                           adjacencyList[w].size() - (partialClique.nodes.size() * 3) - 3);
-                cliqueInfo aClique(partialClique.nodes, newOutgoing);
-                aClique.nodes.push_back(v);
-                aClique.nodes.push_back(w);
-                if (bestResult < greedyHeuristic(inputGraph, aClique).outgoing) {
-                    bestResult = newOutgoing;
-                    firstNewNode = v;
-                    secNewNode = w;
-                }
-            }
-        }
-    }
-    if ((firstNewNode != firstErasedNode) || (secNewNode != secErasedNode)) {
-        partialClique.nodes.push_back(firstNewNode);
-        partialClique.nodes.push_back(secNewNode);
-        partialClique.outgoing = bestResult;
-        return greedyHeuristic(inputGraph, partialClique);
-    } else {
-        partialClique.outgoing = 0; //Pasamos una solución basura
-        return partialClique;
-    }
-}
-
-bool isCliqueWithVariousNodes(const graphInfo &graph, const nodeSet& subclique, unsigned int v , unsigned int w){ //TODO esta recorriendo todas las aristas todas las veces
-    if (itsClique(subclique, graph, v) && itsClique(subclique, graph, w)){
-        for (unsigned int i = 0; i < graph.n; i++){
-            edge e = graph.edges[i];
-            if((e.start == v && e.end == w) || (e.end == v && e.start == w)){
-                return true;
-            }
-        }
-    }
-    return false;
-}
-
-

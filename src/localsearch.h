@@ -12,7 +12,6 @@
  * @param partialClique can be used to start the algorithm from any given clique
  * @return
  */
-cliqueInfo laDeRoniPorLasDudas(const graphInfo &inputGraph, cliqueInfo partialClique);
 
 
 cliqueInfo localSearchHeuristic(const graphInfo &inputGraph);
@@ -23,17 +22,5 @@ cliqueInfo localAdd(const adjList &adjacencyList, cliqueInfo partialClique);
 cliqueInfo localRemove(const adjList &adjacencyList, cliqueInfo partialClique);
 cliqueInfo localSwap(const adjList &adjacencyList, cliqueInfo partialClique);
 cliqueInfo localSwap2(const adjList &adjacencyList, cliqueInfo partialClique);
-
-void swap(const adjList &adjacencyList, cliqueInfo &partialClique, std::vector<node>::iterator &toRemove, std::vector<node>::iterator &toAdd);
-
-
-
-
-
-
-cliqueInfo createNeighborSolution(const graphInfo &inputGraph, cliqueInfo partialClique, const adjList &adjacencyList,
-                                  node i, node j);
-
-bool isCliqueWithVariousNodes(const graphInfo &graph, const nodeSet& subclique, unsigned int v , unsigned int w);
 
 #endif //ALGO3_TP3_LOCALSEARCH_H

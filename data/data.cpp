@@ -98,7 +98,7 @@ int runExact() {
     fprintf(data, "n,m,ns\n");
     for (unsigned int n = MIN_N; n <= MAX_N; ++n) {
         edgeList kGraph = genKGraph(n);
-        for (unsigned int m = MIN_M; m <= (n*(n-1)) >> 1; ++m) {
+        for (unsigned int m = MIN_M; m <= std::min(MAX_M, (n*(n-1)) >> 1); ++m) {
             edgeList graph = getSubgraph(m, kGraph);
             graphInfo info = {n, graph};
             std::cout << "impl = exact, n = " << n << ", m = " << m
@@ -155,15 +155,19 @@ int runLocal() {
     fprintf(data, "n,m,ns\n");
     for (unsigned int n = MIN_N; n <= MAX_N; ++n) {
         edgeList kGraph = genKGraph(n);
-        for (unsigned int m = MIN_M; m <= (n*(n-1)) >> 1; ++m) {
+        for (unsigned int m = MIN_M; m <= std::min(MAX_M, (n*(n-1)) >> 1); ++m) {
             edgeList graph = getSubgraph(m, kGraph);
             graphInfo info = {n, graph};
+            adjList adjacencies = Graph::createAdjacencyList(info);
+            cliqueInfo partialClique = greedyHeuristic(info);
+
             std::cout << "impl = local, n = " << n << ", m = " << m
                       << "                " << "\r" << std::flush;
+
             for (unsigned int i = 0; i < REPETITIONS; ++i) {
                 auto begin = GET_TIME;
 
-                localSearchHeuristic(info);
+                localSearchHeuristic(adjacencies, partialClique);
 
                 auto end = GET_TIME;
 
