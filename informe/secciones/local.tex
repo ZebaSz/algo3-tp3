@@ -30,6 +30,8 @@ Es importante ver que siempre será necesario devolver la solución alternativa 
 
 Imaginémoslo con dos montañas, para acercarnos de manera intuitiva. Nosotros estamos parados actualmente en el pico de una montaña, pero al caminar dos pasos para abajo y dos hacia arriba a la derecha, encontramos un camino nuevo. Bien podríamos descartarlo, porque la altura en la que estamos parados actualmente es menor que la anterior, pero al subirlo podríamos acabar en un pico más alto que el anterior. Es por esto que, a la hora de obtener la solución, es mejor tener en cuenta cuál es el pico más alto que puede alcanzar la nueva clique.
 
+Por lo tanto, acabaremos encontrando o bien nuevas soluciones, o bien la misma solución que encontramos en el algoritmo goloso inicial, de forma que siempre acabaremos teniendo un resultado mejor o igual al que se conseguía con la heurística constructiva aislada.
+
 Teniendo esto en cuenta, quedarían definidas de la siguiente manera las vecindades y el resultado obtenido de cada una de ellas. Como las búsquedas de cada tipo de vecindad son diferentes entre sí, vamos a implementar una función que nos encuentre la mejor solución para cada tipo y después vamos a comparar estas soluciones. Esto nos trae el beneficio de que, en caso de agregar nuevas vecindades, no deberemos tocar mucho la implementación.
 
 \subsubsection{Vecindad: Agregar Nodo}
@@ -51,6 +53,8 @@ Esta vecindad es la que se aplica en la heurística golosa constructiva. Como ya
 			break
 	    }
     }
+    
+    solucion $\leftarrow$ algoritmoGoloso(solucion, listaAdyacencia)
 \end{algorithm}
 
 \subsubsection{Vecindad: Eliminar Nodo}
@@ -78,12 +82,14 @@ La implementación es bastante directa, recorremos los nodos de la clique y busc
     \If{mejora > 0)}{
         borrarNodoClique(solucion, solucion.nodos[nodoABorrar])
     }
+    
+    solucion $\leftarrow$ algoritmoGoloso(solucion, listaAdyacencia)
 
 \end{algorithm}
 
 \subsubsection{Vecindad: Intercambiar Nodo}
 
-La idea de esta vecindad es ver que, al quitar un nodo de la clique y crear una nueva con los nodos restantes y un nodo externo, es posible formar nuevas soluciones que alcancen una frontera mayor a la obtenida. Para encontrar el par de nodos(uno interno a la clique y otro externo) que mejoren la clique, lo que vamos a hacer es, recorrer los nodos internos y por cada nodo buscar en los ejes externos cuanto nos mejora la solución si los intercambiamos.
+Para encontrar el par de nodos(uno interno a la clique y otro externo) que mejoren la clique, lo que vamos a hacer es recorrer los nodos internos y, por cada nodo, buscar en los ejes externos cuanto nos mejora la solución si los intercambiamos.
 
 \begin{algorithm}[H]
 	\NoCaptionOfAlgo
@@ -112,8 +118,18 @@ La idea de esta vecindad es ver que, al quitar un nodo de la clique y crear una 
 
         agregarNodoClique(solucion, solucion.nodos[nodoAAgregar])
     }
+    
+    solucion $\leftarrow$ algoritmoGoloso(solucion, listaAdyacencia)
 
 \end{algorithm}
+
+\subsubsection{Vecindad: Intercambiar par de nodos}
+La idea de intercambiar un par de nodos es similar a la explicada a la hora de intercambiar un único nodo, con la diferencia que a la hora de generar la solución final (es decir, a la hora de aplicarle el algoritmo goloso) deberá primero haberse hecho el intercambio de ambos nodos. Por lo tanto, la idea sería:
+\begin{itemize}
+	\item Sacar dos nodos
+	\item Meter dos nodos
+	\item Algoritmo goloso sobre la nueva clique
+\end{itemize}
 
 \subsection{Complejidad Temporal}
 
