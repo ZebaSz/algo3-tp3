@@ -27,7 +27,7 @@ $$Frontera(C_{ij}) = Frontera(C_i) + d(j) - (tamano(C) + 1) \times 2$$
 
 Vimos que $Frontera(C_{ij})$ $>$ $Frontera(C_i)$, lo cual implica $d(j) > (tamano(C) + 1) \times 2)$, es decir, $d(j) > tamano(C) \times 2$
 
-Pero $Frontera(C_i)$ $<$ $Frontera(C)$, lo cual implica $d(i) < tamano(C) \times 2$ 
+Pero $Frontera(C_i)$ $<$ $Frontera(C)$, lo cual implica $d(i) < tamano(C) \times 2$
 
 Por lo tanto, tenemos $d(j) > tamano(C) \times 2 > d(i)$, es decir, $d(j) > d(i)$. Pero entonces, eso implica que al agregar el nodo $i$ no agregamos el de mayor grado, puesto que $j$ es adyacente a todos los nodos de $C$ y es de mayor grado que $i$. Absurdo.
 \end{center}
@@ -59,17 +59,20 @@ De este modo, tenemos una heurística constructiva golosa válida, que toma siem
 Esta implementación es bastante sencilla y solo utiliza unas pocas funciones. Veamos la complejidad temporal en peor caso de ellas para después ver la del algoritmo general.
 
 \begin{itemize}
-	 \item \textbf{nodoDeMayorGrado}: Recorre los n nodos en la lista y se fija el largo de sus adyacentes en $O(1)$ por lo que la función es $O(n)$.
+    \item \textbf{nodoDeMayorGrado}: Recorre los n nodos en la lista y se fija el largo de sus adyacentes en $O(1)$ por lo que la función es $O(n)$.
 
 	\item \textbf{ordenarPorGrado}: Esta función utiliza por detrás el sort de la STD, y por ende su complejidad en peor caso es de $O(n*log(n))$.
 
-\item \textbf{esAdyacenteATodos}: Busca si hay un nodo en la clique que no sea adyacente a este nuevo nodo. Para eso, arma un arreglo de booleanos y recorre los nodos adyacentes al nodo a insertar (pueden ser hasta $n-1$). Después, basta con recorrer los nodos de la clique y fijarse en el arreglo si son adyacentes o no. Siguiento este procedimiento, el algoritmo tiene una complejidad temporal $O(|adyacentes| + |clique|)$, donde $O(|adyacentes|)$ $\subseteq$ $O(n)$ y $O(|clique)$ $\subseteq$ $O(n)$. Por lo tanto, tenemos $O(n + n)$  $\subseteq$ $O(n)$.
+    \item \textbf{esAdyacenteATodos}: Busca si hay un nodo en la clique que no sea adyacente a este nuevo nodo. Para eso, arma un arreglo de booleanos y recorre los nodos adyacentes al nodo a insertar (pueden ser hasta $n-1$). Después, basta con recorrer los nodos de la clique y fijarse en el arreglo si son adyacentes o no. Siguiento este procedimiento, el algoritmo tiene una complejidad temporal $O(|adyacentes| + |clique|)$, donde $O(|adyacentes|)$ $\subseteq$ $O(n)$ y $O(|clique|)$ $\subseteq$ $O(n)$. Por lo tanto, tenemos $O(n + n)$  $\subseteq$ $O(n)$.
 
-\item \textbf{aumentaLaFrontera}: Hace una simple aritmética entre la cantidad de nodos y la cantidad de adyacentes de la clique por lo que su complejidad es $O(1)$.
+    \item \textbf{aumentaLaFrontera}: Hace una simple aritmética entre la cantidad de nodos y la cantidad de adyacentes de la clique por lo que su complejidad es $O(1)$.
 
-\item \textbf{agregarNodoAClique}: Se encarga de actualizar la clique agregando atrás del vector de nodos en la clique el nodo a insertar en $O(1)$.
+    \item \textbf{agregarNodoAClique}: Se encarga de actualizar la clique agregando atrás del vector de nodos en la clique el nodo a insertar en $O(1)$.
 
 \end{itemize}
 
-Terminando el análisis de complejidad, iteramos entre la cantidad de adyacentes del nodo de mayor grado, que podrían ser $n-1$. Por lo tanto, concluímos que la complejidad temporal en peor caso de la Heurística Constructiva Golosa será de $O(n^2)$
+Ahora analisemos la complejidad de la heurística completa, inicialmente buscamos el nodo de mayor grado y ordenamos sus adyacentes, la operación más costosa aquí es la de ordenar que es $O(n*log n)$.
 
+Nos queda ver la iteración sobre los nodos del grafo: para cada nodo del grafo vamos a llamar a esAdyacenteATodos, como vimos esta función tiene una complejidad de $O(|adyacentes| + |clique|)$ que dijimos que estaba acotado por $n$ por lo que una cota temporal del algoritmo burda sería $O(n^2)$, pero podemos ajustar más esta cota.
+
+Cómo recorremos todos los nodos y para cada nodo iteramos entre sus adyacentes en esAdyacenteATodos, estamos recorriendo todos los ejes 2 veces($m$) en total, pero además en cada iteración recorremos la cantidad de nodos en la clique actual. Podemos acotar la cantidad de nodos en la clique por la cantidad de nodos de la clique máxima, por lo que podemos decir que el algoritmo tiene una complejidad temporal en peor caso de $O( n*log(n) + n*|cliqueMax| + m)$.
