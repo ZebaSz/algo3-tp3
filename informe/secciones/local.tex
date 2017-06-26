@@ -154,7 +154,7 @@ Finalmente, considerando estas cuatro vecindades, acabaremos teniendo un algorit
 
 Donde buscarMejorSolucionVecina corre las cuatro vecindades y se fija cual es la mejor.
 
-\subsection{Complejidad Temporal} %TODO complejidad esta mal, falta un m somewhere
+\subsection{Complejidad Temporal}
 Para analizar la complejidad temporal de este ejercicio, debemos analizar la complejidad de cada una de los algoritmos que corremos para realizar la búsqueda en sus vecindades. Por lo tanto, tendremos las siguientes complejidades:
 
 \begin{center}
@@ -180,7 +180,21 @@ Esto nos deja con una complejidad de $O(n^2)$, a la cual se le debe sumar la de 
 
 \textbf{Para cada nodo $i$ fuera de clique, para cada nodo $j$ fuera de  clique, j $\neq$ i, agregar j e i.}
 
-Por lo tanto, como debemos tanto agregar como sacar nodos, acabaremos teniendo $O(n^2 * n^2)$, lo cual acaba siendo $O(n^4)$, el hecho de tan solo recorrer todas las cliques que podríamos generar. A su vez, para cada una de estas posibles cliques debemos asegurarnos si los dos nodos agregados son adyacentes a todos los demas, y como vimos \textbf{esAdyacenteATodos} tiene una cota temporal de $O(n)$, y al realizarlo dos veces (una por cada nodo del par) tendremos $O(2n)$ $\subseteq$ $O(n)$. Por lo demás, son cálculos realizables en $O(1)$ que no afectan nuestra complejidad, por lo que acabaremos teniendo, para cada posible clique, una complejidad de $O(n)$, lo cual acaba siendo al considerar todas las complejidades $O(n^5)$.
+Por lo tanto, como debemos tanto agregar como sacar nodos, acabaremos teniendo $O(n^2 * n^2)$, lo cual acaba siendo $O(n^4)$, el hecho de tan solo recorrer todas las cliques que podríamos generar. A su vez, para cada una de estas posibles cliques debemos asegurarnos si los dos nodos agregados son adyacentes a todos los demas, y como vimos \textbf{esAdyacenteATodos} tiene una cota temporal de $O(n)$, y al realizarlo dos veces (una por cada nodo del par) tendremos $O(2n)$ $\subseteq$ $O(n)$.	
+\bigskip
+
+\begin{center}
+\textbf{PLUS REENTREGA}
+
+Además, le realizamos greedy a cada uno, es decir que si teniamos $O(n^5)$, ahora tendremos $O(n^5 * (greedy))$, que vimos que es $O(n*log + n*|cliqueMax| + m)$, y se puede acotar por $O(n^2)$, entonces nos da $O(n^7)$. Finalmente, cuando le multipliquemos el ultimo n tendremos $O(n^8)$, siendo esta la verdadera complejidad
+
+\textbf{PLUS REENTREGA}
+
+\bigskip
+\end{center}
+
+Por lo demás, son cálculos realizables en $O(1)$ que no afectan nuestra complejidad, por lo que acabaremos teniendo, para cada posible clique, una complejidad de $O(n)$, lo cual acaba siendo al considerar todas las complejidades $O(n^5)$.
 \bigskip
 
 Así, alcanzamos las complejidades de cada una de nuestras vecindades. Por lo tanto, la complejidad de buscar la mejor solución vecina será $O(n^2 + n^2 + n^5)$, que por propiedades de O grande se acota finalmente con $O(n^5)$. Puesto que el algoritmo general es, simplemente, tomar una clique y correrle el algoritmo hasta que no mejore, el mismo correrá un máximo de $n$ veces (o bien agrega $n$ nodos, o bien los saca). Por lo tanto, al considerar el peor caso, habremos corrido $n$ veces un algoritmo de costo $O(n^5)$, dejándonos con una complejidad temporal final de $O(n^6)$
+
