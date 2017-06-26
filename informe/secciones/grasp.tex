@@ -27,29 +27,75 @@ Habiendo notado que heurísticas determinísticas siempre toman la misma decisi�
 
 \begin{algorithm}[H]
 	\NoCaptionOfAlgo
-	\caption{\algoritmo{randomGreedy}{\In{listaAdyacencia}{lista}, \In{float}{porcentajeConsiderado}}{clique}}
+	\caption{\algoritmo{randomGreedy}{\In{listaAdyacencia}{lista}, \In{clique}{cliqueParcial}, \In{listaNodos}{nodosConsiderados}\In{float}{porcentajeConsiderado}}{clique}}
 	
-	nodosConsiderados $\leftarrow$ nodos(lista)
+	\If{nodosConsiderados.size() $=$ 0}
+	{
+		return cliqueParcial
+	}
 	
 	ordenarPorGrado(nodosConsiderados)
+	
+	\For{nodo $\in$ nodosConsiderados}
+	{
+		\If{nodo.grado() $\wedge$ cliqueParcial.size() * 2 $\vee$ clique.noEsAgregable(nodo)}
+		{
+			nodosConsiderados.borrar(nodo)
+		}
+	}
+
+	\If{nodosConsiderados.size() $=$ 0}
+	{
+		return cliqueParcial
+	}
 	
 	indiceNodoAleatorio $\leftarrow$ nodoAleatorio(nodosConsiderados, porcentajeConsiderado)
 	
 	nodoPorAgregar $\leftarrow$ nodosConsiderados[indiceNodoAleatorio]
 	
 	agregarNodoAClique(res, nodoPorAgregar)
+
+	nodosConsiderados.borrar(nodoPorAgregar)
 	
-	res $\leftarrow$ recurRandomGreedy(lista, res, nodosConsiderados, porcentajeConsiderado)
+	res $\leftarrow$ recurRandomGreedy(lista, cliqueParcial, nodosConsiderados, porcentajeConsiderado)
 
-    nodosAdyacentes $\leftarrow$ adyacentes(lista, mayor)
+\end{algorithm}
 
+\begin{algorithm}[H]
+	\NoCaptionOfAlgo
+	\caption{\algoritmo{nodoAleatorio}{\In{listaNodos}{nodosConsiderados}\In{float}{porcentajeConsiderado}}{clique}}
+	
+		cantidadPorConsiderar $\leftarrow$ nodosConsiderados.size() $*$ (1 - porcentajeConsiderado)
+		
+		res $\leftarrow$ random(rango(cantidadPorConsiderar))
 
-    \For{$i \leftarrow 0$ \KwTo nodosAdyacentes.largo}{
-		\If{esAdyacenteATodos(nodosAdyacentes[i], res, listaAdyacencia) $\land$ \\ aumentaLaFrontera(nodosAdyacentes[i], res, listaAdyacencia)}{
-			agregarNodoAClique(res, nodosAdyacentes[i])
+\end{algorithm}
 
+Cada vez que se elige un nodo, se hace eligiendo un nodo aleatorio que esté entre los mejores de la lista de nodos agregables. En un principio, todos los nodos son elegibles para formar una clique trivial de tamaño uno. El criterio utilizado para elegir alguno es la priorización de nodos de grado alto. Es por esto que en primer lugar se ordenan los nodos en base a su grado. Después se elige un nodo aleatorio entre los de mayor grado. El porcentaje a considerar es una variable de entrada que determinará el comportamiento de la heurística.
+
+La función recursiva tiene un procesamiento muy similar, pero toma como parámetro a una clique y una lista de nodos a considerar. En el caso base, si no quedan nodos por considerar, la clique es maximal. Sino, toma la lista y le filtra los nodos que no son adyacentes a todos los nodos de la clique o que no agrandarían la frontera por tener un grado muy chico. Vuelve a preguntar si quedan nodos a considerar y en caso afirmativo elige un nodo aleatorio entre los mejores y lo agrega a la clique. Elimina a ese nodo de la lista de nodos a considerar y se llama recursivamente. Como en cada paso la cantidad de nodos a considerar disminuye al menos en una unidad, sabemos que la función eventualmente llega al caso base.
+
+La metaheurística GRASP utiliza tanto búsqueda local como greedy aleatorio. La idea esta en que greedy aleatorio avanza estocásticamente por el espacio de soluciones hasta que llega a una solución maximal. Posteriormente esta solución se pasa como parametro a la búsqueda local. Si hacemos esto muchas veces tenemos la posibilidad de llegar a muchas soluciones diferentes y así quedarnos con la mejor. Se memoriza la mejor encontrada y en cada iteración del ciclo se compara una nueva solución. Si iteramos lo suficiente, tendremos seguridad de que la solución que guardamos es la mejor entre muchas posibilidades. 
+
+\begin{algorithm}[H]
+	\NoCaptionOfAlgo
+	\caption{\algoritmo{grasp}{\In{listaAdyacencia}{lista}, \In{unsigned int}{iteraciones}, \In{float}{porcentajeConsiderado}}{clique}}
+
+	bestClique $\leftarrow \emptyset$
+	 
+	\For{i $\in$ rango(iteraciones)}
+	{
+		tempClique $\leftarrow$ local(randomGreedy(lista, porcentajeConsiderado))
+		 
+ 		\If{bestClique.frontera() $<$ tempClique.frontera()}
+		{
+			bestClique $\leftarrow$ tempClique
+		}
+		 
 	}
-}
+	
+	res $\leftarrow$ bestClique
+
 \end{algorithm}
 
 \subsection{Cota temporal}
