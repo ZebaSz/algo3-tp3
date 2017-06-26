@@ -3,7 +3,7 @@
 Las heurísticas de búsqueda local son capaces de iterar sobre cualquier solución dada y
 mejorarla, buscando soluciones vecinas a la solución inicial.
 
-Para plantear la búsqueda local tenemos que definir sobre qué soluciones vecinas buscará el algoritmo, es decir tenemos que definir una relación de vecindad entre el espacio de soluciones del problema. Para que el enfoque no sea complejo, definimos 3 vecindades simples:
+Para plantear la búsqueda local tenemos que definir sobre qué soluciones vecinas buscará el algoritmo. Es decir, tenemos que definir una relación de vecindad entre el espacio de soluciones del problema. Para que el enfoque no sea complejo, definimos 4 vecindades simples:
 
 \begin{enumerate}
 	\item Agregar un nodo a la clique, siempre y cuando siga manteniendo la propiedad de clique.
@@ -16,15 +16,25 @@ Para plantear la búsqueda local tenemos que definir sobre qué soluciones vecin
 
 \end{enumerate}
 
-Ya definidas las vecindades, lo que vamos a hacer en el algoritmo es buscar entre estas soluciones vecinas y quedarnos con la que más nos mejora la frontera, y podemos repetir este procedimiento hasta que las soluciones encontradas no mejoren.
+Ya definidas las vecindades, lo que vamos a hacer en el algoritmo es buscar entre estas soluciones vecinas y quedarnos con la que más nos mejore la frontera, repitiendo este procedimiento hasta que las soluciones encontradas no mejoren.
 
 
 \subsection{Desarrollo}
-Como las búsquedas de cada tipo de vecindad son diferentes entre sí, vamos a implementar una función que nos encuentre la mejor solución para cada tipo y después vamos a comparar estas soluciones, esto nos trae el beneficio de que si queremos agregar vecindades no tenemos que tocar mucho la implementación.
+Si bien es cierto que la idea de realizar un LocalSearch puede ser aplicada de manera ajena a la solución constructiva golosa que vimos anteriormente, optamos por juntar ambas heurísticas de manera que cada una de las soluciones alternativas que se generen tengan un desarrollo constructivo goloso detrás. De este modo, lo que buscamos es darle a Local la responsabilidad de generar rutas alternativas, con nodos que descartamos en nuestra primera construcción, y a partir de ellas volver a encargarle a nuestro algoritmo constructivo que alcance una solución golosa.
+
+De este modo, si repasamos las vecindades definidas anteriormente, notaremos que tanto agregar como eliminar nodos no son opciones que vayan a servirnos (por lo menos, hasta que apliquemos una nueva heurística sobre estas dos), puesto que Local Search recibirá siempre un algoritmo construido mediante la heurística golosa, donde todos los nodos agregados implican un crecimiento de la frontera y donde no hay ningun nodo externo que agrande la misma.
+
+Por ende, dentro de las vecindades solo nos interesa intercambiar tanto uno como dos nodos de la clique, y a partir de esta nueva clique generar un resultado goloso. No es dificil notar que la vecindad, aún quitándole dos nodos y agregando dos nuevos, es pequeña: para casos con $n$ grande, el hecho de intercambiar solo dos nodos de una solución golosa dificilmente nos lleve a la CMF. Sin embargo, el hecho de correr el algoritmo hasta que no se consigan mejoras puede acercarnos bastante a esta solución, más si consideramos que detrás de la búsqueda local hay una heurística golosa que, para cada iteración, encuentra una solución constructiva aún mejor que la anterior.
+
+Es importante ver que siempre será necesario devolver la solución alternativa luego de aplicarle el algoritmo goloso, puesto que de otro modo podríamos descartar una solución mejor a la actual de manera errónea. Si tomamos nuestra solución inicial, le quitamos dos nodos y le agregamos dos nuevos, si bien es posible que este nuevo grafo tenga una frontera mayor al anterior, también podría ocurrir que se genere una clique de peor solución parcial, pero que al aplicarle el algoritmo goloso nos lleve a una clique con una frontera mayor a la que teníamos. Esto pasaría porque conseguimos armar una clique adyacente a nodos que anteriormente no habíamos considerado, y que finalmente resultaron ser una mejor solución para nuestro problema.
+
+Imaginémoslo con dos montañas, para acercarnos de manera intuitiva. Nosotros estamos parados actualmente en el pico de una montaña, pero al caminar dos pasos para abajo y dos hacia arriba a la derecha, encontramos un camino nuevo. Bien podríamos descartarlo, porque la altura en la que estamos parados actualmente es menor que la anterior, pero al subirlo podríamos acabar en un pico más alto que el anterior. Es por esto que, a la hora de obtener la solución, es mejor tener en cuenta cuál es el pico más alto que puede alcanzar la nueva clique.
+
+Teniendo esto en cuenta, quedarían definidas de la siguiente manera las vecindades y el resultado obtenido de cada una de ellas. Como las búsquedas de cada tipo de vecindad son diferentes entre sí, vamos a implementar una función que nos encuentre la mejor solución para cada tipo y después vamos a comparar estas soluciones. Esto nos trae el beneficio de que, en caso de agregar nuevas vecindades, no deberemos tocar mucho la implementación.
 
 \subsubsection{Vecindad: Agregar Nodo}
 
-Esta vecindad es la que se aplica en la heurística golosa constructiva, y como ya vimos la solución que nos va a mejorar más la solución, es agregar la arista que siga siendo clique que más aristas tenga.
+Esta vecindad es la que se aplica en la heurística golosa constructiva. Como ya vimos, la solución que nos va a mejorar más la frontera será agregar el nodo que mantenga la clique y tenga mayor grado.
 
 \begin{algorithm}[H]
 	\NoCaptionOfAlgo
@@ -45,7 +55,7 @@ Esta vecindad es la que se aplica en la heurística golosa constructiva, y como 
 
 \subsubsection{Vecindad: Eliminar Nodo}
 
-Aquí queremos encontrar nodos que al eliminarlos nos aumente la frontera, estos nodos van a tener la característica de tener más adyacentes en la clique que afuera, ya que si por ejemplo el nodo tiene 2 nodos adyacentes por afuera de la clique y esta es de grado 4(por lo que tendrá 3 adyacentes pertenecientes a la clique) si lo eliminamos, la frontera perderá los 2 ejes los nodos adyacentes, pero ganará 3 ejes de los que estaban internos a la clique, por lo que podemos definir el beneficio de eliminar un nodo de la clique como $2 * (grado de la clique - 1) - cantidad de adyacentes al nodo$.
+Aquí queremos encontrar nodos que al eliminarlos nos aumenten la frontera. Estos nodos van a tener la característica de tener más adyacentes en la clique que afuera, ya que si por ejemplo el nodo $j$ perteneciente a la clique tiene 2 adyacencias por afuera de la misma y esta es de grado 4(por lo que tendrá 3 adyacentes pertenecientes a la clique) al eliminarlo, la frontera perderá los 2 ejes adyacentes a $j$, pero ganará los 3 ejes que llegan de la clique a $j$. Por lo tanto, podemos definir el beneficio de eliminar un nodo de la clique como $2 * (grado de la clique - 1) - cantidad de adyacentes al nodo$.
 
 La implementación es bastante directa, recorremos los nodos de la clique y buscamos el que más nos aporte a la frontera si lo eliminamos.
 
@@ -73,7 +83,7 @@ La implementación es bastante directa, recorremos los nodos de la clique y busc
 
 \subsubsection{Vecindad: Intercambiar Nodo}
 
-Para encontrar el par de nodos(uno interno a la clique y otro externo) que mejoren la clique, lo que vamos a hacer es, recorrer los nodos internos y por cada nodo buscar en los ejes externos cuanto nos mejora la solución si los intercambiamos.
+La idea de esta vecindad es ver que, al quitar un nodo de la clique y crear una nueva con los nodos restantes y un nodo externo, es posible formar nuevas soluciones que alcancen una frontera mayor a la obtenida. Para encontrar el par de nodos(uno interno a la clique y otro externo) que mejoren la clique, lo que vamos a hacer es, recorrer los nodos internos y por cada nodo buscar en los ejes externos cuanto nos mejora la solución si los intercambiamos.
 
 \begin{algorithm}[H]
 	\NoCaptionOfAlgo
