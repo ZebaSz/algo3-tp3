@@ -49,7 +49,7 @@ cliqueInfo recurRandomGreedy(const adjList &inputGraph, cliqueInfo &partialCliqu
 
     unsigned int nodeIndexToAdd = randomNode(nodesToConsider, percentageToKeep);
     node toAdd = nodesToConsider[nodeIndexToAdd];
-    partialClique.outgoing += inputGraph[toAdd].size() - partialClique.nodes.size() * 2; //TODO: no estoy seguro sobre esta aritmetica
+    partialClique.outgoing += inputGraph[toAdd].size() - partialClique.nodes.size() * 2;
     partialClique.nodes.push_back(toAdd);
     nodesToConsider.erase(nodesToConsider.begin() + nodeIndexToAdd);
     return recurRandomGreedy(inputGraph, partialClique, nodesToConsider, percentageToKeep);
