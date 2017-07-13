@@ -61,9 +61,9 @@ Esta implementación es bastante sencilla y solo utiliza unas pocas funciones. V
 \begin{itemize}
     \item \textbf{nodoDeMayorGrado}: Recorre los n nodos en la lista y se fija el largo de sus adyacentes en $O(1)$ por lo que la función es $O(n)$.
 
-	\item \textbf{ordenarPorGrado}: Esta función utiliza por detrás el sort de la STD, y por ende su complejidad en peor caso es de $O(n*log(n))$.
+	\item \textbf{ordenarPorGrado}: Esta función utiliza por detrás el sort de la STD, y por ende su complejidad en peor caso es de $O(n*log(n))$. Como sabemos que no recorremos los $n$, sino $|maxAdyacente|$,  podríamos acotarlo por $O(|maxAdyacente|*log(|maxAdyacente|))$
 
-    \item \textbf{esAdyacenteATodos}: Busca si hay un nodo en la clique que no sea adyacente a este nuevo nodo. Para eso, arma un arreglo de booleanos y recorre los nodos adyacentes al nodo a insertar (pueden ser hasta $n-1$). Después, basta con recorrer los nodos de la clique y fijarse en el arreglo si son adyacentes o no. Siguiento este procedimiento, el algoritmo tiene una complejidad temporal $O(|adyacentes| + |clique|)$, donde $O(|adyacentes|)$ $\subseteq$ $O(n)$ y $O(|clique|)$ $\subseteq$ $O(n)$. Por lo tanto, tenemos $O(n + n)$  $\subseteq$ $O(n)$.
+    \item \textbf{esAdyacenteATodos}: Busca si hay un nodo en la clique que no sea adyacente a este nuevo nodo. Para eso, arma un arreglo de booleanos del tamaño del grafo ($O(n)$) y recorre los nodos adyacentes al nodo a insertar (pueden ser hasta $n-1$). Después, basta con recorrer los nodos de la clique y fijarse en el arreglo si son adyacentes o no. Siguiendo este procedimiento, el algoritmo tiene una complejidad temporal $O(n + |adyacentes| + |clique|)$. Es facil ver que $O(|maxClique|)$ $\subseteq$ $O(|maxAdyacentes|)$ , por lo que, si tomamos estas cotas, tendremos $O(n + |adyacentes| + |clique|)$ $\subseteq$ $O(n$ $+ |maxAdyacentes|$ $+ |maxClique|)$ $\subseteq$ $O(n + |maxAdyacentes| + |maxAdyacentes|)$. Veamos, entonces, que $|maxAdyacentes|$ esta acotado por $n - 1$ (puesto que un nodo puede llegar como máximo a todos los nodos del grafo que no son él) por lo que tenemos $O(|maxAdyacentes|)$ $\subseteq$ $O(n)$. Por ende, podemos afirmar $O(n + |maxAdyacentes| + |maxAdyacentes|)$ $\subseteq$ $O(n)$, y nuestra cota queda definida por el costo de armar el vector de booleanos.
 
     \item \textbf{aumentaLaFrontera}: Hace una simple aritmética entre la cantidad de nodos y la cantidad de adyacentes de la clique por lo que su complejidad es $O(1)$.
 
@@ -71,11 +71,11 @@ Esta implementación es bastante sencilla y solo utiliza unas pocas funciones. V
 
 \end{itemize}
 
-Ahora analicemos la complejidad de la heurística completa, inicialmente buscamos el nodo de mayor grado y ordenamos sus adyacentes, la operación más costosa aquí es la de ordenar que es $O(n*log n)$.
+Ahora analicemos la complejidad de la heurística completa. Inicialmente buscamos el nodo de mayor grado y ordenamos sus adyacentes. Aquí, la operación más costosa es la de ordenar en un tiempo $O(|maxAdyacente|*log (|maxAdyacente|))$. Luego, tomamos el nodo de mayor grado y, para cada uno de sus nodos adyacentes, fijarnos si es posible agregarlo a la clique (es decir, si esAdyacenteATodos). Por lo tanto, para $|maxAdyacente|$ corremos un algoritmo de costo $O(n)$.
 
-Nos queda ver la iteración sobre los nodos del grafo: para cada nodo del grafo vamos a llamar a esAdyacenteATodos, como vimos esta función tiene una complejidad de $O(|adyacentes| + |clique|)$ que dijimos que estaba acotado por $n$ por lo que una cota temporal del algoritmo burda sería $O(n^2)$, pero podemos ajustar más esta cota.
+Sin embargo, así como vimos que $|maxAdyacente|$ $\leq$ (n - 1), es fácil ver que en un grafo de 40 nodos y 5 aristas, $|maxAdyacente|$ $\leq$ 5 (puesto que un nodo jamás tendrá 6 o más adyacencias, ya que eso implicaría tener 6 o más aristas en el grafo). Por ende, si extendemos esto a todos los grafos, vemos que $O(|maxAdyacente|)$ $\subseteq$ $O(min(n,m)$ , por lo que acabamos teniendo $O(min(n,m)$ $\times$ $O(n)$.
 
-Cómo recorremos todos los nodos y para cada nodo iteramos entre sus adyacentes en esAdyacenteATodos, estamos recorriendo todos los ejes 2 veces($m$) en total, pero además en cada iteración recorremos la cantidad de nodos en la clique actual. Podemos acotar la cantidad de nodos en la clique por la cantidad de nodos de la clique máxima, por lo que podemos decir que el algoritmo tiene una complejidad temporal en peor caso de $O( n*log(n) + n*|cliqueMax| + m)$.
+Por ende, al implementar la misma cota sobre ordenarPorGrado, tenemos las siguientes operaciones a considerar: se encuentra el nodo de mayor grado en $O(n)$, se ordena por grado en $O(min(n,m)$ $\times$ $log(min(n,m)))$, y se arma la clique en $O(min(n,m)$ $\times$ $n )$.  Entonces, nuestra cota temporal acaba siendo $O(n + min(n,m)$ $\times$ $log(min(n,m)) + min(n,m)$ $\times$ $n )$. Simplemente, vemos que $O(n)$ $\subseteq$ $O(min(n,m)$ $\times$ $n )$, y como $O(min(n,m))$ $\subseteq$ $O(n)$ (porque siempre $n$ será mayor o igual al mínimo entre $n$ y $m$) , tenemos que $O(min(n,m)$ $\times$ $log(min(n,m)))$ $\subseteq$ $O(min(n,m)$ $\times$ $n )$. Por lo tanto, nuestra cota acaba siendo $O(min(n,m)$ $\times$ $n )$.
 
 
 \subsection{Experimentación}
