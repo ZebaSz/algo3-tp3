@@ -77,12 +77,18 @@ cliqueInfo localSwap(const adjList &adjacencyList, cliqueInfo partialClique) {
     unsigned int best = 0;
 
     nodeSet toConsider;
-    for (node n = 0; n < adjacencyList.size(); n++) {
+    /*for (node n = 0; n < adjacencyList.size(); n++) {
         if(std::find(partialClique.nodes.begin(), partialClique.nodes.end(), n) == partialClique.nodes.end()) {
             toConsider.push_back(n);
         }
-    }
+    }*/ //Si lo definimos así, la complejidad del for es O(N)
     for (size_t i = 0; i < partialClique.nodes.size(); i++){
+        if (i == 0){ // toConsider lo definimos en base al nodo que sacamos, para reducir la complejidad
+                    // Si lo definimos así, la complejidad del for es O(min(n,m))
+            toConsider = adjacencyList[partialClique.nodes[i + 1]];
+        } else {
+            toConsider = adjacencyList[partialClique.nodes[i - 1]];
+        }
         for (auto ot = toConsider.begin(); ot != toConsider.end(); ++ot) {
             cliqueInfo testClique = partialClique;
             testClique.nodes.erase(testClique.nodes.begin() + i);
