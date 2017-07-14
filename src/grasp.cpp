@@ -1,31 +1,33 @@
 #include <iostream>
 #include "grasp.h"
 
-cliqueInfo grasp(const graphInfo &inputGraph, const float percentageToKeep, const unsigned int iterations, float inputTime) {
+cliqueInfo grasp(const graphInfo &inputGraph, const float percentageToKeep, const unsigned int iterations, mus inputTime) {
     return grasp(Graph::createAdjacencyList(inputGraph), percentageToKeep, iterations, inputTime);
 }
 
-cliqueInfo grasp(const adjList &inputGraph, const float percentageToKeep, const unsigned int iterations, float inputTime) {
+cliqueInfo grasp(const adjList &inputGraph, const float percentageToKeep, const unsigned int iterations, mus inputTime) {
 
 
     cliqueInfo bestClique(0,0);
 
-    if(iterations > 0 && inputTime <= 0 ){
+    if(iterations > 0 && inputTime <= mus{0} ){
         unsigned int i = 0;
         while(i < iterations){
             i++;
             cliqueInfo tempClique = localSearchHeuristic(inputGraph, randomGreedy(inputGraph, percentageToKeep));
             if(bestClique.outgoing < tempClique. outgoing) bestClique = tempClique;
         }
-    } else if(iterations <= 0 && inputTime > 0){
+    } else if(iterations <= 0 && inputTime > mus{0}){
         fsec time(inputTime);
         auto start = Time::now();
         auto lastTime = Time::now();
-        fsec fs = start - lastTime;
-        ms d = std::chrono::duration_cast<ms>(fs);
+        fsec fs = lastTime - start;
+        mus d = std::chrono::duration_cast<mus>(fs);
         while(fs < time){
             cliqueInfo tempClique = localSearchHeuristic(inputGraph, randomGreedy(inputGraph, percentageToKeep));
             if(bestClique.outgoing < tempClique. outgoing) bestClique = tempClique;
+            lastTime = Time::now();
+            fs = lastTime - start;
         }
     }
 

@@ -11,12 +11,12 @@
 #include <chrono>
 
 typedef std::chrono::high_resolution_clock Time;
-typedef std::chrono::microseconds ms;
+typedef std::chrono::microseconds mus;
 typedef std::chrono::duration<float> fsec;
 
-cliqueInfo grasp(const graphInfo &inputGraph, const float percentageToKeep, const unsigned int iterations, float inputTime);
+cliqueInfo grasp(const graphInfo &inputGraph, const float percentageToKeep, const unsigned int iterations, mus inputTime);
 
-cliqueInfo grasp(const adjList &inputGraph, const float percentageToKeep, const unsigned int iterations, float inputTime);
+cliqueInfo grasp(const adjList &inputGraph, const float percentageToKeep, const unsigned int iterations, mus inputTime);
 
 cliqueInfo randomGreedy(const adjList &inputGraph, const float percentageToKeep);
 
