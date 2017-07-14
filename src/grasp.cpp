@@ -6,7 +6,6 @@ cliqueInfo grasp(const graphInfo &inputGraph, const float percentageToKeep, cons
 }
 
 cliqueInfo grasp(const adjList &inputGraph, const float percentageToKeep, const unsigned int iterations) {
-    //TODO no confío en el hecho de que localSearch de mejor que grasp, hay que afinar esa punteria.
     cliqueInfo bestClique(0,0);
     unsigned int i = 0;
     while(i < iterations){

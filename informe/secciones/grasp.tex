@@ -1,8 +1,8 @@
 \section{Metaheurística GRASP}
 	\subsection{Desarrollo}
-Hemos propuesto dos métodos que computan una solución, formulándola en base a criterios heurísticos. La limitación de los enfoques anteriores reside en que se recorre el espacio de soluciones hasta que no es posible mejorar la solución. Como sabemos que una solución maximal no necesariamente es máxima, sería útil poder contrastar distintas soluciones maximales y elegir a la mejor. En otras palabras quisiéramos ramificar la exploración del espacio de soluciones.
+Hemos propuesto dos métodos que computan una solución, formulándola en base a criterios heurísticos. La limitación de los enfoques anteriores reside en que se recorre el espacio de soluciones hasta que no es posible mejorar la solución. Como sabemos que una solución maximal no necesariamente es máxima, sería útil poder contrastar distintas soluciones maximales y elegir la mejor. En otras palabras, quisiéramos ramificar la exploración del espacio de soluciones, para así aumentar nuestras posibilidades de encontrar la clique de máxima frontera.
 
-Habiendo notado que heurísticas determinísticas siempre toman la misma decisión en el mismo paso, se propone la utilización de una heurística pseudo-greedy. Esta heurística aleatoriamente tomará decisiones localmente buenas pero no necesariamente óptimas. Se considerará que la decisión de agregar un nodo es buena si agregarlo aumenta el tamaño de la frontera. Para tener cierto control sobre que tan goloso es el comportamiento de esta heurística se puede pedir que la elección aleatoria sea tomada teniendo en cuenta solo el mejor porcentaje de las decisiones posibles. Si el porcentaje es chico, solo se consideraran las mejores opciones y el comportamiento será muy similar a la heurística greedy pura. Esto restringiría la ramificación que buscabamos. Si el porcentaje es muy alto existirá la posibilidad de agregar un nodo de grado muy bajo a la clique, lo cual restringirá en gran medida la cantidad de nodos que se pueden agregar, obteniendo muy posiblemente una clique pequeña. 
+Habiendo notado que heurísticas determinísticas siempre toman la misma decisión en el mismo paso, se propone la utilización de una heurística pseudo-greedy. Esta heurística aleatoriamente tomará decisiones localmente buenas pero no necesariamente óptimas. Se considerará que la decisión de agregar un nodo es buena si agregarlo aumenta el tamaño de la frontera. Para tener cierto control sobre que tan goloso es el comportamiento de esta heurística, se puede pedir que la elección aleatoria sea tomada teniendo en cuenta solo el mejor porcentaje de las decisiones posibles (es decir, que se elija aleatoriamente una opción buena dentro del X por ciento más alto). Si el porcentaje es chico, solo se consideraran las mejores opciones y el comportamiento será muy similar a la heurística greedy pura. Esto restringiría la ramificación que buscabamos. Si el porcentaje es muy alto, existirá la posibilidad de agregar un nodo de grado muy bajo a la clique, lo cual restringirá en gran medida la cantidad de nodos que se pueden agregar, obteniendo muy posiblemente una clique pequeña. 
 
 
 \begin{algorithm}[H]
@@ -72,11 +72,11 @@ Habiendo notado que heurísticas determinísticas siempre toman la misma decisi�
 
 \end{algorithm}
 
-Cada vez que se elige un nodo, se hace eligiendo un nodo aleatorio que esté entre los mejores de la lista de nodos agregables. En un principio, todos los nodos son elegibles para formar una clique trivial de tamaño uno. El criterio utilizado para elegir alguno es la priorización de nodos de grado alto. Es por esto que en primer lugar se ordenan los nodos en base a su grado. Después se elige un nodo aleatorio entre los de mayor grado. El porcentaje a considerar es una variable de entrada que determinará el comportamiento de la heurística.
+Cada vez que se elige un nodo, se hace eligiendo aleatoriamente uno que esté entre los mejores de la lista de nodos agregables. En un principio, todos los nodos son elegibles para formar una clique trivial de tamaño uno. El criterio utilizado para elegir alguno es la priorización de nodos de grado alto. Es por esto que en primer lugar se ordenan los nodos en base a su grado y, luego, se elige uno aleatoriamente entre los primeros. El porcentaje a considerar es una variable de entrada que determinará el comportamiento de la heurística.
 
-La función recursiva tiene un procesamiento muy similar, pero toma como parámetro a una clique y una lista de nodos a considerar. En el caso base, si no quedan nodos por considerar, la clique es maximal. Sino, toma la lista y le filtra los nodos que no son adyacentes a todos los nodos de la clique o que no agrandarían la frontera por tener un grado muy chico. Vuelve a preguntar si quedan nodos a considerar y en caso afirmativo elige un nodo aleatorio entre los mejores y lo agrega a la clique. Elimina a ese nodo de la lista de nodos a considerar y se llama recursivamente. Como en cada paso la cantidad de nodos a considerar disminuye al menos en una unidad, sabemos que la función eventualmente llega al caso base.
+La función recursiva tiene un procesamiento muy similar, pero toma como parámetro a una clique y una lista de nodos a considerar. En el caso base, si no quedan nodos por considerar, la clique es maximal. Sino, toma la lista y le filtra los nodos que no son adyacentes a todos los nodos de la clique o que no agrandarían la frontera por tener un grado muy chico. Vuelve a preguntar si quedan nodos a considerar y, en caso afirmativo, elige un nodo aleatorio entre los mejores y lo agrega a la clique. Elimina a ese nodo de la lista de nodos a considerar y se llama recursivamente. Como en cada paso la cantidad de nodos a considerar disminuye al menos en una unidad, sabemos que la función eventualmente llega al caso base.
 
-La metaheurística GRASP utiliza tanto búsqueda local como greedy aleatorio. La idea esta en que greedy aleatorio avanza estocásticamente por el espacio de soluciones hasta que llega a una solución maximal. Posteriormente esta solución se pasa como parametro a la búsqueda local. Si hacemos esto muchas veces tenemos la posibilidad de llegar a muchas soluciones diferentes y así quedarnos con la mejor. Se memoriza la mejor encontrada y en cada iteración del ciclo se compara una nueva solución. Si iteramos lo suficiente, tendremos seguridad de que la solución que guardamos es la mejor entre muchas posibilidades. 
+La metaheurística GRASP utiliza tanto búsqueda local como greedy aleatorio. La idea esta en que greedy aleatorio avanza estocásticamente por el espacio de soluciones hasta que llega a una solución maximal. Posteriormente esta solución se pasa como parametro a la búsqueda local. Si hacemos esto muchas veces, tenemos la posibilidad de llegar a muchas soluciones diferentes y así quedarnos con la mejor. Se memoriza la mejor encontrada y en cada iteración del ciclo se compara una nueva solución. Si iteramos lo suficiente, tendremos seguridad de que la solución que guardamos es la mejor entre muchas posibilidades. 
 
 \begin{algorithm}[H]
 	\NoCaptionOfAlgo
@@ -103,31 +103,19 @@ La metaheurística GRASP utiliza tanto búsqueda local como greedy aleatorio. La
 La complejidad de randomGreedy está dada por:
 
 \begin{itemize}
-    \item \textbf{•}xtbf{nodos(lista)}: Devuelve una lista que contiene a todos los nodos del grafo en $O(n)$.
+    \item \textbf{nodos(lista)}: Devuelve una lista que contiene a todos los nodos del grafo en $O(n)$.
 
-	\item \textbf{ordenarPorGrado}: Esta función utiliza por detrás el sort de la STD, y por ende su complejidad en peor caso es de $O(n*log(n))$.
+	\item \textbf{ordenarPorGrado}: Esta función utiliza por detrás el sort de la STD, y como lo usamos para ordenar toda la lista de nodos, su complejidad en peor caso es de $O(n*log(n))$.
 
 	\item \textbf{indiceNodoAleatorio}: Devuelve un número aleatorio en $O(1)$.
 
 	\item \textbf{agregarNodoAClique}: Se encarga de actualizar la clique agregando atrás del vector de nodos en la clique el nodo a insertar en $O(1)$.	
 
-	\item \textbf{agregarNodoAClique}: Se encarga de actualizar la clique agregando atrás del vector de nodos en la clique el nodo a insertar en $O(1)$.	
-
 \end{itemize}
 
-Vemos que el costo de esta función es dependerá del costo de la función recursiva:
+Con estos costos analizados, y considerando que la función \textbf{esAdyacenteATodos} fue analizada en casos anteriores, podemos pasar a analizar la complejidad de la función recursiva. Dado que esta función termina cuando el parámetro nodosPorConsiderar es de tamaño cero, y que en el peor de los casos puede empezar siendo de tamaño $O(n)$ y decrecer en una unidad en cada llamada recursiva, se concluye que en el peor de los casos se realizarán $O(n)$ llamadas recursivas. En cada una, hay un ciclo de $O(nodosPorConsiderar)$ iteraciones, donde por dentro se llama a la funcion \textbf{esAdyacenteATodos}, que es $O(n)$. Como en el peor de los casos nodosPorConsiderar decrece de a una unidad, la complejidad se reduce a considerar las $n$ llamadas recursivas, que cuentan dentro con un ciclo de $n$ nodos y un algoritmo de complejidad $O(n)$. Por lo tanto, nuestra complejidad acaba siendo $O(n^3)$.
 
-\begin{itemize}
-
-    \item \textbf{esAdyacenteATodos}: Busca si hay un nodo en la clique que no sea adyacente a este nuevo nodo. Para eso, arma un arreglo de booleanos y recorre los nodos adyacentes al nodo a insertar (pueden ser hasta $n-1$). Después, basta con recorrer los nodos de la clique y fijarse en el arreglo si son adyacentes o no. Siguiento este procedimiento, el algoritmo tiene una complejidad temporal $O(|adyacentes| + |clique|)$, donde $O(|adyacentes|)$ $\subseteq$ $O(n)$ y $O(|clique|)$ $\subseteq$ $O(n)$. Por lo tanto, tenemos $O(n + n)$  $\subseteq$ $O(n)$.
-
-    \item \textbf{agregarNodoAClique}: Se encarga de actualizar la clique agregando atrás del vector de nodos en la clique el nodo a insertar en $O(1)$.
-
-\end{itemize}
-
-Dado que la función recursiva termina cuando el parámetro nodosPorConsiderar es de tamaño cero y que en el peor de los casos puede empezar siendo de tamaño $O(n)$ y decrecer en una unidad en cada llamada recursiva, se concluye que en el peor de los casos se realizarán $O(n)$ llamadas recursivas. En cada una hay un ciclo de $O(nodosPorConsiderar)$ iteraciones y adentro se llama a la funcion esAdyacenteATodos que es $O(n)$ como en el peor de los casos nodosPorConsiderar decrece de a una unidad, la complejidad será $O(n * \Sigma in) = O(n^2 * \Sigma i) = O(n^3)$.
-
-Dado que GRASP esta compuesto por un ciclo que corre tantas veces como se le especifique en el parámetro iteraciones, el costo temporal va a depender linealmente del número de iteraciones. En cada iteración del ciclo se realiza una llamada a localSearch(randomGreedy()) lo cual cuesta $O(n^3 + n^6) = O(n^6)$. Por lo tanto el costo de la metaheuristica GRASP será $O(iteraciones * n^6)$
+Dado que GRASP esta compuesto por un ciclo que corre tantas veces como se le especifique en el parámetro iteraciones, el costo temporal va a depender linealmente del número de iteraciones. Por otro lado, hay que considerar que en cada iteración del ciclo se realiza una llamada a localSearch(randomGreedy()). Por lo tanto, lo que acaba ocurriendo es que se suman las complejidades de ambos algoritmos (pues Local Search corre solo una vez sobre la clique generada, por lo que su complejidad es ajena a la de randomGreedy). Por ende, el costo de localSearch(randomGreedy()) es $O(n^3)$ + $O((min(n,m))^3$ $\times$ $n^2)$, y como no podemos afirmar nada sobre $min(n,m)$, no podemos realizar ninguna cota. Por lo tanto, nuestra complejidad acaba siendo $O(n^3 + min(n,m))^3$ $\times$ $n^2)$.
 
 
 \subsection{Experimentación}
