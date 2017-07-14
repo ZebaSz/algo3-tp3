@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <vector>
 
+
 typedef unsigned int node;
 typedef std::vector<node> nodeSet;
 typedef std::vector< std::vector< bool > > adjMatrix;

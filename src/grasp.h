@@ -5,14 +5,18 @@
 #ifndef ALGO3_TP3_GRASP_H
 #define ALGO3_TP3_GRASP_H
 
-#include "greedy.h"
+#include"greedy.h"
 #include "localsearch.h"
 #include <random>
 #include <chrono>
 
-cliqueInfo grasp(const graphInfo &inputGraph, const float percentageToKeep, const unsigned int iterations);
+typedef std::chrono::high_resolution_clock Time;
+typedef std::chrono::microseconds ms;
+typedef std::chrono::duration<float> fsec;
 
-cliqueInfo grasp(const adjList &inputGraph, const float percentageToKeep, const unsigned int iterations);
+cliqueInfo grasp(const graphInfo &inputGraph, const float percentageToKeep, const unsigned int iterations, float inputTime);
+
+cliqueInfo grasp(const adjList &inputGraph, const float percentageToKeep, const unsigned int iterations, float inputTime);
 
 cliqueInfo randomGreedy(const adjList &inputGraph, const float percentageToKeep);
 
