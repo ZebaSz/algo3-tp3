@@ -85,7 +85,9 @@ cliqueInfo localSwap(const adjList &adjacencyList, cliqueInfo partialClique) {
     for (size_t i = 0; i < partialClique.nodes.size(); i++){
         if (i == 0){ // toConsider lo definimos en base al nodo que sacamos, para reducir la complejidad
                     // Si lo definimos así, la complejidad del for es O(min(n,m))
-            toConsider = adjacencyList[partialClique.nodes[i + 1]];
+            if (partialClique.nodes.size() > 1) {
+                toConsider = adjacencyList[partialClique.nodes[i + 1]];
+            }
         } else {
             toConsider = adjacencyList[partialClique.nodes[i - 1]];
         }
