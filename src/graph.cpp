@@ -76,3 +76,34 @@ bool ::Graph::isAdjacentTo(const adjList &graph, const node n1, const node n2) {
 void ::Graph::sortByDegree(nodeSet nodesToSort, const adjList &graph) {
     std::sort(nodesToSort.begin(), nodesToSort.end(), greaterDegreeComparator(graph));
 }
+
+graphInfo Graph::generatePatologicGraphForGreedy(unsigned int maxNodeDegree) {
+    unsigned int maxCliqueSize = maxNodeDegree / 2;
+    unsigned int n = (maxNodeDegree + 1) + maxCliqueSize + (maxNodeDegree - maxCliqueSize) * maxCliqueSize;
+    edgeList edges;
+
+    //El solsito el nodo, 0 tiene grado maxNodeDegree
+    for (unsigned int i = 1; i <= maxNodeDegree; i++) {
+        edges.push_back({0, i});
+    }
+
+    //Hago la frontera de la clique
+    unsigned int frontierOffset = maxNodeDegree + maxCliqueSize + 1;
+    for (unsigned int i = 1; i <= maxCliqueSize; i++) {
+        unsigned int cliqueNode = maxNodeDegree + i;
+        for (unsigned int j = 1; j <= (maxNodeDegree - maxCliqueSize); j++) {
+            edges.push_back({cliqueNode, frontierOffset});
+            frontierOffset++;
+        }
+    }
+    
+    //Cliqueo 
+    for (unsigned int i = 1; i < maxCliqueSize; i++) {
+        unsigned int cliqueNode = maxNodeDegree + i;
+        for (unsigned int j = i + 1; j <= maxCliqueSize; j++) {
+            unsigned int cliqueNodePair = maxNodeDegree + j;
+            edges.push_back({cliqueNode, cliqueNodePair});
+        }
+    }
+    return { n, edges };
+}

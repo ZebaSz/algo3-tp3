@@ -78,5 +78,7 @@ namespace Graph {
 
     void sortByDegree(nodeSet nodesToSort, const adjList &graph);
 
+    graphInfo generatePatologicGraphForGreedy(unsigned int maxNodeDegree);
+
 }
 #endif //ALGO3_TP3_GRAPH_H
