@@ -78,6 +78,7 @@ namespace Graph {
 
     void sortByDegree(nodeSet nodesToSort, const adjList &graph);
 
+    //Greedy Frontier = maxNodeDegree Exact Frontier = maxNodeDegree^2/4
     graphInfo generatePatologicGraphForGreedy(unsigned int maxNodeDegree);
 
 }
