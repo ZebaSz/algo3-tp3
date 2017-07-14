@@ -199,7 +199,7 @@ int runGrasp() {
                     for (unsigned int i = 0; i < REPETITIONS; ++i) {
                         auto begin = GET_TIME;
 
-                        grasp(info, fp, it);
+                        grasp(info, fp, it, mus{0});
 
                         auto end = GET_TIME;
 
@@ -242,7 +242,7 @@ int runFit() {
                           << "     " << "\r"
                           << std::flush;
 
-                cliqueInfo result = grasp((*it).input, fp, i);
+                cliqueInfo result = grasp((*it).input, fp, i, mus{0});
 
                 unsigned int diff = best - result.outgoing;
 
