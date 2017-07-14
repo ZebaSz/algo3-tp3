@@ -104,3 +104,8 @@ TEST_F(GreedyTest, allHuge) {
         }
     }
 }
+
+TEST_F(GreedyTest, patologic) {
+    cliqueInfo result = greedyHeuristic(Graph::generatePatologicGraphForGreedy(10));
+    ASSERT_LE(result.outgoing, 10) << "Caso Patologico";
+}

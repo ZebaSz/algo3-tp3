@@ -27,3 +27,8 @@ TEST_F(ExactTest, allHuge) {
         Utils::log(DEBUG, "Passed test %d", i);
     }
 }
+
+TEST_F(ExactTest, greedyPatologic) {
+    cliqueInfo result = exactCMF(Graph::generatePatologicGraphForGreedy(10));
+    ASSERT_LE(result.outgoing, 25) << "Caso Patologico";
+}
