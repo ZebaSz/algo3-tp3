@@ -15,6 +15,8 @@
 #define FILE_GRASP  "grasp.csv"
 #define FILE_FIT    "fit.csv"
 
+#define ACCURACY(file) ("accuracy-"+std::string(file)).c_str()
+
 #define GET_TIME std::chrono::high_resolution_clock::now()
 #define GET_TIME_DELTA(begin, end) \
  std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin).count()
@@ -25,7 +27,7 @@
 #define MIN_M  (unsigned int)0
 #define MAX_M  (unsigned int)80
 
-#define MAX_IT (unsigned int)5
+#define MAX_IT (unsigned int)15
 
 struct testcase {
     graphInfo input;
@@ -46,6 +48,7 @@ void print_help(char* name) {
               << "     greedy : heuristica golosa" << std::endl
               << "      local : heuristica de busqueda local" << std::endl
               << "      grasp : heuristica golosa con metaheuristica GRASP" << std::endl
+              << "   accuracy : mide la precision de los algoritmos heuristicos" << std::endl
               << "        fit : genera datos de fitteo para GRASP" << std::endl
               << std::endl;
 }
@@ -53,9 +56,12 @@ void print_help(char* name) {
 int runExact();
 int runGreedy();
 int runGreedyMaxDeg();
+int runGreedyEqDeg();
 int runLocal();
 int runGrasp();
+int runAccuracy();
 int runFit();
+std::vector<testcase> generateRandomTests();
 std::vector<testcase> getTests();
 
 int main(int argc, char* argv[]) {
@@ -79,11 +85,13 @@ int main(int argc, char* argv[]) {
     } else if(impl == "exact") {
         return runExact();
     } else if(impl == "greedy") {
-        return runGreedyMaxDeg();
+        return runGreedyEqDeg();
     } else if(impl == "local") {
         return runLocal();
     } else if(impl == "grasp") {
         return runGrasp();
+    } else if(impl == "accuracy") {
+        return runAccuracy();
     } else if(impl == "fit") {
         return runFit();
     } else {
@@ -154,14 +162,53 @@ int runGreedyMaxDeg() {
     FILE* data = fopen(FILE_GREEDY, "a");
 
     fprintf(data, "n,m,maxDeg,ns\n");
+    //for (unsigned int n = MIN_N; n <= MAX_N; ++n) {
+    unsigned int n = 80;
+    //for (unsigned int m = MIN_M; m <= (n*(n-1)) >> 1; ++m) {
+    unsigned int m = (n*(n-1)) >> 4;
+    for (unsigned int maxDeg = 0; maxDeg < std::min(n,m); ++maxDeg) {
+        try {
+            adjList input = createWithMaxDeg(n, m, maxDeg);
+            std::cout << "impl = greedy, n = " << n << ", m = " << m
+                      << ", maxDeg = " << maxDeg
+                      << "                " << "\r" << std::flush;
+            for (unsigned int i = 0; i < REPETITIONS; ++i) {
+                auto begin = GET_TIME;
+
+                greedyHeuristic(input);
+
+                auto end = GET_TIME;
+
+                fprintf(data, "%d,%d,%d,%ld\n", n, m, maxDeg, GET_TIME_DELTA(begin, end));
+            }
+        } catch (graphGenException& ex) {
+            // skip
+        }
+    }
+    //}
+    //}
+    std::cout << "greedy = done!                " << std::endl;
+    fclose(data);
+    return 0;
+}
+
+int runGreedyEqDeg() {
+    remove(FILE_GREEDY);
+    FILE* data = fopen(FILE_GREEDY, "a");
+
+    fprintf(data, "n,m,maxDeg,ns\n");
     for (unsigned int n = MIN_N; n <= MAX_N; ++n) {
         for (unsigned int m = MIN_M; m <= (n*(n-1)) >> 1; ++m) {
-            for (unsigned int maxDeg = 0; maxDeg <= std::min(n,m); ++maxDeg) {
-                std::cout << "impl = greedy, n = " << n << ", m = " << m
-                          << ", maxDeg = " << maxDeg
-                          << "                " << "\r" << std::flush;
+            //for (unsigned int maxDeg = 0; maxDeg < n; ++maxDeg) {
+                unsigned int maxDeg = (m << 1) / n;
+                if((m << 1) % n > 0) {
+                    ++maxDeg;
+                }
                 try {
                     adjList input = createWithMaxDeg(n, m, maxDeg);
+                    std::cout << "impl = greedy, n = " << n << ", m = " << m
+                              << ", maxDeg = " << maxDeg
+                              << "                " << "\r" << std::flush;
                     for (unsigned int i = 0; i < REPETITIONS; ++i) {
                         auto begin = GET_TIME;
 
@@ -174,7 +221,7 @@ int runGreedyMaxDeg() {
                 } catch (graphGenException& ex) {
                     // skip
                 }
-            }
+            //}
         }
     }
     std::cout << "greedy = done!                " << std::endl;
@@ -247,6 +294,79 @@ int runGrasp() {
     return 0;
 }
 
+int runAccuracy() {
+    FILE* data;
+
+    std::vector<testcase> cases = generateRandomTests();
+
+    remove(ACCURACY(FILE_GREEDY));
+    data = fopen(ACCURACY(FILE_GREEDY), "a");
+
+    fprintf(data, "n,m,diff\n");
+    for (auto it = cases.begin(); it != cases.end(); ++it) {
+        adjList input = Graph::createAdjacencyList((*it).input);
+        std::cout << "impl = greedy, n = " << input.size()
+                  << ", m = " << (*it).input.edges.size()
+                  << "                " << "\r" << std::flush;
+
+        cliqueInfo output = greedyHeuristic(input);
+        unsigned int diff = (*it).output.outgoing - output.outgoing;
+
+        fprintf(data, "%ld,%ld,%d\n", input.size(), (*it).input.edges.size(), diff);
+    }
+    std::cout << "greedy = done!                " << std::endl;
+    fclose(data);
+
+    remove(ACCURACY(FILE_LOCAL));
+    data = fopen(ACCURACY(FILE_LOCAL), "a");
+
+    fprintf(data, "n,m,diff\n");
+    for (auto it = cases.begin(); it != cases.end(); ++it) {
+        adjList input = Graph::createAdjacencyList((*it).input);
+        std::cout << "impl = local, n = " << input.size()
+                  << ", m = " << (*it).input.edges.size()
+                  << "                " << "\r" << std::flush;
+
+        cliqueInfo output = localSearchHeuristic(input);
+        unsigned int diff = (*it).output.outgoing - output.outgoing;
+
+        fprintf(data, "%ld,%ld,%d\n", input.size(), (*it).input.edges.size(), diff);
+    }
+    std::cout << "local = done!                " << std::endl;
+    fclose(data);
+
+
+    remove(ACCURACY(FILE_GRASP));
+    data = fopen(ACCURACY(FILE_GRASP), "a");
+
+    fprintf(data, "n,m,p,it,diff\n");
+    for (auto it = cases.begin(); it != cases.end(); ++it) {
+        adjList input = Graph::createAdjacencyList((*it).input);
+
+        for (unsigned int p = 1; p <= 10; ++p) {
+            float fp = (float)p/10;
+            for (unsigned int i = 1; i <= MAX_IT; ++i) {
+                std::cout << "impl = grasp, n = " << input.size()
+                          << ", m = " << (*it).input.edges.size()
+                          << ", p = " << fp
+                          << ", it = " << i
+                          << "     " << "\r"
+                          << std::flush;
+
+                cliqueInfo output = grasp(input, fp, i);
+
+                unsigned int diff = (*it).output.outgoing - output.outgoing;
+
+                fprintf(data, "%ld,%ld,%.1f,%d,%d\n", input.size(), (*it).input.edges.size(), fp, i, diff);
+            }
+        }
+    }
+    std::cout << "grasp = done!                " << std::endl;
+    fclose(data);
+
+    return 0;
+}
+
 int runFit() {
     std::vector<testcase> tests = getTests();
     if(tests.empty()) {
@@ -286,6 +406,25 @@ int runFit() {
     std::cout << "fitting = done!                        " << std::endl;
     fclose(data);
     return 0;
+}
+
+std::vector<testcase> generateRandomTests() {
+    std::vector<testcase> tests;
+
+    for (unsigned int n = MIN_N; n <= MAX_N; ++n) {
+        edgeList kGraph = genKGraph(n);
+        for (unsigned int m = MIN_M; m <= (n*(n-1)) >> 2; ++m) {
+            edgeList graph = getSubgraph(m, kGraph);
+            std::cout << "generating test case: n = " << n << ", m = " << m
+                      << "                " << "\r" << std::flush;
+
+
+            testcase aCase = {{n, graph}, exactCMF({n, graph})};
+            tests.push_back(aCase);
+        }
+    }
+
+    return tests;
 }
 
 std::vector<testcase> getTests() {

@@ -1,0 +1,15 @@
+\section{Comparación de heurísticas}
+
+Dado que el objetivo de este TP es encontrar la mejor solución posible sin utilizar algoritmos exactos (ya que el problema en sí se resuelve en tiempo exponencial), nos dispusimos a comprar los resultados obtenidos entre todos los algoritmos, poniendo énfasis en la precisión de los resultados y su relación con el tiempo de ejecución de cada uno. La idea es hallar el algoritmo que mantenga la mejor proporción tiempo-calidad.
+
+De cara a esto, sabemos que la heurística golosa es la más veloz. También suponemos que la aplicación de la metaheurística GRASP puede incrementar ampliamente la calidad de la solución (si se seleccionan correctamente los parámetros que la misma utiliza).
+
+Para estos tests, se generaron nuevamente grafos en base a distribuciones uniformes tales que:
+
+\begin{itemize}
+	\item $n \leq 40$
+	\item $m \leq \frac{n * (n-1)}{4}$
+\end{itemize}
+
+Esto se debe a que los resultados deben ser comparados con los del algoritmo exacto, lo cual restringe el tamaño de los grafos a generar (o su solución no podría hallarse en tiempo razonable).
+

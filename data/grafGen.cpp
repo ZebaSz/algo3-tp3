@@ -42,7 +42,7 @@ edgeList getSubgraph(unsigned int m, const edgeList& base) {
 }
 
 adjList createWithMaxDeg(unsigned int n, unsigned int m, unsigned int maxDeg) {
-    if(maxDeg >= n || maxDeg > m - 1) {
+    if(maxDeg >= n || maxDeg > m) {
         throw graphGenException("Not enough nodes or edges for max degree " + maxDeg);
     }
     adjList res(n, nodeSet());
@@ -62,8 +62,10 @@ adjList createWithMaxDeg(unsigned int n, unsigned int m, unsigned int maxDeg) {
     long seed = std::chrono::system_clock::now().time_since_epoch().count();
     std::default_random_engine generator (seed);
     for (size_t i = 0; i < res.size(); ++i) {
-        std::uniform_int_distribution<size_t> distribution(i, res.size() - 1);
-        std::swap(res[i], res[distribution(generator)]);
+        for (size_t j = 0; j < res[i].size(); ++j) {
+            std::uniform_int_distribution<size_t> distribution(j, res[i].size() - 1);
+            std::swap(res[i][j], res[i][distribution(generator)]);
+        }
     }
     return res;
 }
