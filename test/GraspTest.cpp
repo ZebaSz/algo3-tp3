@@ -47,9 +47,7 @@ TEST_F(GraspTest, allHuge) {
     }
 }
 
-/*
 TEST_F(GraspTest, patologic) {
-    cliqueInfo result = grasp(Graph::generatePatologicGraphForGreedy(10), 0.3, 10);
-    ASSERT_LE(result.outgoing, 10) << "Caso Patologico";
+    cliqueInfo result = grasp(Graph::generatePatologicGraphForGrasp(100, 10), 0.3, 10);
+    ASSERT_LE(result.outgoing, 100) << "Caso Patologico";
 }
- */

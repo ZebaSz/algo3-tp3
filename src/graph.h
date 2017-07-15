@@ -80,6 +80,6 @@ namespace Graph {
 
     //Greedy Frontier = maxNodeDegree Exact Frontier = maxNodeDegree^2/4
     graphInfo generatePatologicGraphForGreedy(unsigned int maxNodeDegree);
-
+    graphInfo generatePatologicGraphForGrasp(unsigned int maxNodeDegree, unsigned int amountOfMaxNodesDegree);
 }
 #endif //ALGO3_TP3_GRAPH_H

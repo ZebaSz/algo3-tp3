@@ -96,12 +96,51 @@ graphInfo Graph::generatePatologicGraphForGreedy(unsigned int maxNodeDegree) {
             frontierOffset++;
         }
     }
-    
-    //Cliqueo 
+
+    //Cliqueo
     for (unsigned int i = 1; i < maxCliqueSize; i++) {
         unsigned int cliqueNode = maxNodeDegree + i;
         for (unsigned int j = i + 1; j <= maxCliqueSize; j++) {
             unsigned int cliqueNodePair = maxNodeDegree + j;
+            edges.push_back({cliqueNode, cliqueNodePair});
+        }
+    }
+    return { n, edges };
+}
+
+graphInfo Graph::generatePatologicGraphForGrasp(unsigned int maxNodeDegree, unsigned int amountOfMaxNodesDegree) {
+    unsigned int maxCliqueSize = maxNodeDegree / 2;
+    unsigned int n = (maxNodeDegree + 1) * amountOfMaxNodesDegree + maxCliqueSize + (maxNodeDegree - maxCliqueSize) * maxCliqueSize;
+    edgeList edges;
+
+    unsigned int offset = amountOfMaxNodesDegree;
+    //El solsito el nodo, 0 tiene grado maxNodeDegree
+    for (unsigned int i = 0; i < amountOfMaxNodesDegree; i++) {
+        for (unsigned int j = 1; j <= maxNodeDegree; j++) {
+            edges.push_back({i, offset});
+            offset++;
+        }
+    }
+
+    offset --;
+    //Hago la frontera de la clique
+    unsigned int frontierOffset = offset + maxCliqueSize + 1;
+    for (unsigned int i = 1; i <= maxCliqueSize; i++) {
+        unsigned int cliqueNode = offset + i;
+        for (unsigned int j = 1; j <= (maxNodeDegree - maxCliqueSize); j++) {
+            if(frontierOffset >= n) {
+                edges.push_back({cliqueNode, frontierOffset});
+            }
+            edges.push_back({cliqueNode, frontierOffset});
+            frontierOffset++;
+        }
+    }
+
+    //Cliqueo
+    for (unsigned int i = 1; i < maxCliqueSize; i++) {
+        unsigned int cliqueNode = offset + i;
+        for (unsigned int j = i + 1; j <= maxCliqueSize; j++) {
+            unsigned int cliqueNodePair = offset + j;
             edges.push_back({cliqueNode, cliqueNodePair});
         }
     }
