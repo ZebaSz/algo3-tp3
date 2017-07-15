@@ -1,7 +1,9 @@
 #include <chrono>
 #include <random>
 #include <utility>
+#include <cassert>
 #include "grafGen.h"
+
 
 /**
  * Generates a complete graph
@@ -39,3 +41,33 @@ edgeList getSubgraph(unsigned int m, const edgeList& base) {
     return subgraph;
 }
 
+adjList createWithMaxDeg(unsigned int n, unsigned int m, unsigned int maxDeg) {
+    if(maxDeg >= n || maxDeg > m - 1) {
+        throw graphGenException("Not enough nodes or edges for max degree " + maxDeg);
+    }
+    adjList res(n, nodeSet());
+    unsigned int u = 0;
+    unsigned int v = 1;
+    for (unsigned int i = 0; i < m; ++i) {
+        while(res[u].size() == maxDeg || v >= n) {
+            ++u;
+            v = u + 1;
+            if(u >= n - 1) {
+                throw graphGenException("Too many edges for max degree " + maxDeg);
+            }
+        }
+        res[u].push_back(v);
+        res[v++].push_back(u);
+    }
+    long seed = std::chrono::system_clock::now().time_since_epoch().count();
+    std::default_random_engine generator (seed);
+    for (size_t i = 0; i < res.size(); ++i) {
+        std::uniform_int_distribution<size_t> distribution(i, res.size() - 1);
+        std::swap(res[i], res[distribution(generator)]);
+    }
+    return res;
+}
+
+const char* graphGenException::what() const noexcept {
+    return msg.c_str();
+}

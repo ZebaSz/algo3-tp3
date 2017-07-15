@@ -25,7 +25,7 @@
 #define MIN_M  (unsigned int)0
 #define MAX_M  (unsigned int)80
 
-#define MAX_IT (unsigned int)50
+#define MAX_IT (unsigned int)5
 
 struct testcase {
     graphInfo input;
@@ -52,6 +52,7 @@ void print_help(char* name) {
 
 int runExact();
 int runGreedy();
+int runGreedyMaxDeg();
 int runLocal();
 int runGrasp();
 int runFit();
@@ -78,7 +79,7 @@ int main(int argc, char* argv[]) {
     } else if(impl == "exact") {
         return runExact();
     } else if(impl == "greedy") {
-        return runGreedy();
+        return runGreedyMaxDeg();
     } else if(impl == "local") {
         return runLocal();
     } else if(impl == "grasp") {
@@ -129,17 +130,50 @@ int runGreedy() {
         edgeList kGraph = genKGraph(n);
         for (unsigned int m = MIN_M; m <= (n*(n-1)) >> 1; ++m) {
             edgeList graph = getSubgraph(m, kGraph);
-            graphInfo info = {n, graph};
+            adjList input = Graph::createAdjacencyList({n, graph});
             std::cout << "impl = greedy, n = " << n << ", m = " << m
                       << "                " << "\r" << std::flush;
             for (unsigned int i = 0; i < REPETITIONS; ++i) {
                 auto begin = GET_TIME;
 
-                greedyHeuristic(info);
+                greedyHeuristic(input);
 
                 auto end = GET_TIME;
 
                 fprintf(data, "%d,%d,%ld\n", n, m, GET_TIME_DELTA(begin, end));
+            }
+        }
+    }
+    std::cout << "greedy = done!                " << std::endl;
+    fclose(data);
+    return 0;
+}
+
+int runGreedyMaxDeg() {
+    remove(FILE_GREEDY);
+    FILE* data = fopen(FILE_GREEDY, "a");
+
+    fprintf(data, "n,m,maxDeg,ns\n");
+    for (unsigned int n = MIN_N; n <= MAX_N; ++n) {
+        for (unsigned int m = MIN_M; m <= (n*(n-1)) >> 1; ++m) {
+            for (unsigned int maxDeg = 0; maxDeg <= std::min(n,m); ++maxDeg) {
+                std::cout << "impl = greedy, n = " << n << ", m = " << m
+                          << ", maxDeg = " << maxDeg
+                          << "                " << "\r" << std::flush;
+                try {
+                    adjList input = createWithMaxDeg(n, m, maxDeg);
+                    for (unsigned int i = 0; i < REPETITIONS; ++i) {
+                        auto begin = GET_TIME;
+
+                        greedyHeuristic(input);
+
+                        auto end = GET_TIME;
+
+                        fprintf(data, "%d,%d,%d,%ld\n", n, m, maxDeg, GET_TIME_DELTA(begin, end));
+                    }
+                } catch (graphGenException& ex) {
+                    // skip
+                }
             }
         }
     }
@@ -157,9 +191,8 @@ int runLocal() {
         edgeList kGraph = genKGraph(n);
         for (unsigned int m = MIN_M; m <= std::min(MAX_M, (n*(n-1)) >> 1); ++m) {
             edgeList graph = getSubgraph(m, kGraph);
-            graphInfo info = {n, graph};
-            adjList adjacencies = Graph::createAdjacencyList(info);
-            cliqueInfo partialClique = greedyHeuristic(info);
+            adjList adjacencies = Graph::createAdjacencyList({n, graph});
+            cliqueInfo partialClique = greedyHeuristic(adjacencies);
 
             std::cout << "impl = local, n = " << n << ", m = " << m
                       << "                " << "\r" << std::flush;
@@ -187,9 +220,9 @@ int runGrasp() {
     fprintf(data, "n,m,p,it,ns\n");
     for (unsigned int n = MIN_N; n <= MAX_N; ++n) {
         edgeList kGraph = genKGraph(n);
-        for (unsigned int m = MIN_M; m <= (n*(n-1)) >> 1; ++m) {
+        for (unsigned int m = MIN_M; m <= std::min(MAX_M, (n*(n-1)) >> 1); ++m) {
             edgeList graph = getSubgraph(m, kGraph);
-            graphInfo info = {n, graph};
+            adjList adjacencies = Graph::createAdjacencyList({n, graph});
             for (unsigned int p = 1; p <= 10; ++p) {
                 float fp = (float)p/10;
                 for (unsigned int it = 1; it <= MAX_IT; ++it) {
@@ -199,7 +232,7 @@ int runGrasp() {
                     for (unsigned int i = 0; i < REPETITIONS; ++i) {
                         auto begin = GET_TIME;
 
-                        grasp(info, fp, it);
+                        grasp(adjacencies, fp, it);
 
                         auto end = GET_TIME;
 
