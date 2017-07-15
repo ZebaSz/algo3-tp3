@@ -80,29 +80,44 @@ Por ende, al implementar la misma cota sobre ordenarPorGrado, tenemos las siguie
 
 \subsection{Experimentación}
 
-El mayor desafío al analizar nuestra complejidad fue visualizar el impacto de $n$ en el tiempo de ejecución.
+El desafío que nos encontramos al analizar la complejidad de nuestras heurísticas fue que las mismas dependían no solo de $n$ y $m$, sino de la relación entre las mismas. Para simplificar, decidimos obviar algunos casos promedio que resultaron dificultosos.
 
 \noindent
-\begin{minipage}{0.55\textwidth}
+\begin{minipage}{0.49\textwidth}
     \hfill
-    \includegraphics[scale=0.6]{img/greedy-n.png}
+    \includegraphics[scale=0.55]{img/greedy-n-low.png}
+
+    \begin{center}
+        Datos del gráfico
+
+        \begin{tabular}{ | l l |}
+            \hline
+             & $m = 10$ \\ 
+            Curva aproximada & $f(x) = 320 * x + 10000$ \\
+            \hline
+        \end{tabular}
+    \end{center}
 \end{minipage}
 \hfill
-\begin{minipage}{0.44\textwidth}
+\begin{minipage}{0.49\textwidth}
+    \hfill
+    \includegraphics[scale=0.55]{img/greedy-n-hi.png}
+
     \begin{center}
         Datos del gráfico
 
         \begin{tabular}{ | l l |}
             \hline
              & $m = 40$ \\ 
-            Curva aproximada & $f(x) = 100 * x * log(x)$\\
-             & $+ 10 * x + 32000$ \\
+            Curva aproximada & $f(x) = 7 * n^2 + 31000$ \\
             \hline
         \end{tabular}
     \end{center}
 \end{minipage}
 
-Nos resultó muy dificil medir el impacto del tamaño de la clique máxima, ya que la misma depende mucho de las aristas del grafo generado. Esto resultó en algunos resultados dispares. Sin embargo, podemos ver por el r de Pearson que la correlación se aproxima a lineal.
+Como nuestra complejidad tiene un componente fijo $n$ y uno variable $min(n,m)$, decidimos
+
+Nos resultó dificil medir el impacto del tamaño de la clique máxima, ya que la misma depende mucho de las aristas del grafo generado. Esto resultó en algunos resultados dispares. Sin embargo, podemos ver por el R de Pearson que nuestra aproximación  la correlación se aproxima a lineal.
 
 \noindent
 \begin{minipage}{0.55\textwidth}
@@ -117,10 +132,10 @@ Nos resultó muy dificil medir el impacto del tamaño de la clique máxima, ya q
         \begin{tabular}{ | l l |}
             \hline
              & $n = 20$\\ 
-            Curva aproximada & $f(x) = 650 * x + 10000$ \\
+            Curva aproximada & $f(x) = 580 * x + 10000$ \\
             \hline
         \end{tabular}
     \end{center}
 \end{minipage}
 
-Por otro lado, el impacto lineal de la cantidad de aristas fue más que evidente, ya que el mismo coeficiente r dio exactamente 1 con margen de error ínfimo. La curva aproximada debio ser graficada en otro color por este motivo.
+Por otro lado, el impacto lineal de la cantidad de aristas fue más que evidente. Debido a la superposición de los puntos, la curva aproximada debió ser graficada en otro color.
