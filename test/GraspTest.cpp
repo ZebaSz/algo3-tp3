@@ -18,6 +18,14 @@ TEST_F(GraspTest, k4TimeLimit) {
     ASSERT_EQ(grasp(k4, 0.7, 0, mus{10000}).outgoing, (unsigned int)4);
 }
 
+TEST_F(GraspTest, k4BothLimits) {
+    ASSERT_EQ(grasp(k4, 0.1, 100, mus{10000}).outgoing, (unsigned int)4);
+    ASSERT_EQ(grasp(k4, 0.3, 100, mus{10000}).outgoing, (unsigned int)4);
+    ASSERT_EQ(grasp(k4, 0.5, 100, mus{10000}).outgoing, (unsigned int)4);
+    ASSERT_EQ(grasp(k4, 0.7, 100, mus{10000}).outgoing, (unsigned int)4);
+    ASSERT_EQ(grasp(k4, 0.7, 0, mus{0}).outgoing, (unsigned int)0); //si no se le permite iterar, devuelve cero
+}
+
 TEST_F(GraspTest, k4PlusTwoEdges) {
     ASSERT_EQ(grasp(k4plus, 0.1, 10, mus{0}).outgoing, (unsigned int)6);
     ASSERT_EQ(grasp(k4plus, 0.3, 10, mus{0}).outgoing, (unsigned int)6);

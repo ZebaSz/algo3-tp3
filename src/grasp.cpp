@@ -29,6 +29,22 @@ cliqueInfo grasp(const adjList &inputGraph, const float percentageToKeep, const 
             lastTime = Time::now();
             fs = lastTime - start;
         }
+    } else if( iterations > 0 && inputTime > mus{0}){
+        unsigned int i = 0;
+        fsec time(inputTime);
+        auto start = Time::now();
+        auto lastTime = Time::now();
+        fsec fs = lastTime - start;
+        mus d = std::chrono::duration_cast<mus>(fs);
+        while(fs < time && i < iterations){
+            cliqueInfo tempClique = localSearchHeuristic(inputGraph, randomGreedy(inputGraph, percentageToKeep));
+            if(bestClique.outgoing < tempClique. outgoing) bestClique = tempClique;
+            lastTime = Time::now();
+            fs = lastTime - start;
+            i++;
+        }
+    } else {
+        Utils::log(ERROR, "Iterations and time are both negative.");
     }
 
 
