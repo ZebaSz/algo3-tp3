@@ -30,5 +30,5 @@ TEST_F(ExactTest, allHuge) {
 
 TEST_F(ExactTest, greedyPatologic) {
     cliqueInfo result = exactCMF(Graph::generatePatologicGraphForGreedy(10));
-    ASSERT_LE(result.outgoing, 25) << "Caso Patologico";
+    ASSERT_LE(result.outgoing, 10) << "Caso Patologico";
 }

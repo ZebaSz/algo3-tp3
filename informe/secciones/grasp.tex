@@ -117,7 +117,9 @@ Con estos costos analizados, y considerando que la función \textbf{esAdyacenteA
 
 Dado que GRASP esta compuesto por un ciclo que corre tantas veces como se le especifique en el parámetro iteraciones, el costo temporal va a depender linealmente del número de iteraciones. Por otro lado, hay que considerar que en cada iteración del ciclo se realiza una llamada a localSearch(randomGreedy()). Por lo tanto, lo que acaba ocurriendo es que se suman las complejidades de ambos algoritmos (pues Local Search corre solo una vez sobre la clique generada, por lo que su complejidad es ajena a la de randomGreedy). Por ende, el costo de localSearch(randomGreedy()) es $O(n^3)$ + $O((min(n,m))^3$ $\times$ $n^2)$, y como no podemos afirmar nada sobre $min(n,m)$, no podemos realizar ninguna cota. Por lo tanto, nuestra complejidad acaba siendo $O(n^3 + min(n,m))^3$ $\times$ $n^2)$.
 
+\subsection{Casos Patológicos}
 
+Ya que la metaheurística tiene un grado de aleatoriedad, es difícil discernir casos patológicos. Pero cómo usa las heurísticas de búsqueda local y constructiva golosa, cuyo casos patológicos son parecidos, tenemos que tener en cuenta este tipo de instancias, aunque hay que ganarle a la probabilidad que se seleccione algún nodo de los de la clique de la mejor solución. Para evitar esto, hay que disminuir la probabilidad de que seleccione uno de estos nodos, por lo que que podemos generar muchas componentes como la de mayor grado, para que sea muy probable que en las iteraciones seleccione estos nodos en vez de los de la solución máxima. Notemos que podemos generar la cantidad que queramos de este tipo de componentes por lo que mientras más generemos, menos probabilidad tendremos de seleccionar la clique.
 \subsection{Experimentación}
 
 Al experimentar con la metaheurística, primero decidimos analizar el impacto lineal de las iteraciones:
