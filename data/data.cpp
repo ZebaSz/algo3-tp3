@@ -411,7 +411,7 @@ int runPathological() {
     FILE* data;
 
     std::vector<testcase> cases = generatePathologicalCases(false);
-
+/*
     remove(PATHOLOGICAL(FILE_GREEDY));
     data = fopen(PATHOLOGICAL(FILE_GREEDY), "a");
 
@@ -456,7 +456,7 @@ int runPathological() {
     }
     std::cout << "local = done!                    " << std::endl;
     fclose(data);
-
+*/
 
     remove(PATHOLOGICAL(FILE_GRASP));
     data = fopen(PATHOLOGICAL(FILE_GRASP), "a");
@@ -464,22 +464,25 @@ int runPathological() {
     fprintf(data, "n,m,p,it,diff,ns\n");
     for (auto it = cases.begin(); it != cases.end(); ++it) {
         adjList input = Graph::createAdjacencyList((*it).input);
-        float fp = 0.6f;
-        unsigned int i = 50;
-        std::cout << "impl = grasp, n = " << input.size()
-                  << ", m = " << (*it).input.edges.size()
-                  << ", p = " << fp
-                  << ", it = " << i
-                  << "     " << "\r"
-                  << std::flush;
+        for (unsigned int p = 1; p <= 10; ++p) {
+            float fp = (float) p / 10;
+            for (unsigned int i = 1; i <= MAX_IT; ++i) {
+                std::cout << "impl = grasp, n = " << input.size()
+                          << ", m = " << (*it).input.edges.size()
+                          << ", p = " << fp
+                          << ", it = " << i
+                          << "     " << "\r"
+                          << std::flush;
 
-        for (unsigned int j = 0; j < REPETITIONS; ++j) {
-            auto begin = GET_TIME;
-            cliqueInfo output = grasp(input, fp, i);
-            auto end = GET_TIME;
-            unsigned int diff = (*it).output.outgoing - output.outgoing;
-            fprintf(data, "%ld,%ld,%.1f,%d,%d,%ld\n",
-                    input.size(), (*it).input.edges.size(), fp, i, diff, GET_TIME_DELTA(begin, end));
+                for (unsigned int j = 0; j < REPETITIONS; ++j) {
+                    auto begin = GET_TIME;
+                    cliqueInfo output = grasp(input, fp, i);
+                    auto end = GET_TIME;
+                    unsigned int diff = (*it).output.outgoing - output.outgoing;
+                    fprintf(data, "%ld,%ld,%.1f,%d,%d,%ld\n",
+                            input.size(), (*it).input.edges.size(), fp, i, diff, GET_TIME_DELTA(begin, end));
+                }
+            }
         }
     }
     std::cout << "grasp = done!                           " << std::endl;
@@ -492,23 +495,26 @@ int runPathological() {
     fprintf(data, "n,m,p,it,diff,ns\n");
     for (auto it = cases.begin(); it != cases.end(); ++it) {
         adjList input = Graph::createAdjacencyList((*it).input);
-        float fp = 0.6f;
-        unsigned int i = 50;
-        std::cout << "impl = grasp2, n = " << input.size()
-                  << ", m = " << (*it).input.edges.size()
-                  << ", p = " << fp
-                  << ", it = " << i
-                  << "     " << "\r"
-                  << std::flush;
+        for (unsigned int p = 1; p <= 10; ++p) {
+            float fp = (float) p / 10;
+            for (unsigned int i = 1; i <= MAX_IT; ++i) {
+                std::cout << "impl = grasp2, n = " << input.size()
+                          << ", m = " << (*it).input.edges.size()
+                          << ", p = " << fp
+                          << ", it = " << i
+                          << "     " << "\r"
+                          << std::flush;
 
-        for (unsigned int j = 0; j < REPETITIONS; ++j) {
-            auto begin = GET_TIME;
-            cliqueInfo output = grasp(input, fp, i);
-            auto end = GET_TIME;
-            unsigned int diff = (*it).output.outgoing - output.outgoing;
+                for (unsigned int j = 0; j < REPETITIONS; ++j) {
+                    auto begin = GET_TIME;
+                    cliqueInfo output = grasp(input, fp, i);
+                    auto end = GET_TIME;
+                    unsigned int diff = (*it).output.outgoing - output.outgoing;
 
-            fprintf(data, "%ld,%ld,%.1f,%d,%d,%ld\n",
-                    input.size(), (*it).input.edges.size(), fp, i, diff, GET_TIME_DELTA(begin, end));
+                    fprintf(data, "%ld,%ld,%.1f,%d,%d,%ld\n",
+                            input.size(), (*it).input.edges.size(), fp, i, diff, GET_TIME_DELTA(begin, end));
+                }
+            }
         }
     }
     std::cout << "grasp2 = done!                           " << std::endl;
