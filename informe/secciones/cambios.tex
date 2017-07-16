@@ -15,7 +15,15 @@
 	\subsection*{Experimentación general}
 
 		Se agregaron las experimentaciones generales (de complejidad) de los algoritmos faltantes. Al mismo tiempo, debido a cambios en las complejidades calculadas para los distintos algoritmos, además de un cambio de criterio de medición temporal (que antes incluía una conversión innecesaria entre representaciones de grafos) se midieron nuevamente todas las experimentaciones de las heurísticas.
-
+		
+	\subsection*{Heurística de Búsqueda Local}
+		
+		Se eliminó la Vecindad de Local Search que quitaba dos nodos de la clique y agregaba dos nuevos. Si bien en un primer momento creímos que esta vecindad extendía nuestra posibilidad de alcanzar la clique de máxima frontera, al comparar los resultados que se obtenían con y sin la misma notamos que no existía diferencia en nuestros resultados. Sin embargo, sí se veía afectada la cota temporal del algoritmo, por lo que el costo que se pagaba por realizar este intercambio era demasiado para el mínimo beneficio que se obtenía.
+		
+		% COMENTARIO COMENTADO insertar imagen resultados
+		
+		De cualquier modo, es importante resaltar que esta decisión es tomada teniendo en cuenta las experimentaciones realizadas y los resultados observados (y, por ende, la repercusión del intercambio sobre nuestro problema). En otro problema, podría ocurrir que esta vecindad tenga una repercusión mayor o bien que su cota temporal sea más chica, justificando su uso.
+		
 	\subsection*{Análisis de precisión de heurísticas}
 
 		Se agregó una sección con la finalidad de comparar la calidad de los resultados obtenidos al aplicar cada heurística, y al mismo tiempo evaluar la relación costo/beneficio del uso de heurísticas más complejas.
