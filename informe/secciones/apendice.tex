@@ -14,6 +14,8 @@
 
 		Para analizar el comportamiento de nuestros algoritmos frente a ciertas instancias particulares, creamos un generador de grafos que no es aleatorio, sino que dados ciertos parámetros genera determinísticamente grafos poco favorables de las heurísticas.
 
+		Dados $k$ y $q$, $k$ es el mayor grado entre los nodos del grafo, existen $q$ componentes donde hay un nodo de grado $k$ donde sus adyacentes son de grado 1, y además una componente tal que es una clique de $\frac{k}{2}$ nodos y cada uno de ellos tienen $\frac{k}{2}$ nodos adyacentes de grado 1(Como los descritos en la sección de casos patológicos).
+
 		\item Mediciones de tiempo con \texttt{std::chrono} (parte de la biblioteca estándar de C++11).
 
 		Cada algoritmo fue probado 100 veces consecutivas con cada entrada, conservando solo el valor de tiempo menor para reducir el ruido por procesos ajenos al problema.
