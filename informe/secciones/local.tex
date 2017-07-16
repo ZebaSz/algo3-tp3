@@ -175,3 +175,69 @@ Así, alcanzamos las complejidades de cada una de nuestras vecindades. Por lo ta
 \subsection{Casos Patológicos}
 
 Los casos patológicos de la heurística de búsqueda local tienen la complejidad de que partimos de una solución, por lo que si la solución original no es vecina a la mejor solución no vamos a poder encontrarla. Podemos afirmar que la familia de instancias que definimos en la heurística golosa, tambien son malos casos para esta heurística, ya que la solución que nos entrega la golosa, no se encuentra en la vecindad de la la solución óptima, por lo que no lograremos alcanzar esta solución. Hay que tener en cuenta que la heurística depende de la solución inicial, por lo que el caso patológico solamente se va a dar si la solución inicial es la que estamos describiendo.
+
+\subsection{Experimentación}
+
+Al igual que con la heurística golosa, el tiempo de ejecución de este algoritmo depende de varios aspectos del grafo, además de $n$ y $m$. Por esto, decidimos solo realizar un análisis del peor caso para comprobar las cotas propestas.
+
+\noindent
+\begin{minipage}{0.55\textwidth}
+    \hfill
+    \includegraphics[scale=0.6]{img/local-n.png}
+\end{minipage}
+\hfill
+\begin{minipage}{0.44\textwidth}
+    \begin{center}
+        Datos del gráfico
+
+        \begin{tabular}{ | l l |}
+            \hline
+            Grafo completo & $m = \frac{n * (n-1)}{2}$\\ 
+            Curva aproximada & $f(x) = (x^5) / 2 + 5000 * x^2$ \\
+            \hline
+        \end{tabular}
+    \end{center}
+\end{minipage}
+
+Dado que el exponente que forma parte de nuestra cota de complejidad es bastante elevado, decidimos observar estos mismos datos con 2 enfoques distintos: por un lado, en escala logarítimica, y por el otro, en base a m (que, al ser grafos completos, equivale a $n^2$).
+
+
+\noindent
+\begin{minipage}{0.55\textwidth}
+    \hfill
+    \includegraphics[scale=0.6]{img/local-n-log.png}
+\end{minipage}
+\hfill
+\begin{minipage}{0.44\textwidth}
+    \begin{center}
+        Datos del gráfico
+
+        \begin{tabular}{ | l l |}
+            \hline
+            Grafo completo & $m = \frac{n * (n-1)}{2}$\\ 
+            Curva aproximada & $f(x) = (x^5) / 2 + 5000 * x^2$ \\
+            \hline
+        \end{tabular}
+    \end{center}
+\end{minipage}
+
+\noindent
+\begin{minipage}{0.55\textwidth}
+    \hfill
+    \includegraphics[scale=0.6]{img/local-m.png}
+\end{minipage}
+\hfill
+\begin{minipage}{0.44\textwidth}
+    \begin{center}
+        Datos del gráfico
+
+        \begin{tabular}{ | l l |}
+            \hline
+            Grafo completo & $m = \frac{n * (n-1)}{2}$\\ 
+            Curva aproximada & $f(x) = 3 * (x^{2.5}) + 10000 * x$ \\
+            \hline
+        \end{tabular}
+    \end{center}
+\end{minipage}
+
+Podemos notar en estos gráficos que las constantes elegidas para las curvas están un poco sobreajustadas. Sin embargo, utilizando el R de Pearson podemos aseverar que la complejidad en sí es correcta, ya que este coeficiente detecta correlaciones lineales y no depende de las constantes asociadas a cada elemento.

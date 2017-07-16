@@ -1,0 +1,43 @@
+\section{Informe de cambios}
+	\subsection*{Cambios generales}
+	
+		\begin{itemize}
+			\item Se agregaron nuevas situaciones reales.
+			
+			\item Se hizó un análisis para todas las heurísticas sobre las instancias donde la solución obtenida no es óptima (Casos patológicos).
+			
+			\item El uso previo del R de Pearson, como era provisto por la biblioteca de graficado de Seaborn, no era representativo de las curvas que nosotros aproximamos. Esto se rectificó, y ahora el R se calcula relacionando el gráfico y la curva de complejidad propuesta.			
+			
+			\item Se ajustó la cota de la complejidad temporal de los algoritmos
+			
+		\end{itemize}	
+
+	\subsection*{Experimentación general}
+
+		Se agregaron las experimentaciones generales (de complejidad) de los algoritmos faltantes. Al mismo tiempo, debido a cambios en las complejidades calculadas para los distintos algoritmos, además de un cambio de criterio de medición temporal (que antes incluía una conversión innecesaria entre representaciones de grafos) se midieron nuevamente todas las experimentaciones de las heurísticas.
+		
+	\subsection*{Heurística de Búsqueda Local}
+		
+		Se eliminó la Vecindad de Local Search que quitaba dos nodos de la clique y agregaba dos nuevos. Si bien en un primer momento creímos que esta vecindad extendía nuestra posibilidad de alcanzar la clique de máxima frontera, al comparar los resultados que se obtenían con y sin la misma notamos que no existía diferencia en nuestros resultados. Sin embargo, sí se veía afectada la cota temporal del algoritmo, por lo que el costo que se pagaba por realizar este intercambio era demasiado para el mínimo beneficio que se obtenía.
+		
+		% COMENTARIO COMENTADO insertar imagen resultados
+		
+		De cualquier modo, es importante resaltar que esta decisión es tomada teniendo en cuenta las experimentaciones realizadas y los resultados observados (y, por ende, la repercusión del intercambio sobre nuestro problema). En otro problema, podría ocurrir que esta vecindad tenga una repercusión mayor o bien que su cota temporal sea más chica, justificando su uso.
+		
+	\subsection*{Análisis de precisión de heurísticas}
+
+		Se agregó una sección con la finalidad de comparar la calidad de los resultados obtenidos al aplicar cada heurística, y al mismo tiempo evaluar la relación costo/beneficio del uso de heurísticas más complejas.
+
+		Esta sección incluye:
+
+		\begin{itemize}
+			\item análisis de precisión o calidad de los resultados de cada heurística
+
+			\item análisis de relación entre calidad y tiempo de ejecución
+
+			\item experimentación con parámetros de metaheurística (movido de la sección de GRASP)
+
+			\item experimentación de casos patológicos y su impacto en tiempo de ejecución y calidad de resultados
+
+			\item comparación entre las distintas heurísticas enterminos de tiempo de ejecución, calidad de resultados y casos patológicos
+		\end{itemize}

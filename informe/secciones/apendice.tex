@@ -8,7 +8,11 @@
 
 		Para poder probar las distintas implementaciones, creamos un generador de grafos aleatorios. El mismo consiste básicamente en un generador de grafos completos y una función de mezclado aleatorio, basado en los generadores de distribuciones uniformes provistas por la \texttt{std} de C++.
 
-		Cada uno de los grafos generados se utilizó multiples veces para testear varios aspectos de un mismo algoritmo.
+		Cada uno de los grafos generados se utilizó multiples veces para testear varios aspectos de un mismo algoritmo, al igual que para realizar pruebas comparativas entre las distintas implementaciones.
+
+		\item Un generador de grafos para casos patológicos
+
+		Para analizar el comportamiento de nuestros algoritmos frente a ciertas instancias particulares, creamos un generador de grafos que no es aleatorio, sino que dados ciertos parámetros genera determinísticamente grafos poco favorables de las heurísticas.
 
 		\item Mediciones de tiempo con \texttt{std::chrono} (parte de la biblioteca estándar de C++11).
 
@@ -20,9 +24,9 @@
 
 		Se utilizaron los DataFrames de Pandas para el manejo de datos (guardados en \texttt{.csv}) y las funciones de regresión de Seaborn para el graficado, en conjunto con matplotlib.
 
-		Algunos gráficos incluyen el coeficiente de correlación (o ``r'') de Pearson, al igual que un p-valor para la hipotesis nula que los valores pueden haber sido generados sin correlación real. Esto quiere decir, un R cercano a 1 con un p-valor mínimo indica que hay una fuerte correlación positiva entre los valores graficados; un p-valor elevado, por otro lado, invalida una posible correlación positiva o negativa.
-
 	\end{itemize}
+
+	Algunos gráficos incluyen coeficientes de correlación o ``R'' de Pearson. El mismo denota la correlación lineal entre 2 variables aleatorias. Nostros lo aplicamos entre los datos obtenidos (en particular, el tiempo de ejecución) y la curva graficada que se aproxima a esos datos. De esta manera, podemos determinar si nuestra aproximación es correcto: un R cercano o igual a 1 indica que hay una fuerte correlación positiva entre los valores graficados y la curva, es decir, la curva aproxima correctamente al gráfico. Junto al coeficiente se incluye un p-valor para la hipotesis nula que los valores pueden haber sido generados sin correlación real; un p-valor elevado invalidaría una posible correlación positiva o negativa, lo cual significaría que nuestra aproximación es erronea.
 
 	\subsection{Apéndice II: herramientas de compilación y testing}
 	Durante el desarrollo se utilizaron las siguientes herramientas:
