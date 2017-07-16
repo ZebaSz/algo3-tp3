@@ -343,9 +343,11 @@ int runAccuracy() {
     for (auto it = cases.begin(); it != cases.end(); ++it) {
         adjList input = Graph::createAdjacencyList((*it).input);
 
-        for (unsigned int p = 1; p <= 10; ++p) {
-            float fp = (float)p/10;
-            for (unsigned int i = 1; i <= MAX_IT; ++i) {
+        //for (unsigned int p = 1; p <= 10; ++p) {
+        //    float fp = (float)p/10;
+        //    for (unsigned int i = 1; i <= MAX_IT; ++i) {
+        float fp = 0.6f;
+        unsigned int i = 50;
                 std::cout << "impl = grasp, n = " << input.size()
                           << ", m = " << (*it).input.edges.size()
                           << ", p = " << fp
@@ -358,8 +360,8 @@ int runAccuracy() {
                 unsigned int diff = (*it).output.outgoing - output.outgoing;
 
                 fprintf(data, "%ld,%ld,%.1f,%d,%d\n", input.size(), (*it).input.edges.size(), fp, i, diff);
-            }
-        }
+            //}
+        //}
     }
     std::cout << "grasp = done!                " << std::endl;
     fclose(data);
