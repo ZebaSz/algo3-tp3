@@ -92,7 +92,7 @@ Notemos que la diferencia de frontera es de $\frac{k^2}{4} - k$ por lo basta con
 
 \subsection{Experimentación}
 
-El desafío que nos encontramos al analizar la complejidad de nuestras heurísticas fue que las mismas dependían no solo de $n$ y $m$, sino de la relación entre las mismas (el grado máximo de los nodos). Por un lado, decidimos estudiar el peor caso en términos de tiempos de ejecución, que es el grafo completo. Por el otro, vamos a analizar levemente algunos casos promedio, ya que, si bien las cotas teóricas son correctas, nos encontramos que el algoritmo no evoluciona de manera uniforme.
+El desafío que nos encontramos al analizar la complejidad de nuestras heurísticas fue que las mismas dependían no solo de $n$ y $m$, sino de la relación entre las mismas (el grado máximo de los nodos). Decidimos estudiar el peor caso en términos de tiempos de ejecución, que es el grafo completo. Por otro lado, consideramos analizar algunos casos promedio, pero el tiempo de ejecución depende de muchos aspectos (grado máximo, tamaño de la clique, etc.), por lo que resultó demasiado difícil medir y analisar estos casos.
 
 \noindent
 \begin{minipage}{0.55\textwidth}
@@ -115,114 +115,115 @@ El desafío que nos encontramos al analizar la complejidad de nuestras heurísti
 
 Como se puede observar, nuestra cota teórica de $O(min(n,m)$ $\times$ $n)$ aplica correctamente para nuestro peor caso. En este contexto, n siempre es menor a m, por lo que $O(min(n,m)$ $\times$ $n) = O(n^2) = O(m)$.
 
-Para analizar el caso general, utilizamos dos estrategias distintas para la generación automática de los grafos:
+% LALALALALA MALDITO CASO PROMEDIO
+% Para analizar el caso general, utilizamos dos estrategias distintas para la generación automática de los grafos:
 
-\begin{itemize}
-    \item uniforme: se generan grafos con ejes aleatorios, basandose en un grafo completo y utilizando una distribución uniforme para remover aristas excedentes
+% \begin{itemize}
+%     \item uniforme: se generan grafos con ejes aleatorios, basandose en un grafo completo y utilizando una distribución uniforme para remover aristas excedentes
 
-    \item grado máximo: en este caso se parte de un nodo de grado máximo y se agregan adyacencias de forma ordenada, siempre evitando exceder el grado máximo preestablecido
-\end{itemize}
+%     \item grado máximo: en este caso se parte de un nodo de grado máximo y se agregan adyacencias de forma ordenada, siempre evitando exceder el grado máximo preestablecido
+% \end{itemize}
 
-Ambas estrategias presentan sus ventajas y desventajas: la generación uniforme solo permite analizar n y m de manera independiente, lo cual dificulta el análisis, mientras que la generación por grado máximo puede dar casos sesgados ya que los ejes no están apropiadamente distribuidos, y pueden dar casos particularmente favorables o desfavorables para la heurística.
+% Ambas estrategias presentan sus ventajas y desventajas: la generación uniforme solo permite analizar n y m de manera independiente, lo cual dificulta el análisis, mientras que la generación por grado máximo puede dar casos sesgados ya que los ejes no están apropiadamente distribuidos, y pueden dar casos particularmente favorables o desfavorables para la heurística.
 
-\subsubsection*{Grafos uniformes}
+% \subsubsection*{Grafos uniformes}
 
-\noindent
-\begin{minipage}{0.49\textwidth}
-    \hfill
-    \includegraphics[scale=0.55]{img/greedy-n-low.png}
+% \noindent
+% \begin{minipage}{0.49\textwidth}
+%     \hfill
+%     \includegraphics[scale=0.55]{img/greedy-n-low.png}
 
-    \begin{center}
-        Datos del gráfico
+%     \begin{center}
+%         Datos del gráfico
 
-        \begin{tabular}{ | l l |}
-            \hline
-             & $m = 40$ \\ 
-            \hline
-        \end{tabular}
-    \end{center}
-\end{minipage}
-\hfill
-\begin{minipage}{0.49\textwidth}
-    \hfill
-    \includegraphics[scale=0.55]{img/greedy-n-hi.png}
+%         \begin{tabular}{ | l l |}
+%             \hline
+%              & $m = 40$ \\ 
+%             \hline
+%         \end{tabular}
+%     \end{center}
+% \end{minipage}
+% \hfill
+% \begin{minipage}{0.49\textwidth}
+%     \hfill
+%     \includegraphics[scale=0.55]{img/greedy-n-hi.png}
 
-    \begin{center}
-        Datos del gráfico
+%     \begin{center}
+%         Datos del gráfico
 
-        \begin{tabular}{ | l l |}
-            \hline
-             & $m = 20$ \\
-            \hline
-        \end{tabular}
-    \end{center}
-\end{minipage}
+%         \begin{tabular}{ | l l |}
+%             \hline
+%              & $m = 20$ \\
+%             \hline
+%         \end{tabular}
+%     \end{center}
+% \end{minipage}
 
-Nuestros primeros experimentos nos dejaron muy sorprendidos: en casos promedio, si aislamos n, pareciese tener una relación inversa con el tiempo de ejecución mientras n < m, pero no influye una vez que n > m.
+% Nuestros primeros experimentos nos dejaron muy sorprendidos: en casos promedio, si aislamos n, pareciese tener una relación inversa con el tiempo de ejecución mientras n < m, pero no influye una vez que n > m.
 
-Si bien no aproximamos ninguna curva, utilizamos el coeficiente de correlacion de Spearman para analizar estos resultados. El mismo sirve para detectar correlaciones no necesariamente lineales o uniformemente distribuídas, pero sí monótonas (es decir, estrictamente positivas o negativas).
+% Si bien no aproximamos ninguna curva, utilizamos el coeficiente de correlacion de Spearman para analizar estos resultados. El mismo sirve para detectar correlaciones no necesariamente lineales o uniformemente distribuídas, pero sí monótonas (es decir, estrictamente positivas o negativas).
 
 
-\noindent
-\begin{minipage}{0.49\textwidth}
-    \hfill
-    \includegraphics[scale=0.55]{img/greedy-m-low.png}
+% \noindent
+% \begin{minipage}{0.49\textwidth}
+%     \hfill
+%     \includegraphics[scale=0.55]{img/greedy-m-low.png}
 
-    \begin{center}
-        Datos del gráfico
+%     \begin{center}
+%         Datos del gráfico
 
-        \begin{tabular}{ | l l |}
-            \hline
-             & $n = 40$ \\
-            Curva aproximada & $f(x) = 60 * x + 2000$ \\
-            \hline
-        \end{tabular}
-    \end{center}
-\end{minipage}
-\hfill
-\begin{minipage}{0.49\textwidth}
-    \hfill
-    \includegraphics[scale=0.55]{img/greedy-m-hi.png}
+%         \begin{tabular}{ | l l |}
+%             \hline
+%              & $n = 40$ \\
+%             Curva aproximada & $f(x) = 60 * x + 2000$ \\
+%             \hline
+%         \end{tabular}
+%     \end{center}
+% \end{minipage}
+% \hfill
+% \begin{minipage}{0.49\textwidth}
+%     \hfill
+%     \includegraphics[scale=0.55]{img/greedy-m-hi.png}
 
-    \begin{center}
-        Datos del gráfico
+%     \begin{center}
+%         Datos del gráfico
 
-        \begin{tabular}{ | l l |}
-            \hline
-             & $n = 40$ \\
-            Curva aproximada & $f(x) = \frac{x^2}{10} * 30 * x + 4000$ \\
-            \hline
-        \end{tabular}
-    \end{center}
-\end{minipage}
+%         \begin{tabular}{ | l l |}
+%             \hline
+%              & $n = 40$ \\
+%             Curva aproximada & $f(x) = \frac{x^2}{10} * 30 * x + 4000$ \\
+%             \hline
+%         \end{tabular}
+%     \end{center}
+% \end{minipage}
 
-Al hacer un análisis similar en base a m, nos encontramos que un aumento en m derivaba indefectiblemente en un aumento del tiempo de ejecución. En particular, parecería que si m > n, el algorítmo ejecuta en $O(m^2)$.
+% Al hacer un análisis similar en base a m, nos encontramos que un aumento en m derivaba indefectiblemente en un aumento del tiempo de ejecución. En particular, parecería que si m > n, el algorítmo ejecuta en $O(m^2)$.
 
-Nuestra conclusión ante estos resultados fue que las cotas de complejidad propuestas no necesariamente son incorrectas, pero al no poder garantizar el valor del factor determinante (el máximo grado del grafo) estos resultan engañosos, ya que existe una relación positiva entre el grado de los nodos y la cantidad de ejes, mientras que existe una relación inversa entre la cantidad de nodos y sus grados, asumiendo que los ejes están distribuídos de manera uniforme.
+% Nuestra conclusión ante estos resultados fue que las cotas de complejidad propuestas no necesariamente son incorrectas, pero al no poder garantizar el valor del factor determinante (el máximo grado del grafo) estos resultan engañosos, ya que existe una relación positiva entre el grado de los nodos y la cantidad de ejes, mientras que existe una relación inversa entre la cantidad de nodos y sus grados, asumiendo que los ejes están distribuídos de manera uniforme.
 
-\subsubsection*{Grafos con grado máximo}
+% \subsubsection*{Grafos con grado máximo}
 
-Para suplir las falencias de los datos uniformes, decidimos analizar grafos con grados máximos garantizados, al costo de perder la distribución uniforme de sus ejes.
+% Para suplir las falencias de los datos uniformes, decidimos analizar grafos con grados máximos garantizados, al costo de perder la distribución uniforme de sus ejes.
 
-Si bien consideramos que es posible generar grafos que cumplan con ambos requisitos, el esfuerzo involucrado es mayor, por lo que decidimos no incluir dicho análisis en el presente trabajo.
+% Si bien consideramos que es posible generar grafos que cumplan con ambos requisitos, el esfuerzo involucrado es mayor, por lo que decidimos no incluir dicho análisis en el presente trabajo.
 
-\noindent
-\begin{minipage}{0.55\textwidth}
-    \hfill
-    \includegraphics[scale=0.6]{img/greedy-alt-maxdeg.png}
-\end{minipage}
-\hfill
-\begin{minipage}{0.44\textwidth}
-    \begin{center}
-        Datos del gráfico
+% \noindent
+% \begin{minipage}{0.55\textwidth}
+%     \hfill
+%     \includegraphics[scale=0.6]{img/greedy-alt-maxdeg.png}
+% \end{minipage}
+% \hfill
+% \begin{minipage}{0.44\textwidth}
+%     \begin{center}
+%         Datos del gráfico
 
-        \begin{tabular}{ | l l |}
-            \hline
-             & $n = 20$\\ 
-            Curva aproximada & $f(x) = 580 * x + 10000$ \\
-            \hline
-        \end{tabular}
-    \end{center}
-\end{minipage}
+%         \begin{tabular}{ | l l |}
+%             \hline
+%              & $n = 20$\\ 
+%             Curva aproximada & $f(x) = 580 * x + 10000$ \\
+%             \hline
+%         \end{tabular}
+%     \end{center}
+% \end{minipage}
 
-Por otro lado, el impacto lineal de la cantidad de aristas fue más que evidente. Debido a la superposición de los puntos, la curva aproximada debió ser graficada en otro color.
+% Por otro lado, el impacto lineal de la cantidad de aristas fue más que evidente. Debido a la superposición de los puntos, la curva aproximada debió ser graficada en otro color.
