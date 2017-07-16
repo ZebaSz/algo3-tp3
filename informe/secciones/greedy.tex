@@ -81,6 +81,8 @@ Por ende, al implementar la misma cota sobre ordenarPorGrado, tenemos las siguie
 
 La heurística falla en el resultado máximo, cuando uno de los nodos de mayor grado que siguen formando la clique no pertenece a la del resultado esperado, si esto sucede, otros nodos de menor grado nos permiten conseguir en conjunto una mayor frontera.
 
+En la sección de Análisis de precisíón de heurísticas analizaremos más a fondo estos casos, y los compararemos con las otras heurísticas a presentar.
+
 \begin{SCfigure}[1][h]
 \caption{En este caso podemos apreciar que si elegimos el nodo de máximo grado(5), esta va a ser nuestra frontera maximal. Pero en cambio la clique formada por los nodos de menor grado(4) en conjunto su frontera es mayor, obteniendo una frontera de 6.}
 \includegraphics[width=0.5\textwidth]{img/patologic.pdf}
@@ -107,13 +109,35 @@ El desafío que nos encontramos al analizar la complejidad de nuestras heurísti
         \begin{tabular}{ | l l |}
             \hline
             Grafo completo & $m = \frac{n * (n-1)}{2}$\\ 
-            Curva aproximada & $f(x) = 50 * x^2 + 3000$ \\
+            Curva aproximada & $f(x) = 52 * x^2 + 2500$ \\
             \hline
         \end{tabular}
     \end{center}
 \end{minipage}
 
-Como se puede observar, nuestra cota teórica de $O(min(n,m)$ $\times$ $n)$ aplica correctamente para nuestro peor caso. En este contexto, n siempre es menor a m, por lo que $O(min(n,m)$ $\times$ $n) = O(n^2) = O(m)$.
+Como se puede observar, nuestra cota teórica de $O(min(n,m)$ $\times$ $n)$ aplica correctamente para nuestro peor caso. En este contexto, n siempre es menor a m, por lo que $O(min(n,m)$ $\times$ $n) = O(n^2) = O(m)$. Podemos analizar esto mismo graficando los mismos datos en funcion de m:
+
+\noindent
+\begin{minipage}{0.55\textwidth}
+    \hfill
+    \includegraphics[scale=0.6]{img/greedy-complete-m.png}
+\end{minipage}
+\hfill
+\begin{minipage}{0.44\textwidth}
+    \begin{center}
+        Datos del gráfico
+
+        \begin{tabular}{ | l l |}
+            \hline
+            Grafo completo & $m = \frac{n * (n-1)}{2}$\\ 
+            Curva aproximada & $f(x) = 110 * x + 2500$ \\
+            \hline
+        \end{tabular}
+    \end{center}
+\end{minipage}
+
+Cabe reiterar que esto solo aplica en nuestro contexto de grafo completo. El tiempo de ejecución puede variar de forma distinta si no se tienen encuenta los factores anteriormente mencionados, como el grado máximo o el tamaño de la clique máxima del grafo.
+
 
 % LALALALALA MALDITO CASO PROMEDIO
 % Para analizar el caso general, utilizamos dos estrategias distintas para la generación automática de los grafos:
