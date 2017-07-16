@@ -120,6 +120,12 @@ Dado que GRASP esta compuesto por un ciclo que corre tantas veces como se le esp
 \subsection{Casos Patológicos}
 
 Ya que la metaheurística tiene un grado de aleatoriedad, es difícil discernir casos patológicos. Pero cómo usa las heurísticas de búsqueda local y constructiva golosa, cuyo casos patológicos son parecidos, tenemos que tener en cuenta este tipo de instancias, aunque hay que ganarle a la probabilidad que se seleccione algún nodo de los de la clique de la mejor solución. Para evitar esto, hay que disminuir la probabilidad de que seleccione uno de estos nodos, por lo que que podemos generar muchas componentes como la de mayor grado, para que sea muy probable que en las iteraciones seleccione estos nodos en vez de los de la solución máxima. Notemos que podemos generar la cantidad que queramos de este tipo de componentes por lo que mientras más generemos, menos probabilidad tendremos de seleccionar la clique.
+
+\begin{SCfigure}[1][h]
+\caption{En la imagen podemos apreciar cómo copiamos 4 veces la componente que tiene el nodo de mayor grado, así estas componentes tienen más probabilidad de ser seleccionadas.}
+\includegraphics[width=0.5\textwidth]{img/patologicGrasp.pdf}
+\end{SCfigure}
+
 \subsection{Experimentación}
 
 Al experimentar con la metaheurística, primero decidimos analizar el impacto lineal de las iteraciones:
