@@ -14,10 +14,6 @@ cliqueInfo greedyHeuristic(const adjList &adjacencyList) {
     return greedyHeuristic(adjacencyList, partialClique);
 }
 
-cliqueInfo greedyHeuristic(const graphInfo &inputGraph, cliqueInfo partialClique){
-    return greedyHeuristic(Graph::createAdjacencyList(inputGraph), partialClique);
-}
-
 cliqueInfo greedyHeuristic(const adjList &adjacencyList, cliqueInfo partialClique) {
     nodeSet nodesToConsider = adjacencyList[partialClique.nodes[0]];
     std::sort(nodesToConsider.begin(), nodesToConsider.end(), greaterDegreeComparator(adjacencyList));

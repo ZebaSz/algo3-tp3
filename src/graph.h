@@ -52,9 +52,6 @@ namespace Graph {
      */
     adjList createAdjacencyList(const graphInfo &input);
 
-
-    bool isAdjacentTo(const adjList& graph, const node n1, const node n2);
-
     /**
      * Returns whether adding a given node to a clique yields a new clique
      *

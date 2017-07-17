@@ -1,7 +1,3 @@
-//
-// Created by catofthecannals on 21/06/17.
-//
-
 #ifndef ALGO3_TP3_GRASP_H
 #define ALGO3_TP3_GRASP_H
 

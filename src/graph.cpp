@@ -64,15 +64,6 @@ node Graph::nodeWithMaxDegree(const adjList &graph) {
     return best;
 }
 
-
-bool ::Graph::isAdjacentTo(const adjList &graph, const node n1, const node n2) {
-    if (graph[n1].size() < graph[n2].size()) {
-        return std::binary_search(graph[n1].begin(), graph[n1].end(), n2);
-    } else {
-        return std::binary_search(graph[n2].begin(), graph[n2].end(), n1);
-    }
-}
-
 void ::Graph::sortByDegree(nodeSet nodesToSort, const adjList &graph) {
     std::sort(nodesToSort.begin(), nodesToSort.end(), greaterDegreeComparator(graph));
 }
