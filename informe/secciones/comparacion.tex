@@ -13,9 +13,12 @@ Para estos tests, se generaron nuevamente grafos en base a distribuciones unifor
 
 Esto se debe a que los resultados deben ser comparados con los del algoritmo exacto, lo cual restringe el tamaño de los grafos a generar (o su solución no podría hallarse en tiempo razonable).
 
-Además de hacer pruebas generales, se hicieron algunas pruebas específicas a los casos patológicos. Estos fueron generados con las siguientes propiedades:
+Además de hacer pruebas generales, se hicieron algunas pruebas específicas a los casos patológicos. Estos fueron generados con las siguientes propiedades (detalles adicionales sobre el funcionamiento de estos generadores se encuentran en el apéndice):
 
-Dados $k$ y $q$, $k$ es el mayor grado entre los nodos del grafo, existen $q$ componentes donde hay un nodo de grado $k$ donde sus adyacentes son de grado 1, y además una componente tal que es una clique de $\frac{k}{2}$ nodos y cada uno de ellos tienen $\frac{k}{2}$ nodos adyacentes de grado 1(Como los descritos en la sección de casos patológicos).
+\begin{itemize}
+    \item $k \leq 15$
+    \item $q == 10$ (exclusivamente para GRASP)
+\end{itemize}
 
 Para cada heurística, analizaremos los siguientes aspectos de las pruebas:
 
@@ -24,7 +27,7 @@ Para cada heurística, analizaremos los siguientes aspectos de las pruebas:
 	\item el error máximo realizado por el algoritmo,
 	\item el error promedio de todos los casos (esto incluye aqueyos sin error),
 	\item la desviación estandar de dicha diferencia, y
-    \item el tiempo de ejecución de las heurísticas (con sus promedios y desviaciones)
+    \item el tiempo de ejecución promedio de las heurísticas
 \end{itemize}
 
 Creemos que con estos indicadores, podemos analizar correctamente el comportamiento de cada algoritmo y realizar comparaciones entre los mismos.
@@ -98,7 +101,7 @@ Al aplicar una búsqueda local sobre la metodología greedy, podemos ver una amp
 \begin{center}
     \begin{tabular}{ | l l |}
         \hline
-        Porcentaje de resultados con error & 30.83\% \\ \hline
+        Porcentaje de resultados con error & 20.21\% \\ \hline
         Errores & $\Delta$ \\
         - máximo & $max(\Delta) = 15$ \\
         - promedio & $\mu(\Delta) = 0.59$ \\
@@ -157,15 +160,15 @@ Si bien este gráfico no permite un análisis muy profundo, muestra una tendenci
     \begin{tabular}{ | c | c | c | c | c | c | c |}
         \hline
         \% de nodos considerados & Iteraciones & \% de error & $max(\Delta)$ & $\mu(\Delta)$ & $\sigma(\Delta)$ & $\mu(t)$ \\ \hline
-         & 1 & 68.3\% & 48 & 4.556 & 5.658 & 318434 \\ \cline{2-7}
-        0.2 & 7 & 21.0\% & 27 & 0.696 & 1.939 & 2351098\\ \cline{2-7}
-         & 15 & 17.5\% & 18 & 0.530 & 1.598 & 5021068 \\ \hline
-         & 1 & 75.9\% & 59 & 5.861 & 6.489 & 281990\\ \cline{2-7}
-        0.6 & 7 & 11.8\% & 15 & 0.307 & 1.133 & 2339655 \\ \cline{2-7}
-         & 15 & 4.7\% & 9 & 0.097 & 0.562 & 5009071 \\ \hline
-         & 1 & 78.9\% & 60 & 6.484 & 6.789 & 260273 \\ \cline{2-7}
-        1 & 7 & 9.3\% & 13 & 0.227 & 0.952 & 2350323 \\ \cline{2-7}
-         & 15 & 2\% & 9 & 0.054 & 0.401 & 4995022 \\
+            &  1 & 68.3\% & 48 & 4.556 & 5.658 &  318434 \\ \cline{2-7}
+        0.2 &  7 & 21.0\% & 27 & 0.696 & 1.939 & 2351098 \\ \cline{2-7}
+            & 15 & 17.5\% & 18 & 0.530 & 1.598 & 5021068 \\ \hline
+            &  1 & 75.9\% & 59 & 5.861 & 6.489 &  281990 \\ \cline{2-7}
+        0.6 &  7 & 11.8\% & 15 & 0.307 & 1.133 & 2339655 \\ \cline{2-7}
+            & 15 &  4.7\% &  9 & 0.097 & 0.562 & 5009071 \\ \hline
+            &  1 & 78.9\% & 60 & 6.484 & 6.789 &  260273 \\ \cline{2-7}
+          1 &  7 &  9.3\% & 13 & 0.227 & 0.952 & 2350323 \\ \cline{2-7}
+            & 15 &    2\% &  9 & 0.054 & 0.401 & 4995022 \\
         \hline
     \end{tabular}
 \end{center}
@@ -197,9 +200,9 @@ A modo de comparación con las pruebas realizadas en la sección de la metaheur�
             \hline
             \% de resultados con error & 1.04\% \\ \hline
             Errores & $\Delta$ \\
-            - máximo & $max(\Delta) = 7$ \\
-            - promedio & $\mu(\Delta) = 0.017$ \\
-            - desviacion estandar & $\sigma(\Delta) = 0.19$ \\
+            - máximo & $max(\Delta) = 6$ \\
+            - promedio & $\mu(\Delta) = 0.018$ \\
+            - desviacion estandar & $\sigma(\Delta) = 0.21$ \\
             \hline
         \end{tabular}
     \end{center}
@@ -260,5 +263,25 @@ Aquí es claro el rol del parámetro $p$ en la heurística. Si bien existen caso
 
 Por supuesto, debe recordarse que GRASP tiene un alto componente aleatorio: así como $p = 1, it = 1$ superó otras instancias con menor $p$ y más iteraciones, podría haber resultado en valores igualmente malos.
 
+\subsection*{Resumen comparativo y conclusiones}
 
-TODO COMPARACIONES DE TIEMPO ENTRE HEURISTICAS ACA
+A modo de referencia, se muestra aquí una comparación entre todas las heurísticas analisadas:
+
+\bigskip
+
+\begin{tabular}{| l | r | r | r | r | r | r | r | r |}
+    \hline
+                             & \multicolumn{4}{|c|}{Gráfos uniformes}                            & \multicolumn{4}{|c|}{Gráfos patológicos}    \\ \cline{2-9}
+    Heurística               & \% error & $\mu(\Delta)$ & $\sigma(\Delta)$ & $\mu(t)$ & \% error & $\mu(\Delta)$ & $\sigma(\Delta)$ & $\mu(t)$ \\ \hline
+    Constructiva Golosa      &  30.83\% &          1.18 &             2.52 &    10122 &  86.67\% &         63.27 &            61.71 &     7102 \\ \hline
+    Búsqueda Local           &  20.21\% &          0.59 &             1.56 &   189041 &  86.67\% &         63.27 &            61.71 &    25391 \\ \hline
+    GRASP (p = 1, it = 15)   &      2\% &          0.05 &             0.40 &  4995022 &   21.6\% &          9.76 &            33.99 &  4033435 \\ \hline
+    GRASP (p = 0.6, it = 50) &   1.04\% &          0.02 &             0.21 & 99235601 &     70\% &         35.20 &            41.47 &  6918257 \\
+    \hline
+\end{tabular}
+
+Como se puede ver, el uso de heurísticas más complejas conlleva un gran aumento del tiempo de ejecución. Algo que nos llamó la atención fue hecho que la búsqueda local, si bien mejora los resultados, tiene un gran costo relativo a los errores resueltos, y sufre los mismos casos patológicos. Por otro lado, la metaheurística reduce ampliamente los errores, pero su uso de búsquedas locales y el factor aleatorio significan que debe ser usado con precaución.
+
+Otro detalle interesante es como el tiempo de ejecución de GRASP puede resultar inversamente proporcional a la calidad del resultado hallado: si bien realizamos más del triple de iteraciones, al utlizar un p menor y no hallar el caso óptimo cada iteración tarda menos porque las cliques a considerar son más pequeñas.
+
+En conclusión, el uso de una metaheurística puede brindar resultados muy cercanos a un algoritmo preciso, pero debe ser optimizada con cuidado en cada uno de sus componentes (incluyendo tanto sus parámetros como sus heurísticas internas) para que el costo de ejecución a pagar por soluciones de mayor calidad no sea muy alto. 
