@@ -32,7 +32,7 @@ Para cada heurística, analizaremos los siguientes aspectos de las pruebas:
 
 Creemos que con estos indicadores, podemos analizar correctamente el comportamiento de cada algoritmo y realizar comparaciones entre los mismos.
 
-\subsection*{Heurística constructiva golosa}
+\subsection{Heurística constructiva golosa}
 
 Primero decidimos mirar la heurística golosa, ya que las otras están pensadas para funcionar sobre la misma:
 
@@ -90,7 +90,7 @@ Podemos ver que en estos casos, el algoritmo comete errores enormes, y en genera
 
 Cabe destacar que al analizar los tiempos de ejecución, el caso patológico no es necesariamente más lento que un grafo promedio de tamaño equivalente. Si bien los tiempos de ejecución no son comparables por los distintos tamaños, en general la calidad del resultado no influye (al menos de forma negativa) en los tiempos de ejecución. 
 
-\subsection*{Heurística de búsqueda local}
+\subsection{Heurística de búsqueda local}
 
 \begin{center}
     \includegraphics[scale=0.6]{img/accuracy-local.png}
@@ -146,7 +146,7 @@ Desafortunadamente, en el caso del grafo patológico, los resultados son exactam
 
 No solo eso, dado que el grado máximo es muy elevado, el tiempo de ejecución se triplica en promedio al de la heurística golosa, ya que busca mejoría entre sus nodos adyacentes y se haya con muchos casos idénticamente malos.
 
-\subsection*{Metaheurística GRASP}
+\subsection{Metaheurística GRASP}
 
 Al analizar la precisión de GRASP, tuvimos que tener en cuenta los parámetros de la metaheurística: el porcentaje de los nodos considerados y la cantidad de iteraciones aleatorias. La combinatoria de estos dos parámetros es muy grande, así que decidimos mostrar solo algunos de los valores que consideramos representativos de las tendencias generales:
 
@@ -224,15 +224,15 @@ En cuanto a los casos patológicos, primero decidimos comparar el rendimiento de
     \begin{tabular}{ | c | c | c | c | c | c | c |}
         \hline
         \% de nodos considerados & Iteraciones & \% de error & $max(\Delta)$ & $\mu(\Delta)$ & $\sigma(\Delta)$ & $\mu(t)$ \\ \hline
-            & 1  & 86.7\% & 97 & 35.617 & 29.447 &  204206 \\ \cline{2-7}
-        0.2 & 7  & 70.0\% & 84 & 22.350 & 24.291 & 1326573 \\ \cline{2-7}
-            & 15 & 56.7\% & 84 & 15.767 & 21.808 & 3081457 \\ \hline
-            & 1  & 83.3\% & 97 & 31.150 & 31.244 &  241819 \\ \cline{2-7}
-        0.6 & 7  & 13.3\% & 84 &  4.083 & 15.847 & 2228526 \\ \cline{2-7}
-            & 15 & 10.0\% & 84 &  3.400 & 15.554 & 5182525 \\ \hline
-            & 1  & 93.3\% & 97 & 31.667 & 30.820 &  240112 \\ \cline{2-7}
-        1   & 7  &  6.7\% & 84 &  2.817 & 15.333 & 2612865 \\ \cline{2-7}
-            & 15 &  3.3\% & 84 &  2.800 & 15.336 & 5901750 \\
+            & 1  & 86.7\% & 194 & 35.617 & 29.447 &  204206 \\ \cline{2-7}
+        0.2 & 7  & 70.0\% & 168 & 22.350 & 24.291 & 1326573 \\ \cline{2-7}
+            & 15 & 56.7\% & 168 & 15.767 & 21.808 & 3081457 \\ \hline
+            & 1  & 83.3\% & 194 & 31.150 & 31.244 &  241819 \\ \cline{2-7}
+        0.6 & 7  & 13.3\% & 168 &  4.083 & 15.847 & 2228526 \\ \cline{2-7}
+            & 15 & 10.0\% & 168 &  3.400 & 15.554 & 5182525 \\ \hline
+            & 1  & 93.3\% & 194 & 31.667 & 30.820 &  240112 \\ \cline{2-7}
+        1   & 7  &  6.7\% & 168 &  2.817 & 15.333 & 2612865 \\ \cline{2-7}
+            & 15 &  3.3\% & 168 &  2.800 & 15.336 & 5901750 \\
         \hline
     \end{tabular}
 \end{center}
@@ -267,7 +267,7 @@ Aquí es claro el rol del parámetro $p$ en la heurística. Si bien existen caso
 
 Por supuesto, debe recordarse que GRASP tiene un alto componente aleatorio: $p = 1, it = 1$ resultó peor que otras instancias con menor $p$. Depurar estos errores luego de sucesivas iteraciones es una parte importante del funcionamiento de la metaheurística.
 
-\subsection*{Resumen comparativo y conclusiones}
+\subsection{Resumen comparativo y conclusiones}
 
 A modo de referencia, se muestra aquí una comparación entre todas las heurísticas analizadas:
 
